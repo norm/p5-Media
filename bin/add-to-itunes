@@ -1,0 +1,50 @@
+#!/bin/bash
+
+CONFIG_FILE="${MEDIA_CONFIG:=$HOME/etc/media.conf}"
+    sync_to=$( grep 'sync_to' $CONFIG_FILE | sed -e 's/.*= *//' )
+
+
+
+for file in "$@"; do
+    
+    # fix relative pathnames to be absolute (because osascript
+    # doesn't pay attention to the working directory)
+    if [ '/' != ${file:0:1} ]; then
+        file="$PWD/$file"
+    fi
+    
+    # First, add the file(s) to iTunes (this will not copy the file into
+    # the iTunes organised file area, regardless of the preference).
+    osascript <<APPLESCRIPT
+        set new_file to POSIX file "${file}"
+        
+        tell application "iTunes"
+            launch
+            add new_file to playlist "Library" of source "Library"
+        end tell
+APPLESCRIPT
+    
+done
+
+# Second, sync iTunes to the named device(s) (default to anything matching 
+# 'tv') to copy new files across ready for watching.
+if [ -n "${sync_to}" ]; then
+    osascript <<APPLESCRIPT
+        tell application "System Events"
+            tell process "iTunes"
+            set file_menu to menu 1 of menu bar item "File" of menu bar 1
+            set sync_menus to name of ¬
+                (every menu item of file_menu whose name contains "Sync")
+            
+            repeat with i from 1 to number of items in sync_menus
+                set sync_item to item i of sync_menus as Unicode text
+                if sync_item contains "${sync_to}" then
+                    click menu item sync_item of file_menu
+                end if
+            end repeat
+            
+            end tell
+        end tell
+APPLESCRIPT
+fi
+

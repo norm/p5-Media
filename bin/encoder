@@ -1,0 +1,174 @@
+#!/ports/bin/perl
+
+use Modern::Perl;
+
+use Media;
+use IO::All;
+
+use constant HIGHEST_PRIORITY => 1;
+use constant PROCESS_ID_FILE  => "$ENV{'HOME'}/var/encoder.pid";
+use constant SIG_CHECK        => 0;
+use constant SIG_KILL         => 9;
+use constant SIG_STOP         => 17;
+use constant SIG_CONT         => 19;
+
+
+
+my $media        = Media->new();
+my $encoder      = Media->new( log_file => 'encoder.log' );
+my $base         = $media->get_config( 'base_directory' );
+my $auto_install = $media->get_config( 'install_encodes' );
+
+my $argument = shift // 'queue';
+given ( $argument ) {
+    when ( 'run'    ) { run_encoder_queue();          }
+    
+    when ( 'queue'  ) { list_encoder_queue();         }
+    
+    when ( 'pause'  ) { pause_current_encode();       }
+    when ( 'stop'   ) { stop_encoder_after_current(); }
+    when ( 'abort'  ) { stop_encoder_immediately();   }
+    when ( 'resume' ) { resume_current_encode();      }
+    
+    when ( 'remove' ) { remove_from_queue( @ARGV );   }
+    when ( 'clear'  ) { clear_encoder_queue();        }
+    
+    default           { die "Unknown: $argument";     }
+}
+exit;
+
+
+
+sub run_encoder_queue {
+    # always start in the base
+    chdir $base
+        or die "chdir $base: $!";
+    say "-> Starting in $base";
+    
+    # run the encoder at as low a priority as possible
+    setpriority( 0, $$, 20 );
+    
+    $$ > io( PROCESS_ID_FILE );
+    
+    while ( 1 ) {
+        my( $job, $data ) = $encoder->dequeue_conversion();
+        my $end_queue = $data->{'end_queue'} // 0;
+        
+        convert_video( $data )
+            unless $end_queue;
+        
+        $job->finish();
+        
+        last if $end_queue;
+    }
+}
+sub pause_current_encode {
+    my $pid < io( PROCESS_ID_FILE );
+    my @children = get_child_processes( $pid );
+    
+    kill SIG_STOP, @children;
+}
+sub resume_current_encode {
+    my $pid < io( PROCESS_ID_FILE );
+    my @children = get_child_processes( $pid );
+    
+    kill SIG_CONT, @children;
+}
+sub clear_encoder_queue {
+    while ( 1 ) {
+        # pass a timeout, so that when there are no
+        # more jobs we actually get control back
+        my( $job, $data ) = $encoder->dequeue_conversion( 1 );
+        
+        last unless defined $job;
+        
+        my $filename = $data->{'filename'};
+        say "-> remove $filename";
+        
+        $job->finish();
+    }
+}
+sub list_encoder_queue {
+    foreach my $job ( $media->list_all_in_queue() ) {
+        my $file     = $job->{'payload'}{'filename'};
+        my $handler  = $job->{'active'};
+        my $active   = '';
+        my $priority = $job->{'priority'};
+        my $title    = $job->{'payload'}{'options'}{'-t'};
+        
+        if ( defined $handler ) {
+            $active = ( kill 0, $handler ) ? 'active' : 'inactive'; 
+        }
+        
+        say "[${priority}] $file"
+          . ( defined $title   ? " title $title"               : '' )
+          . ( defined $handler ? " (handler $handler $active)" : '' );
+        ;
+    }
+}
+sub stop_encoder_after_current {
+    $media->queue_conversion( { end_queue => 1, }, HIGHEST_PRIORITY );
+}
+sub stop_encoder_immediately {
+    my $pid < io( PROCESS_ID_FILE );
+    my @children = get_child_processes( $pid );
+    
+    kill SIG_KILL, $pid, @children;
+}
+sub remove_from_queue {
+    my @removals = @_;
+    
+    foreach my $job ( $media->list_all_in_queue() ) {
+        my $file  = $job->{'payload'}{'filename'};
+        my $title = $job->{'payload'}{'options'}{'-t'};
+        my $path  = $job->{'path'};
+        
+        $file = "$file title $title"
+            if defined $title;
+        
+        foreach my $arg ( @removals ) {
+            if ( $file =~ m{^${arg}$} ) {
+                $media->remove_queued_job( $path );
+                $media->write_log( "REMOVE $file" );
+            }
+        }
+    }
+}
+
+sub get_child_processes {
+    my $pid    = shift;
+    my $signal = shift;
+    
+    my $process_list = io( 'ps ax -o pid,ppid' )->pipe;
+    my @processes;
+    
+    while ( my $line = $process_list->getline ) {
+        if ( $line =~ m{ (\d+) \s (\d+) }x ) {
+            push @processes, $1
+                if $pid == $2;
+        }
+    }
+    
+    return @processes;
+}
+sub convert_video {
+    my $data = shift;
+    
+    my $directory = $data->{'directory'};
+    my $convert   = $data->{'filename'};
+    
+    if ( -f $convert or -d $convert ) {
+        $encoder->convert_file( $data );
+
+        if ( $auto_install ) {
+            # reprocess directory now that it contains the
+            # converted video (run as separate process)
+            say "-> process $directory";
+            $media->process_directory( $directory );
+        }
+    }
+    else {
+        # it is not an error if the item has since been removed
+        say "-> $convert has since vanished";
+    }
+}

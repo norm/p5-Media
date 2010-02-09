@@ -1,0 +1,14 @@
+bin/add-to-itunes
+bin/clean-srt
+bin/convert
+bin/encoder
+bin/media
+lib/Media.pm
+lib/Media/Config.pm
+lib/Media/Handler.pm
+lib/Media/Handler/Movie.pm
+lib/Media/Handler/TV.pm
+lib/Media/Handler/DVD.pm
+Makefile.PL
+t/parse_tv.t
+MANIFEST

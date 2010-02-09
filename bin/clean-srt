@@ -1,0 +1,403 @@
+#!/ports/bin/perl
+
+use Modern::Perl;
+
+use FileHandle;
+use Getopt::Std;
+use IO::All;
+use Term::ReadKey;
+use Text::Aspell;
+use Text::Iconv;
+use Term::ANSIColor;
+use locale;
+
+
+
+$| = 1;
+
+my %opt;
+getopts( 'l', \%opt );
+
+my $speller = Text::Aspell->new;
+$speller->set_option( 'lang',     'en_GB'  );
+$speller->set_option( 'sug-mode', 'normal' );
+
+my %dict_words  = get_dict_words();
+my $auto_return = 0;
+my $clear       = `clear`;
+my %replacements;
+my %ignored_words;
+my %corrections;
+
+
+
+while ( my $file = shift ) {
+    my $content < io $file;
+    $content = fix_content( $content );
+    
+    my $line_number = 0;
+    my @lines       = split m{\n}, $content;
+    my $corrected_content;
+    
+    foreach my $original_line ( @lines ) {
+        $line_number++;
+        
+        if ( ! $opt{'l'} ) {
+            # provide some visual feedback that things are still happening
+            # when the document is spelled correctly
+            printf "\r[%04d/%04d] %-67s\r", 
+                $line_number, $#lines, $original_line;
+            select undef, undef, undef, 0.001;
+        }
+        
+        my $not_found      = 0;
+        my $line_has_error = 0;
+        my $line           = fix_ocr_line( $original_line );
+        my $fixed_line;
+        
+        while ( $line =~ s{^ ( [^\w']*? )( [\w']+ ) }{}x ) {
+            my $prefix   = $1;
+            my $word     = $2;
+            my $checked  = spell_check_word( 
+                    $word, 
+                    $original_line, 
+                    "${file} - line ${line_number}/$#lines" 
+                );
+            
+            if ( '' eq $checked ) {
+                $line_has_error = 1;
+                $ignored_words{ $word } = 1
+                    if $opt{'l'};
+            }
+            
+            $fixed_line .= "${prefix}${checked}";
+        }
+        
+        if ( $opt{'l'} ) {
+            my $possible_error 
+                = flag_possible_errors( $fixed_line );
+            
+            if ( $line_has_error or $possible_error ) {
+                printf "[%04d/%04d] %s\n", 
+                    $line_number, $#lines, $original_line;
+            }
+        }
+        
+        $fixed_line .= $line;
+        $corrected_content .= "$fixed_line\n";
+    }
+    
+    if ( ! $opt{'l'} ) {
+        print $clear;
+        $corrected_content > io $file;
+    }
+}
+exit;
+
+
+
+sub flag_possible_errors {
+    my $text = shift // '';
+    
+    return 0 if length( $text ) < 1;
+    
+    return 1 if $text =~ m{ [[:lower:]] \s+ V }x;
+    return 1 if $text =~ m{ [[:lower:]] \s+ K }x;
+    return 1 if $text =~ m{ [[:lower:]] \s+ X }x;
+
+    return 1 if $text =~ m{ ' Ve }x;
+    
+    return 0;
+}
+sub fix_content {
+    my $content = shift;
+    
+    # picking up i as i-acute is much more common than a word with i-acute
+    $content =~ s{\xED}{i}gs;
+    
+    # convert to UTF-8
+    my $iconv = Text::Iconv->new( 'ISO-8859-1', 'UTF-8' );
+    $content  = $iconv->convert( $content );
+    
+    return $content;
+}
+sub spell_check_word {
+    my $word      = shift;
+    my $full_line = shift;
+    my $context   = shift;
+    
+    return $word
+        if $auto_return;
+    
+    return $word
+        if $word =~ m{^ \d+ $}x;
+    
+    if ( ! recognised_word( $word ) ) {
+        my @suggestions = $speller->suggest( $word );
+        
+        # accept the first suggestion if it contains two words 
+        # ("ofthis" becomes "of this")
+        my $first = $suggestions[ 0 ] // '__BROKEN__';
+        return $first
+            if $first =~ m{\s};
+        
+        # first apply common regexp and compare to hits from speller, 
+        # if they match then automatically accept
+        my $guess          = ocr_corrected_word( $word );
+        my $in_suggestions = grep { lc($_) eq lc($guess) } @suggestions;
+        
+        return $guess
+            if $in_suggestions;
+        
+        # replace words across the entire document
+        return $replacements{ $word }
+            if defined $replacements{ $word };
+        
+        if ( ! $opt{'l'} ) {
+            printf "\r-> %-76s\n", coloured( 'bold yellow', $full_line );
+            say "   [$context]";
+            say "\nWord " 
+              . coloured( 'red', $word )
+              . " not recognised.\n";
+            $word = present_menu( $word, @suggestions );
+            print $clear;
+        }
+        else {
+            $word = '';
+        }
+    }
+    
+    return $word;
+}
+sub present_menu {
+    my $unknown_word = shift;
+    my @suggestions  = @_;
+    
+    my @option_keys = qw( 
+            a b c d e f g h i j k l m
+            n o p q r s t u v w x y z
+        );
+    my $count = 0;
+    my %options;
+    
+    # previously corrected words are probably right again
+    if ( defined $corrections{ $unknown_word } ) {
+        $options{'a'} = $corrections{ $unknown_word };
+        $count = 1;
+    }
+    
+    WORD:
+    foreach my $word ( @suggestions ) {
+        my $key = $option_keys[ $count ];
+        
+        $options{ $key } = $word;
+        last WORD if ++$count == 26;
+    }
+    
+    my $key = choose_from_menu( %options );
+    given ( $key ) {
+        when ( "\n" ) {
+            return $unknown_word;
+        }
+        when ( ' ' ) {
+            $ignored_words{ $unknown_word } = 1;
+            return $unknown_word;
+        }
+        when ( '1' ) {
+            print "Enter word: ";
+            my $new_word = <STDIN>;
+            chomp $new_word;
+            
+            $corrections{ $unknown_word } = $new_word;
+            return $new_word;
+        }
+        when ( '0' ) {
+            $auto_return = 1;
+            return $unknown_word;
+        }
+        default {
+            my $lower_key = lc $key;
+            
+            if ( defined $options{ $lower_key } ) {
+                if ( $lower_key eq $key ) {
+                    return $options{ $lower_key };
+                }
+                else {
+                    $replacements{ $unknown_word } = $options{ $lower_key };
+                    return $options{ $lower_key };
+                }
+            }
+            return $unknown_word;
+        }
+    }
+}
+sub choose_from_menu {
+    my %options = @_;
+    
+    say 'Choose from the following options:';
+    say ' [Return]  Ignore word'
+      . '           [Space]  Ignore word (for rest of document)';
+    say "      [1]  Provide spelling          [0]  Skip rest of document";
+    
+    my $advisory = "(for rest of document)";
+    foreach my $option ( sort keys %options ) {
+        printf 
+            "      [%s]  %-24s  [%s]  %s %s\n",
+                $option,
+                $options{ $option },
+                uc $option,
+                $options{ $option },
+                $advisory;
+        $advisory = '';
+    }
+    
+    ReadMode 'cbreak';
+    my $key = ReadKey( 0 );
+    ReadMode 'restore';
+    
+    return $key;
+}
+sub fix_ocr_line {
+    my $line = shift;
+    
+    $line =~ s{''}{"}g;
+    $line =~ s{,,,}{...}g;
+    $line =~ s{ \.\.\. \.+ }{...}xg;
+    
+    # happened before - want to check if I see it again
+    die "Single-line containing only punctuation"
+        if ( $line =~ m{ \n [,'\.] \n }x );
+    
+    # Aspell thinks "l" is a word. In every case I've found, it's
+    # just the OCR being wrong on "I".
+    $line =~ s{ \b l \b }{I}gx;
+    
+    # "o' utdoors" and "hos'pitality" happens too often
+    my $errant_quote = qr{ \b ( (\w+) \' ( \s* ) (\w+) ) \b }x;
+    while ( $line =~ $errant_quote ) {
+        if ( $speller->check( "$2'$4" ) ) {
+            # don't crap on "we'll" - preserve the apostrophe for later
+            $line =~ s{$errant_quote}{$2--APOS--$4}x;
+        }
+        elsif ( $speller->check( "$2$4" ) ) {
+            $line =~ s{$errant_quote}{$2$4}x;
+        }
+        else {
+            # unrecognised jibberish, leave it alone
+            $line =~ s{$errant_quote}{$2--APOS--$3$4}x;
+        }
+    }
+    
+    # "I'Ve" and "we'Ve"
+    $line =~ s{ (\w) ' Ve }{$1've}gx;
+    
+    # words starting with a capital-V in the middle of a sentence 
+    # (could cause problems with proper nouns, but that's much rarer)
+    $line =~ s{ ( [[:lower:]] \s+ ) V }{$1v}gx;
+    
+    # "ensu!e" is not a word
+    $line =~ s{ (\w) [!] (\w) }{$1$2}gx;
+    
+    # correct placeholders
+    $line =~ s{--APOS--}{'}g;
+    
+    return $line;
+}
+sub ocr_corrected_word {
+    my $word = shift;
+    
+    # various common upper/lower case identification problems
+    return $word if $word =~ s{ ([\w]) V         }{$1v}x;
+    return $word if $word =~ s{ ([[:lower:]]) X  }{$1x}x;
+    return $word if $word =~ s{ ([[:lower:]]) K  }{$1x}x;
+    return $word if $word =~ s{ I'Ve             }{I've}x;
+    
+    # I and L are often confused at the start of words
+    return $word if $word =~ s{^ l (.*)        }{I$1}x;
+    return $word if $word =~ s{^ I (.*)        }{l$1}x;
+    
+    # provide English correction to common American spellings,
+    # which will trigger automatic correction
+    return $word if $word =~ s{ ize $           }{ise}x;
+    return $word if $word =~ s{ ized $          }{ised}x;
+    return $word if $word =~ s{ izes $          }{ises}x;
+    return $word if $word =~ s{ er $            }{re}x;
+    return $word if $word =~ s{ vorite          }{vourite}x;
+    return $word if $word =~ s{ ([Cc]) olor     }{$1olour}x;
+    
+    return $word;
+}
+
+sub recognised_word {
+    my $word = shift;
+    
+    return 1
+        if valid_word( $word );
+    
+    # GNU Aspell doesn't recognise common contractions such as
+    # "anyone's", "That'll", "everything's" and "Nobody's"
+    if ( $word =~ m{ (.*) ' (s|ll|d|ve) $}x ) {
+        return 1
+            if valid_word( $1 );
+    }
+    
+    # for words ending in an apostrophe, accept it if the word exists
+    # when the ' is replaced with a g (eg. "tryin'", "hurtin'")
+    if ( $word =~ m{ (.*) ' }x ) {
+        return 1
+            if valid_word( "${1}g" );
+    }
+    
+    # accept words that end with "s'", such as "clients'" and "years'"
+    if ( $word =~ m{ (.*) ' $}x ) {
+        return 1
+            if valid_word( $1 );
+    }
+    
+    # accept words at the beginning of a single-quoted sentence 
+    # ('To quit is my goal!')
+    if ( $word =~ m{^ ' (.*) }x ) {
+        return 1
+            if valid_word( $1 );
+    }
+    
+    return 0;
+}
+sub valid_word {
+    my $word  = shift;
+    
+    return 1 
+        if $speller->check( $word );
+    
+    # GNU Aspell doesn't seem to know some words that seem to me to be 
+    # fairly common (the ones I discovered before I got bored of it and
+    # added this code were "doxy", "specialty" and "plow" -- and they
+    # all exist in the system dictionary).
+    return 1
+        if defined $dict_words{ $word };
+    
+    return 1
+        if defined $ignored_words{ $word };
+    
+    return 0;
+}
+sub coloured {
+    my $colour = shift;
+    my $text   = shift;
+    
+    return colored( $text, $colour );
+}
+sub get_dict_words {
+    my %words;
+    
+    my $handle = FileHandle->new( '/usr/share/dict/words' )
+        or return;
+    
+    while ( my $word = <$handle> ) {
+        chomp $word;
+        $words{ $word } = 1
+            if length( $word ) > 2;
+    }
+    
+    return %words;
+}

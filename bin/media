@@ -1,0 +1,35 @@
+#!/ports/bin/perl
+
+use Modern::Perl;
+
+use Getopt::Std;
+use Media;
+
+
+# default priority = 50
+my %opt = ( p => 50 );
+getopts( 'p:', \%opt );
+
+my $media    = Media->new();
+my $argument = shift 
+            // '';
+
+given ( $argument ) {
+    when ( -d ) {
+        # directory, possibly containing other directories
+        # (can be multiple arguments)
+        while ( defined $argument ) {
+            $media->process_directory( $argument, $opt{'p'} );
+            $argument = shift;
+        }
+    }
+    when ( m{^[A-Z]+$} ) {
+        # result of unraring of media file
+        $media->process_result( $argument, @ARGV );
+    }
+    default {
+        pod2usage();
+    }
+}
+
+exit;
