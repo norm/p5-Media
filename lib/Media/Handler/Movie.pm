@@ -55,6 +55,9 @@ method install_file ( Str $directory, Str $file ) {
 }
 
 method create_movie_links ( Str $origin, HashRef $details, Str $extension ) {
+    my( undef, $filename ) 
+        = $self->get_movie_location( $details, $extension );
+    
     my $year = $details->{'year'} // '1900';
     $self->link_movie( $origin, "Year/${year}", $filename );
     
