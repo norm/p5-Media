@@ -85,15 +85,15 @@ method is_video_file ( Str $filename ) {
                                     : 0;
 }
 method convert_video ( Str $directory, Str $file, Int $priority ) {
-    my $extension = $self->get_file_extension( $file );
-    my $media     = $self->get_media();
-    my $target    = "${directory}/${file}";
+    my %details = $self->parse_type_string( $directory );
+    my $process = $self->get_processing_directory( \%details );
+    my $media   = $self->get_media();
     
-    $self->write_log( "queue conversion: ${target}" );
+    $self->write_log( "queue conversion: ${directory}/${file}" );
     $media->queue_conversion( 
             {
-                'filename'      => $target,
-                'directory'     => $directory,
+                'input'  => "${directory}/${file}",
+                'output' => $process,
             },
             $priority,
         );

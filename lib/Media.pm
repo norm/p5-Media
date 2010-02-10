@@ -223,21 +223,21 @@ method remove_queued_job ( Str $path ) {
     }
 }
 method convert_file ( HashRef $options ) {
-    my $filename  = $options->{'filename'} // '';
-    my $directory = $options->{'directory'};
-    my $type      = $self->get_file_extension( $filename );
-    my $config    = $self->get_configuration();
+    my $input  = $options->{'input'} // '';
+    my $output = $options->{'output'};
+    my $type   = $self->get_file_extension( $input );
+    my $config = $self->get_configuration();
     
-    if ( -d "$filename/VIDEO_TS" ) {
+    if ( -d "$input/VIDEO_TS" ) {
         $type = 'DVD';
     }
-    mkpath( $directory );
+    mkpath( $output );
     
     if ( defined $config->{ $type } ) {
-        my $target = "${directory}/${CONVERSION_FILE}";
+        my $target = "${output}/${CONVERSION_FILE}";
         my $start   = time();
         my $args    = $options->{'options'} // {};
-        my $message = "Converting $filename";
+        my $message = "Converting $input";
            $message .= ' title ' . $args->{'-t'}
                 if defined $args->{'-t'};
         
@@ -262,7 +262,7 @@ method convert_file ( HashRef $options ) {
         delete $options{'subtitle'};
         
         if ( defined $options{'poster'} ) {
-            $self->get_poster( $directory, $options{'poster'} );
+            $self->get_poster( $output, $options{'poster'} );
         }
         delete $options{'poster'};
         
@@ -290,7 +290,7 @@ method convert_file ( HashRef $options ) {
                 'HandBrakeCLI',
                 %encoding_arguments,
                 '-i',
-                $filename,
+                $input,
                 '-o',
                 $target,
             );
@@ -302,13 +302,13 @@ method convert_file ( HashRef $options ) {
         my $elapsed = elapsed( $end - $start );
         $self->write_log( "Done - took $elapsed" );
         
-        my $converted = "${directory}/${CONVERTED_FILE}";
+        my $converted = "${output}/${CONVERTED_FILE}";
         move( $target, $converted );
         
-        $self->trash_file( $filename );
+        $self->trash_file( $input );
     }
     else {
-        $self->write_log( "ERROR: no type (${type}) for ${filename}")
+        $self->write_log( "ERROR: no type (${type}) for ${input}")
     }
 }
 method get_audio_args ( HashRef $options ) {

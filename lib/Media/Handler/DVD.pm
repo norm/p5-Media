@@ -68,11 +68,10 @@ method process_dvd ( Str $directory, Int $priority ) {
         my $process = $handler->get_processing_directory( \%details );
         
         $self->write_log( "queue conversion: ${directory} title ${key}" );
-        
         my %conversion = (
-                'filename'  => $directory,
-                'directory' => $process,
-                'options'   => {
+                'input'   => $directory,
+                'output'  => $process,
+                'options' => {
                     '-t'       => $key,
                     'audio'    => $details{'audio'},
                     'subtitle' => $details{'subtitle'},

@@ -154,21 +154,21 @@ sub get_child_processes {
 sub convert_video {
     my $data = shift;
     
-    my $directory = $data->{'directory'};
-    my $convert   = $data->{'filename'};
+    my $input  = $data->{'input'};
+    my $output = $data->{'output'};
     
-    if ( -f $convert or -d $convert ) {
+    if ( -f $input or -d $input ) {
         $encoder->convert_file( $data );
 
         if ( $auto_install ) {
             # reprocess directory now that it contains the
             # converted video (run as separate process)
-            say "-> process $directory";
-            $media->process_directory( $directory );
+            say "-> process $output";
+            $media->process_directory( $output );
         }
     }
     else {
         # it is not an error if the item has since been removed
-        say "-> $convert has since vanished";
+        say "-> $input has since vanished";
     }
 }
