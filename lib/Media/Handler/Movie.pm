@@ -39,28 +39,23 @@ method install_file ( Str $directory, Str $file ) {
     my $target = "${directory}/${file}";
     
     $self->tag_file( $target, \%details );
-    $self->safely_move_file( 
-            $target,
-            $destination_directory, 
-            $destination_filename 
-        );
+    my $moved_to 
+        = $self->safely_move_file( 
+                $target,
+                $destination_directory, 
+                $destination_filename 
+            );
     
     # only the main feature is linked to multiple locations
     # and added to itunes, extras are not cluttering things up
     if ( !defined $details{'extra'} ) {
-        $self->create_movie_links( \%details, $extension );
-        $self->add_to_itunes( 
-                "$destination_directory/$destination_filename" 
-            );
+        $self->create_movie_links( $moved_to, \%details, $extension );
+        $self->add_to_itunes( $moved_to );
     }
 }
-method create_movie_links ( HashRef $details, Str $extension ) {
-    my( $directory, $filename ) 
-        = $self->get_movie_location( $details, $extension );
-    
-    my $origin = "${directory}/${filename}";
-    my $year   = $details->{'year'} // '1900';
-    
+
+method create_movie_links ( Str $origin, HashRef $details, Str $extension ) {
+    my $year = $details->{'year'} // '1900';
     $self->link_movie( $origin, "Year/${year}", $filename );
     
     foreach my $genre ( @{ $details->{'genre'} } ) {

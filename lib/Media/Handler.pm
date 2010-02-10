@@ -149,7 +149,7 @@ method get_path_segments ( Str $filename ) {
 method safely_move_file ( Str $from, Str $directory, Str $to ) {
     my $media = $self->get_media();
     
-    $media->safely_move_file( $from, $directory, $to );
+    return $media->safely_move_file( $from, $directory, $to );
 }
 
 method get_config ( Str $key, Str $block = '' ) {

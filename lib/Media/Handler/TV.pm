@@ -34,13 +34,14 @@ method install_file ( Str $directory, Str $file ) {
     my $target      = "${directory}/${file}";
     
     $self->tag_file( $target, \%details );
-    $self->safely_move_file( 
-            $target, 
-            $destination_directory, 
-            $destination_filename 
-        );
+    my $moved_to 
+        = $self->safely_move_file( 
+                $target,
+                $destination_directory, 
+                $destination_filename 
+            );
         
-    $self->add_to_itunes( "$destination_directory/$destination_filename" );
+    $self->add_to_itunes( $moved_to );
 }
 method tag_file ( Str $file, HashRef $details ) {
     my $extension = $self->get_file_extension( $file );

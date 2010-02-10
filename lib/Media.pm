@@ -585,6 +585,8 @@ method safely_move_file (
     mkpath( $directory );
     move( $from, $destination )
         or $self->write_log( "ERROR: move ${from} to ${destination}: $!" );
+    
+    return $destination;
 }
 method get_config ( Str $key, Str $block = '' ) {
     my $config = $self->get_configuration();
