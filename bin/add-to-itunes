@@ -2,9 +2,17 @@
 
 CONFIG_FILE="${MEDIA_CONFIG:=$HOME/etc/media.conf}"
     sync_to=$( grep 'sync_to' $CONFIG_FILE | sed -e 's/.*= *//' )
+    do_sync=1
+    
+while getopts "cehn" option; do
+    case $option in
+        n)  do_sync=0 ;;
+    esac
+done
+shift $(( OPTIND - 1 ))
 
 
-
+# First, add the file(s) to iTunes 
 for file in "$@"; do
     
     # fix relative pathnames to be absolute (because osascript
@@ -13,8 +21,8 @@ for file in "$@"; do
         file="$PWD/$file"
     fi
     
-    # First, add the file(s) to iTunes (this will not copy the file into
-    # the iTunes organised file area, regardless of the preference).
+    # adding it this way will not copy the file into the iTunes 
+    # organised file area, regardless of the preference
     osascript <<APPLESCRIPT
         set new_file to POSIX file "${file}"
         
@@ -28,7 +36,7 @@ done
 
 # Second, sync iTunes to the named device(s) (default to anything matching 
 # 'tv') to copy new files across ready for watching.
-if [ -n "${sync_to}" ]; then
+if [ 1 = $do_sync -a -n "${sync_to}" ]; then
     osascript <<APPLESCRIPT
         tell application "System Events"
             tell process "iTunes"
