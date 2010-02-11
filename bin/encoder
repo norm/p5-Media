@@ -90,7 +90,7 @@ sub clear_encoder_queue {
 }
 sub list_encoder_queue {
     foreach my $job ( $media->list_all_in_queue() ) {
-        my $file     = $job->{'payload'}{'filename'};
+        my $input    = $job->{'payload'}{'input'};
         my $handler  = $job->{'active'};
         my $active   = '';
         my $priority = $job->{'priority'};
@@ -100,7 +100,7 @@ sub list_encoder_queue {
             $active = ( kill 0, $handler ) ? 'active' : 'inactive'; 
         }
         
-        say "[${priority}] $file"
+        say "[${priority}] $input"
           . ( defined $title   ? " title $title"               : '' )
           . ( defined $handler ? " (handler $handler $active)" : '' );
         ;
