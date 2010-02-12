@@ -82,8 +82,8 @@ sub clear_encoder_queue {
         
         last unless defined $job;
         
-        my $filename = $data->{'filename'};
-        say "-> remove $filename";
+        my $input = $data->{'input'};
+        say "-> remove $input";
         
         $job->finish();
     }
@@ -119,17 +119,17 @@ sub remove_from_queue {
     my @removals = @_;
     
     foreach my $job ( $media->list_all_in_queue() ) {
-        my $file  = $job->{'payload'}{'filename'};
+        my $input = $job->{'payload'}{'input'};
         my $title = $job->{'payload'}{'options'}{'-t'};
         my $path  = $job->{'path'};
         
-        $file = "$file title $title"
+        $input = "$input title $title"
             if defined $title;
         
         foreach my $arg ( @removals ) {
-            if ( $file =~ m{^${arg}$} ) {
+            if ( $input =~ m{${arg}} ) {
                 $media->remove_queued_job( $path );
-                $media->write_log( "REMOVE $file" );
+                $media->write_log( "REMOVE $input" );
             }
         }
     }
