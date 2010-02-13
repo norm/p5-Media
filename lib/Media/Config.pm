@@ -38,13 +38,19 @@ sub get_default_config {
                  . 'weightb=0:trellis=0:weightp=0',
         },
         '.mkv' => {
-            'audio' => [ '1:aac', '1:ac3' ],
+            'audio' => [ 
+                '1:aac:Dolby Surround', 
+                '1:ac3:Dolby Surround' 
+            ],
         },
         '.avi' => {
-            'audio' => [ '1:stereo' ],
+            'audio' => [ '1:stereo:Sound' ],
         },
         'DVD' => {
-            'audio'   => [ '1:aac', '1:ac3' ],
+            'audio' => [ 
+                '1:aac:Dolby Surround', 
+                '1:ac3:Dolby Surround' 
+            ],
         },
     );
     

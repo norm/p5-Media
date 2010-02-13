@@ -222,9 +222,9 @@ method remove_queued_job ( Str $path ) {
         $job->finish();
     }
 }
-method convert_file ( HashRef $options ) {
-    my $input  = $options->{'input'} // '';
-    my $output = $options->{'output'};
+method convert_file ( HashRef $job_data ) {
+    my $input  = $job_data->{'input'} // '';
+    my $output = $job_data->{'output'};
     my $type   = $self->get_file_extension( $input );
     my $config = $self->get_configuration();
     
@@ -236,7 +236,7 @@ method convert_file ( HashRef $options ) {
     if ( defined $config->{ $type } ) {
         my $target = "${output}/${CONVERSION_FILE}";
         my $start   = time();
-        my $args    = $options->{'options'} // {};
+        my $args    = $job_data->{'options'} // {};
         my $message = "Converting $input";
            $message .= ' title ' . $args->{'-t'}
                 if defined $args->{'-t'};
@@ -255,8 +255,8 @@ method convert_file ( HashRef $options ) {
         # not just the cryptic string detailing which formats to use
         %options = (
                 %options,
-                $self->get_audio_args( $options ),
-                $self->get_subtitle_args( $options ),
+                $self->get_audio_args( $job_data, $type ),
+                $self->get_subtitle_args( $job_data ),
             );
         delete $options{'audio'};
         delete $options{'subtitle'};
@@ -311,19 +311,23 @@ method convert_file ( HashRef $options ) {
         $self->write_log( "ERROR: no type (${type}) for ${input}")
     }
 }
-method get_audio_args ( HashRef $options ) {
+method get_audio_args ( HashRef $job_data, Str $type ) {
     my $config     = $self->get_configuration();
+    my $options    = $job_data->{'options'}{'audio'};
     my %audio_args = ( '-a' => [], '-E' => [], '-B' => [], '-A' => [], 
                        '-6' => [], '-R' => [], '-D' => [] );
-    
-    my $audio_args = $options->{'options'}{'audio'};
     my @audio_streams;
-
-    if ( 'ARRAY' eq ref $audio_args ) {
-       push @audio_streams, @{ $audio_args };
+    
+    if ( defined $options ) {
+        if ( 'ARRAY' eq ref $options ) {
+           push @audio_streams, @{ $options };
+        }
+        else {
+           push @audio_streams, $options;
+        }
     }
     else {
-       push @audio_streams, $audio_args;
+        push @audio_streams, @{ $config->{ $type }{'audio'} };
     }
     
     foreach my $stream ( @audio_streams ) {
@@ -368,18 +372,19 @@ method get_audio_args ( HashRef $options ) {
     
     return %args;
 }
-method get_subtitle_args ( HashRef $config ) {
-    my %subtitle_args    = ( '--srt-file' => [], '--srt-lang' => [] );
-    my $filename         = $config->{'filename'};
-    my $default          = 0;
-    my $subtitle_args    = $config->{'options'}{'subtitle'};
+method get_subtitle_args ( HashRef $job_data ) {
+    my $config        = $self->get_configuration();
+    my $input         = $job_data->{'input'};
+    my $options       = $job_data->{'options'}{'subtitle'};
+    my %subtitle_args = ( '--srt-file' => [], '--srt-lang' => [] );
+    my $default       = 0;
     my @subtitle_streams;
     
-    if ( 'ARRAY' eq ref $subtitle_args ) {
-        push @subtitle_streams, @{ $subtitle_args };
+    if ( 'ARRAY' eq ref $options ) {
+        push @subtitle_streams, @{ $options };
     }
     else {
-        push @subtitle_streams, $subtitle_args;
+        push @subtitle_streams, $options;
     }
     
     # HACK: So ... my Apple TV refuses to properly let me switch between
@@ -405,8 +410,8 @@ method get_subtitle_args ( HashRef $config ) {
                 $default = $count;
             }
             
-            if ( -d "$filename/VIDEO_TS" ) {
-                $sub_file = "${filename}/${sub_file}";
+            if ( -d "$input/VIDEO_TS" ) {
+                $sub_file = "${input}/${sub_file}";
             }
             
             push @{ $subtitle_args{'--srt-file'} }, $sub_file;
