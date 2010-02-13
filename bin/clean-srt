@@ -42,7 +42,7 @@ while ( my $file = shift ) {
     foreach my $original_line ( @lines ) {
         $line_number++;
         
-        if ( ! $opt{'l'} ) {
+        if ( ( ! $opt{'l'} ) && ( ! $auto_return ) ) {
             # provide some visual feedback that things are still happening
             # when the document is spelled correctly
             printf "\r[%04d/%04d] %-67s\r", 
@@ -262,25 +262,33 @@ sub fix_ocr_line {
     
     $line =~ s{''}{"}g;
     $line =~ s{,,,}{...}g;
+    $line =~ s{ :. (\s+) }{:$1}xg;
     $line =~ s{ \.\.\. \.+ }{...}xg;
     
     # happened before - want to check if I see it again
     die "Single-line containing only punctuation"
         if ( $line =~ m{ \n [,'\.] \n }x );
     
-    # Aspell thinks "l" is a word. In every case I've found, it's
-    # just the OCR being wrong on "I".
+    # aspell thinks "l" is a word. In every case I've found, it's
+    # just the OCR being wrong on "I"
     $line =~ s{ \b l \b }{I}gx;
+    
+    # although "ls" is a valid unix command, you don't often see it in movies
+    $line =~ s{ \b ls \b }{Is}gx;
     
     # "o' utdoors" and "hos'pitality" happens too often
     my $errant_quote = qr{ \b ( (\w+) \' ( \s* ) (\w+) ) \b }x;
     while ( $line =~ $errant_quote ) {
-        if ( $speller->check( "$2'$4" ) ) {
-            # don't crap on "we'll" - preserve the apostrophe for later
+        # don't crap on "we'll" - preserve the apostrophe for later
+        if ( recognised_word( "$2'$4" ) ) {
             $line =~ s{$errant_quote}{$2--APOS--$4}x;
         }
-        elsif ( $speller->check( "$2$4" ) ) {
+        elsif ( recognised_word( "$2$4" ) ) {
             $line =~ s{$errant_quote}{$2$4}x;
+        }
+        # "many'others" happens as well, though
+        elsif ( recognised_word( $2 ) and recognised_word( $4 ) ) {
+            $line =~ s{$errant_quote}{$2 $4};
         }
         else {
             # unrecognised jibberish, leave it alone
