@@ -90,6 +90,13 @@ method rationalise_series ( Str $series ) {
     my $media    = $self->get_media();
     my $rational = $self->get_config( $series, 'rationalise' );
     
+    if ( defined $rational ) {
+        # = and : cannot be used in keys, but are needed, so
+        # use a [C] and [E] notation to represent them
+        $rational =~ s{ \[ C \] }{:}gx;
+        $rational =~ s{ \[ E \] }{=}gx;
+    }
+    
     return $rational // $series;
 }
 method parse_title_string ( $title ) {
