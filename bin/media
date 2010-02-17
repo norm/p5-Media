@@ -2,6 +2,7 @@
 
 use Modern::Perl;
 
+use Cwd;
 use Getopt::Std;
 use Media;
 
@@ -11,7 +12,8 @@ my %opt = ( p => 50 );
 getopts( 'p:', \%opt );
 
 my $media    = Media->new();
-my $argument = shift 
+my $base     = $media->get_config( 'base_directory' );
+my $argument = shift
             // '';
 
 given ( $argument ) {
@@ -19,6 +21,16 @@ given ( $argument ) {
         # directory, possibly containing other directories
         # (can be multiple arguments)
         while ( defined $argument ) {
+            # make relative paths absolute so the encoder can find them
+            if ( $argument !~ m{/} ) {
+                my $current_dir = getcwd();
+                $argument = "${current_dir}/${argument}";
+            }
+            
+            # if the argument is in the base, trim the full pathname 
+            # (I find this makes the logs much easier to read quickly)
+            $argument =~ s{^$base/}{};
+            
             $media->process_directory( $argument, $opt{'p'} );
             $argument = shift;
         }
