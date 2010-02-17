@@ -31,7 +31,7 @@ given ( $argument ) {
     when ( 'resume' ) { resume_current_encode();      }
     
     when ( 'remove' ) { remove_from_queue( @ARGV );   }
-    when ( 'clear'  ) { clear_encoder_queue();        }
+    when ( 'clear'  ) { remove_from_queue( '-p', '0' ); }
     
     default           { die "Unknown: $argument";     }
 }
@@ -74,20 +74,6 @@ sub resume_current_encode {
     
     kill SIG_CONT, @children;
 }
-sub clear_encoder_queue {
-    while ( 1 ) {
-        # pass a timeout, so that when there are no
-        # more jobs we actually get control back
-        my( $job, $data ) = $encoder->dequeue_conversion( 1 );
-        
-        last unless defined $job;
-        
-        my $input = $data->{'input'};
-        say "-> remove $input";
-        
-        $job->finish();
-    }
-}
 sub list_encoder_queue {
     foreach my $job ( $media->list_all_in_queue() ) {
         my $input    = $job->{'payload'}{'input'};
@@ -118,19 +104,45 @@ sub stop_encoder_immediately {
 sub remove_from_queue {
     my @removals = @_;
     
+    my $first           = $removals[ 0 ];
+    my $by_name         = 1;
+    my $lowest_priority = 2;
+    
+    return unless defined $first;
+    
+    if ( '-p' eq $first ) {
+        shift @removals;
+        $lowest_priority = shift @removals;
+        
+        if ( ! @removals ) {
+            $by_name = 0;
+            unshift @removals, '';
+        }
+    }
+    
     foreach my $job ( $media->list_all_in_queue() ) {
         my $input = $job->{'payload'}{'input'};
         my $title = $job->{'payload'}{'options'}{'-t'};
+        my $prio  = $job->{'priority'};
         my $path  = $job->{'path'};
         
         $input = "$input title $title"
             if defined $title;
         
         foreach my $arg ( @removals ) {
-            if ( $input =~ m{${arg}} ) {
-                $media->remove_queued_job( $path );
-                $media->write_log( "REMOVE $input" );
+            my $remove_job = 0;
+            
+            if ( $by_name ) {
+                $remove_job = $input =~ m{${arg}}
+                              &&
+                              $prio > $lowest_priority;
             }
+            else {
+                $remove_job = $prio > $lowest_priority;
+            }
+
+            $media->remove_queued_job( $path )
+                if $remove_job;
         }
     }
 }
