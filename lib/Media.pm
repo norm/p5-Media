@@ -215,11 +215,23 @@ method list_all_in_queue {
     return @jobs;
 }
 method remove_queued_job ( Str $path ) {
-    my $queue  = $self->get_conversion_queue();
-    my $job    = $queue->pickup_queued_job( path => $path );
+    my $queue = $self->get_conversion_queue();
+    my $job   = $queue->pickup_queued_job( path => $path );
     
     if ( defined $job ) {
+        my $data     = $job->get_data();
+        my $payload  = thaw( $data );
+        my $input    = $payload->{'input'};
+        my $title    = $payload->{'options'}{'-t'};
+        my $stop_job = $payload->{'end_queue'};
+        
+        $input = "$input title $title"
+            if defined $title;
+        $input = "STOP JOB"
+            if defined $stop_job;
+        
         $job->finish();
+        $self->write_log( "REMOVE $input" );
     }
 }
 method convert_file ( HashRef $job_data ) {

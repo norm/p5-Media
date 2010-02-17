@@ -81,15 +81,21 @@ sub list_encoder_queue {
         my $active   = '';
         my $priority = $job->{'priority'};
         my $title    = $job->{'payload'}{'options'}{'-t'};
+        my $stop_job = $job->{'payload'}{'end_queue'};
         
-        if ( defined $handler ) {
-            $active = ( kill 0, $handler ) ? 'active' : 'inactive'; 
+        if ( defined $stop_job ) {
+            say "[--] STOP ENCODER AFTER CURRENT JOB";
         }
-        
-        say "[${priority}] $input"
-          . ( defined $title   ? " title $title"               : '' )
-          . ( defined $handler ? " (handler $handler $active)" : '' );
-        ;
+        else {
+            if ( defined $handler ) {
+                $active = ( kill 0, $handler ) ? 'active' : 'inactive'; 
+            }
+
+            say "[${priority}] $input"
+              . ( defined $title   ? " title $title"               : '' )
+              . ( defined $handler ? " (handler $handler $active)" : '' );
+            ;
+        }
     }
 }
 sub stop_encoder_after_current {
