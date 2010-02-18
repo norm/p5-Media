@@ -22,7 +22,7 @@ given ( $argument ) {
         # (can be multiple arguments)
         while ( defined $argument ) {
             # make relative paths absolute so the encoder can find them
-            if ( $argument !~ m{/} ) {
+            if ( $argument !~ m{^/} ) {
                 my $current_dir = getcwd();
                 $argument = "${current_dir}/${argument}";
             }
