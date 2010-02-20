@@ -657,6 +657,9 @@ method have_series ( Str $series ) {
 method have_episode ( HashRef $details ) {
     my( $directory, $filename ) = $self->get_episode_location( $details );
     
+    # escape anything likely to interfere with a regexp
+    $filename =~ s{([\W])}{\\$1}g;
+    
     opendir( my $handle, $directory )
         or return 0;
     
