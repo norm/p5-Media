@@ -395,6 +395,21 @@ method parse_title_string ( $title ) {
         return %details;
     }
     
+    # Numbered episodes in a series, not in a season
+    # The Eloquent Ji Xiaolan IV - 18
+    my $no_season_no_title = qr{
+            ^
+                (?<series> .*? ) 
+                \s+ - \s+
+                (?<episode> \d+ )
+            $
+        }x;
+    
+    if ( $title =~ $no_season_no_title ) {
+        %details = %+;
+        return %details;
+    }
+    
     # Extras
     # The Big Bang Theory - Season 2 (Subpack)
     # Star Trek: Deep Space Nine - Season 2 (DVD Extras)

@@ -3,7 +3,7 @@ use Modern::Perl;
 
 use Data::Dumper;
 use Media;
-use Test::More          tests => 91;
+use Test::More          tests => 94;
 
 
 my $media   = Media->new();
@@ -772,6 +772,28 @@ is_deeply(
 is_deeply( \%details, \%check ) 
     or print "$title check:\n" . Dumper \%check;
 
+
+$title = q(The Eloquent Ji Xiaolan IV - 18);
+%details = $handler->parse_title_string( $title );
+is_deeply( 
+        \%details,
+        {
+            series  => 'The Eloquent Ji Xiaolan IV',
+            episode => '18',
+        }
+    ) or print "$title becomes:\n" . Dumper \%details;
+@location = $handler->get_episode_location( \%details, '.avi' );
+is_deeply(
+        \@location, 
+        [
+            '/files/tv/The Eloquent Ji Xiaolan IV',
+            "18 - Episode 18.avi"
+        ]
+    ) or print "$title location:\n" . Dumper \@location;
+%check = $handler->details_from_location( join '/', @location );
+$details{'title'} = 'Episode 18';
+is_deeply( \%details, \%check ) 
+    or print "$title check:\n" . Dumper \%check;
 
 
 # should not recognise as a TV show
