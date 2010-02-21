@@ -27,8 +27,8 @@ method is_type ( Str $name ) {
 }
 
 method install_file ( Str $directory, Str $file ) {
-    my %details   = $self->parse_type_string( $directory );
-    my $extension = $self->get_file_extension( $file );
+    my( undef, %details ) = $self->parse_type_string( $directory );
+    my $extension         = $self->get_file_extension( $file );
     
     my( $destination_directory, $destination_filename ) 
         = $self->get_episode_location( \%details, $extension );
@@ -48,12 +48,20 @@ method tag_file ( Str $file, HashRef $details ) {
     my $extension = $self->get_file_extension( $file );
     return unless '.m4v' eq $extension;
     
-    my $episode = qq($details->{'season'}x$details->{'episode'});
-    my @arguments;
+    my $episode = $details->{'episode'};
+    if ( defined $details->{'first_episode'} ) {
+        $episode = sprintf '%s-%s',
+                       $details->{'first_episode'},
+                       $details->{'last_episode'};
+    }
+    my $episode_id     = qq($details->{'season'}x${episode});
+    my $episode_number = $details->{'episode'}
+                         // $details->{'first_episode'};
     
+    my @arguments;
     push @arguments, q(--TVShowName),   $details->{'series'};
     push @arguments, q(--TVSeasonNum),  $details->{'season'};
-    push @arguments, q(--TVEpisodeNum), $details->{'episode'};
+    push @arguments, q(--TVEpisodeNum), $episode_number;
     push @arguments, q(--TVEpisode),    $episode;
     push @arguments, q(--title),        $details->{'title'};
     push @arguments, q(--stik),         q(TV Show);
