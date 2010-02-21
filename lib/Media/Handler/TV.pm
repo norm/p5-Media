@@ -18,8 +18,9 @@ method is_type ( Str $name ) {
     }
     
     # or the string can be parsed into metadata
-    if ( defined $self->parse_type_string( $name ) ) {
-        return 'TV';
+    my ( $confidence, %details ) = $self->parse_type_string( $name );
+    if ( %details ) {
+        return ( 'TV', $confidence );
     }
     
     return;
@@ -62,15 +63,20 @@ method tag_file ( Str $file, HashRef $details ) {
 }
 
 method parse_type_string ( $title_string ) {
+    my $high_confidence = 10;
+    my $confidence;
+    
     my %details = $self->details_from_location( $title_string );
-    return %details if %details;
+    return ( $high_confidence, %details ) if %details;
     
     my $type = $self->strip_leading_directories( $title_string );
        $type = $self->strip_type_hint( $type );
     
-    %details = $self->parse_title_string( $type );
+    ( $confidence, %details ) = $self->parse_title_string( $type );
+    
     if ( ! %details ) {
-        %details = $self->parse_title_string( $title_string );
+        ( $confidence, %details ) 
+            = $self->parse_title_string( $title_string );
     }
     
     if ( defined $details{'series'} ) {
@@ -79,9 +85,11 @@ method parse_type_string ( $title_string ) {
         if ( defined $rational ) {
             $details{'original_series'} = $details{'series'};
             $details{'series'}          = $rational;
+            $confidence++;
         }
     }
-    return %details 
+    
+    return ( $confidence, %details )
         if %details;
     
     return;
@@ -100,12 +108,31 @@ method rationalise_series ( Str $series ) {
     return $rational // $series;
 }
 method parse_title_string ( $title ) {
-    my %details;
+    my %details    = $self->get_title_string_elements( $title );
+    my $confidence = 0;
+    
+    if ( %details ) {
+        $confidence++
+            if $self->have_series( $details{'series'} );
+        $confidence++
+            if defined $details{'first_episode'};
+        $confidence++
+            if defined $details{'season'};
+        $confidence++
+            if defined $details{'disk'};
+        $confidence++
+            if defined $details{'special'};
+    }
+    
+    return( $confidence, %details );
+}
+method get_title_string_elements ( $title ) {
     my %words = ( 
             'one'  => 1, 'two' => 2, 'three' => 3, 'four'  => 4, 
             'five' => 5, 'six' => 6, 'seven' => 7, 'eight' => 8,
             'nine' => 9, 'ten' => 10
         );
+    my %details;
     
     # standard episode title looks like:
     # House - 2x23 - Who's Your Daddy
@@ -361,10 +388,6 @@ method parse_title_string ( $title ) {
             }
         }
         
-        if ( !defined $details{'season'} ) {
-            $details{'season'} = 1;
-        }
-        
         if ( defined $details{'mini'} ) {
             delete $details{'mini'};
             delete $details{'season'};
@@ -541,8 +564,10 @@ method details_from_location ( Str $pathname ) {
         my $multiple_episodes = qr{
                 ^
                     (?<series> .*? )
-                    / Season \s+ 
-                    (?<season> \d+ )
+                    (?:
+                        / Season \s+ 
+                        (?<season> \d+ )
+                    )?
                     / (?: \d x )?
                     (?<first_episode> \d+ ) 
                     - (?: \d x )?

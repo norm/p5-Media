@@ -23,8 +23,9 @@ method is_type ( Str $name ) {
     }
     
     # or the string can be parsed into metadata
-    if ( defined $self->parse_type_string( $name ) ) {
-        return 'Movie';
+    my ( $confidence, %details ) = $self->parse_type_string( $name );
+    if ( %details ) {
+        return ( 'Movie', $confidence );
     }
     
     return;
@@ -119,12 +120,15 @@ method parse_type_string ( $title_string ) {
     my $type = $self->strip_leading_directories( $title_string );
        $type = $self->strip_type_hint( $type );
     
-    %details = $self->parse_title_string( $type );
-    return %details if %details;
+    my $confidence;
+    ( $confidence, %details ) = $self->parse_title_string( $type );
+    return ( $confidence, %details ) 
+        if %details;
     
     return $self->parse_title_string( $title_string );
 }
 method parse_title_string ( $title ) {
+    my $confidence = 0;
     my %details;
     
     # movie title looks like:
@@ -138,7 +142,7 @@ method parse_title_string ( $title ) {
                 (?<title> .*? )
                 (?:
                     \s+ - \s+
-                    (?<certificate> \w+ )
+                    (?<rating> \w+ )
                 )?
                 \s+
                 \(
@@ -154,6 +158,12 @@ method parse_title_string ( $title ) {
     if ( $title =~ $movie_title ) {
         %details = %+;
         
+        # traits that identify this as a legitimate movie
+        $confidence++
+            if defined $details{'rating'};
+        $confidence++
+            if defined $details{'year'};
+
         # look up extra information in the IMDB
         my $imdb = IMDB::Film->new( 
                 crit  => $details{'title'}, 
@@ -163,6 +173,8 @@ method parse_title_string ( $title ) {
         
         # make sure we've found the same thing
         if ( $details{'title'} eq $imdb->title() ) {
+            $confidence++;
+            
             foreach my $director ( @{ $imdb->directors() } ) {
                 my $name = $director->{'name'};
                 push @{ $details{'director'} }, $name;
@@ -184,10 +196,10 @@ method parse_title_string ( $title ) {
                 push @{ $details{'writer'} }, $name;
             }
             
-            if ( !defined $details{'certificate'} ) {
-                my %certs = $imdb->certifications();
-                $details{'rating'} = $certs{'UK'} 
-                                  // $certs{'USA'} 
+            if ( !defined $details{'rating'} ) {
+                my $certs = $imdb->certifications();
+                $details{'rating'} = $certs->{'UK'} 
+                                  // $certs->{'USA'} 
                                   // 'Unrated';
             }
             
@@ -195,7 +207,7 @@ method parse_title_string ( $title ) {
             $details{'plot'}    = $imdb->full_plot();
         }
         
-        return %details;
+        return( $confidence, %details );
     }
     
     # no match
@@ -251,10 +263,10 @@ method get_dvd_details ( HashRef $config, Str $key ) {
     my %details = (
             %{ $config->{ $key } },
             
-            title       => $config->{''}{'title'},
-            year        => $config->{''}{'year'},
-            certificate => $config->{''}{'certificate'},
-            poster      => $config->{''}{'poster'},
+            title  => $config->{''}{'title'},
+            year   => $config->{''}{'year'},
+            rating => $config->{''}{'rating'},
+            poster => $config->{''}{'poster'},
         );
     
     if ( defined $config->{ $key }{'title'} ) {
@@ -269,15 +281,11 @@ method details_from_location ( Str $pathname ) {
     if ( $pathname =~ s{^$base/?}{}s ) {
         # All/Batman Begins - 12A (2005)/Batman Begins - 12A (2005).m4v
         # Genre/Science Fiction/Dark Star - PG (1974).avi
-        
-        # the leading directory is irrelevant
-        $pathname =~ s{^ .*? ( [^/]+ ) $}{$1}sx;
-        
         my $full_details = qr{
-                ^
-                    (?<title> .*? )
+                    /
+                    (?<title> [^/]+ )
                     \s+ - \s+
-                    (?<certificate> \w+ )
+                    (?<rating> \w+ )
                     \s+
                     \(
                     (?<year> \d+ )
@@ -287,6 +295,26 @@ method details_from_location ( Str $pathname ) {
             }x;
         
         if ( $pathname =~ $full_details ) {
+            my %details = %+;
+            return %details;
+        }
+        
+        # All/Serenity - 15 (2005)/Deleted Scenes.avi
+        my $extra_content = qr{
+                    (?<title> [^/]+ )
+                    \s+ - \s+
+                    (?<rating> \w+ )
+                    \s+
+                    \(
+                    (?<year> \d+ )
+                    \)
+                    /
+                    (?<extra> [^/]+ )
+                    \. [^\.]+
+                $
+            }x;
+        
+        if ( $pathname =~ $extra_content ) {
             my %details = %+;
             return %details;
         }
@@ -308,14 +336,14 @@ method get_movie_location ( HashRef $details, Str $extension ) {
     return( $directory, $filename );
 }
 method get_movie_filename ( HashRef $details ) {
-    my $title       = $details->{'title'} 
-                   // 'No Title';
-    my $year        = $details->{'year'} 
-                   // '1900';
-    my $certificate = $details->{'certificate'}
-                   // 'NR';
+    my $title  = $details->{'title'} 
+                 // 'No Title';
+    my $year   = $details->{'year'} 
+                 // '1900';
+    my $rating = $details->{'rating'}
+                 // 'NR';
     
-    return "${title} - ${certificate} (${year})";
+    return "${title} - ${rating} (${year})";
 }
 method get_processing_directory ( HashRef $details ) {
     my $path  = $self->get_movie_filename( $details );

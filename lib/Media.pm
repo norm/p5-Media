@@ -139,23 +139,26 @@ method get_handler ( Str $name ) {
 }
 method determine_type ( Str $name ) {
     my $handlers = $self->get_handlers();
-    my $handler;
+    my %types;
     
-    my $tv_first = sub {
-        return -1 if ( 'TV' eq $a );
-        return 1 if ( 'TV' eq $b );
-        
-        return $a cmp $b;
-    };
-    
-    foreach my $try ( sort $tv_first keys %{ $handlers } ) {
+    foreach my $try ( keys %{ $handlers } ) {
         my $handler = $handlers->{ $try };
-        my $type    = $handler->is_type( $name );
-        
-        return $type if defined $type;
+        my ( $type, $confidence ) = $handler->is_type( $name );
+         
+        $types{ $type } = ( $confidence // 0 )
+            if defined $type;
     }
     
-    return;
+    my $type;
+    my $confidence = 0;
+    foreach my $instance ( keys %types ) {
+        if ( $confidence < $types{ $instance } ) {
+            $type       = $instance;
+            $confidence = $types{ $instance };
+        }
+    }
+    
+    return $type;
 }
 method get_handler_type ( Str $type ) {
     my $handlers = $self->get_handlers();
