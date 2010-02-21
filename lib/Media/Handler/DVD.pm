@@ -25,7 +25,7 @@ method is_type ( Str $name ) {
     # or the directory contains another directory 'VIDEO_TS'
     if ( -d $name ) {
         if ( -d "${name}/VIDEO_TS" ) {
-            return 'DVD';
+            return( 'DVD', $self->high_confidence );
         }
     }
     
