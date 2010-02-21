@@ -13,7 +13,8 @@ while ( my $argument = shift ) {
     my $handler = $media->get_handler( $argument );
     
     if ( defined $handler ) {
-        my %details   = $handler->parse_type_string( $file );
+        my( undef, %details ) = $handler->parse_type_string( $file );
+        
         my $directory = $handler->get_processing_directory( \%details );
         my $extension = $media->get_file_extension( $file );
         my $target    = "${directory}/convert${extension}";

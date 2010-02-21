@@ -86,7 +86,8 @@ method is_video_file ( Str $filename ) {
                                     : 0;
 }
 method convert_video ( Str $directory, Str $file, Int $priority ) {
-    my %details = $self->parse_type_string( $directory );
+    my( undef, %details ) = $self->parse_type_string( $directory );
+    
     my $process = $self->get_processing_directory( \%details );
     my $media   = $self->get_media();
     

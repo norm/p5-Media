@@ -32,8 +32,8 @@ method is_type ( Str $name ) {
 }
 
 method install_file ( Str $directory, Str $file ) {
-    my %details   = $self->parse_type_string( $directory );
-    my $extension = $self->get_file_extension( $file );
+    my( undef, %details ) = $self->parse_type_string( $directory );
+    my $extension         = $self->get_file_extension( $file );
     
     my( $destination_directory, $destination_filename ) 
         = $self->get_movie_location( \%details, $extension );
