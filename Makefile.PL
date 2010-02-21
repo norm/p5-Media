@@ -17,6 +17,7 @@ WriteMakefile(
     ],
     PREREQ_PM => {
         'Config::Std'                => 0,
+        'Data::Dumper::Concise'      => 0,
         'IMDB::Film'                 => 0,
         'IO::All'                    => 0,
         'IO::CaptureOutput'          => 0,
