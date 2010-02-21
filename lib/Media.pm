@@ -21,7 +21,7 @@ use Time::Elapsed   qw( elapsed );
 use TryCatch;
 use version;
 
-our $VERSION                     = qv( 0.9.2 );
+our $VERSION                     = qv( 0.9.3 );
 use constant MEDIA_TYPES         => qw( DVD Movie TV );
 use constant QUEUE_POLL_TIMEOUT  => 0;
 use constant QUEUE_POLL_INTERVAL => 15;
