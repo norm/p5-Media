@@ -12,6 +12,7 @@ use Readonly;
 
 Readonly my $CONVERSION_FILE     => 'Z-conversion.m4v';
 Readonly my $CONVERTED_FILE      => 'Z-converted.m4v';
+Readonly my $HIGH_CONFIDENCE     => 10;
 Readonly my @UNWANTED_FILE_TYPES => qw( .nfo .sfv .nzb .txt .srr );
 
 has media => (
@@ -150,6 +151,10 @@ method safely_move_file ( Str $from, Str $directory, Str $to ) {
     my $media = $self->get_media();
     
     return $media->safely_move_file( $from, $directory, $to );
+}
+
+method high_confidence {
+    return $HIGH_CONFIDENCE;
 }
 
 method get_config ( Str $key, Str $block = '' ) {

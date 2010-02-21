@@ -63,11 +63,10 @@ method tag_file ( Str $file, HashRef $details ) {
 }
 
 method parse_type_string ( $title_string ) {
-    my $high_confidence = 10;
     my $confidence;
     
     my %details = $self->details_from_location( $title_string );
-    return ( $high_confidence, %details ) if %details;
+    return ( $self->high_confidence, %details ) if %details;
     
     my $type = $self->strip_leading_directories( $title_string );
        $type = $self->strip_type_hint( $type );
