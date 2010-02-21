@@ -10,5 +10,7 @@ lib/Media/Handler/Movie.pm
 lib/Media/Handler/TV.pm
 lib/Media/Handler/DVD.pm
 Makefile.PL
-t/parse_tv.t
+t/01.parse_movie.t
+t/01.parse_tv.t
+t/02.detect_type.t
 MANIFEST

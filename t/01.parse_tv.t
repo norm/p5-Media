@@ -15,6 +15,12 @@ my $title;
 my $location;
 
 
+# create some directories to test against (affects confidences)
+mkdir q(t/tv/American Dad!);
+mkdir q(t/tv/Bones);
+mkdir q(t/tv/Grey's Anatomy);
+mkdir q(t/tv/House);
+
 
 # basic episode format
 $title      = q(House - 1x01 - Pilot);
