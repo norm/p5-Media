@@ -54,6 +54,7 @@ method tag_file ( Str $file, HashRef $details ) {
                        $details->{'first_episode'},
                        $details->{'last_episode'};
     }
+    
     my $episode_id     = qq($details->{'season'}x${episode});
     my $episode_number = $details->{'episode'}
                          // $details->{'first_episode'};
@@ -62,7 +63,7 @@ method tag_file ( Str $file, HashRef $details ) {
     push @arguments, q(--TVShowName),   $details->{'series'};
     push @arguments, q(--TVSeasonNum),  $details->{'season'};
     push @arguments, q(--TVEpisodeNum), $episode_number;
-    push @arguments, q(--TVEpisode),    $episode;
+    push @arguments, q(--TVEpisode),    $episode_id;
     push @arguments, q(--title),        $details->{'title'};
     push @arguments, q(--stik),         q(TV Show);
     
