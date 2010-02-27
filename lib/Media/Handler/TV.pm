@@ -688,7 +688,10 @@ method have_series ( Str $series ) {
     return 0;
 }
 method have_episode ( HashRef $details ) {
-    my( $directory, $filename ) = $self->get_episode_location( $details );
+    my %details = %{ $details };
+    delete $details{'title'};
+    
+    my( $directory, $filename ) = $self->get_episode_location( \%details );
     
     # escape anything likely to interfere with a regexp
     $filename =~ s{([\W])}{\\$1}g;
