@@ -15,6 +15,7 @@ use IPC::DirQueue;
 use Media::Handler::DVD;
 use Media::Handler::Movie;
 use Media::Handler::TV;
+use Media::Handler::VHS;
 use Readonly;
 use Storable        qw( freeze thaw store retrieve );
 use Time::Elapsed   qw( elapsed );
@@ -22,7 +23,7 @@ use TryCatch;
 use version;
 
 our $VERSION                     = qv( 0.9.3 );
-use constant MEDIA_TYPES         => qw( DVD Movie TV );
+use constant MEDIA_TYPES         => qw( DVD Movie TV VHS );
 use constant QUEUE_POLL_TIMEOUT  => 0;
 use constant QUEUE_POLL_INTERVAL => 15;
 Readonly my $CONVERSION_FILE     => 'Z-conversion.m4v';
@@ -268,11 +269,17 @@ method convert_file ( HashRef $job_data ) {
         
         $self->write_log( $message );
         
+        # original source type can provide extra flags 
+        # (enable denoise on VHS sources, for example)
+        my $source = $args->{'source_type'};
+        delete $args->{'source_type'};
+        
         # get initial options -- this allows more specific options
         # to override the general settings before it
         my %options = (
-                %{ $config->{'common'} },
-                %{ $config->{ $type  } },
+                %{ $config->{'common'}  },
+                %{ $config->{ $source } },
+                %{ $config->{ $type }   },
                 %{ $args },
             );
         
