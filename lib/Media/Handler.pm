@@ -100,10 +100,9 @@ method convert_video (
 ) {
     my( undef, %details ) = $self->parse_type_string( $directory );
     
+    my $base   = $self->get_config( 'base_directory' );
     my $target = $self->get_processing_directory( \%details );
-    my $media  = $self->get_media();
-    
-    mkpath( $target );
+    mkpath( "$base/$target" );
     
     $self->write_log( "queue conversion: ${directory}/${file}" );
     my %conversion = (
@@ -112,6 +111,7 @@ method convert_video (
             options => $options,
         );
     
+    my $media = $self->get_media();
     $media->queue_conversion( \%conversion, $priority );
 }
 method add_to_itunes ( Str $file ) {

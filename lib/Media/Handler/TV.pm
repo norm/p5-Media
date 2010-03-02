@@ -769,10 +769,7 @@ method get_episode_location ( HashRef $details, Str $extension = '' ) {
     return( $directory, $filename );
 }
 method get_processing_directory ( HashRef $details ) {
-    my $short_name = $self->get_short_filename( $details );
-    my $base       = $self->get_config( 'base_directory' );
-    
-    return "${base}/${short_name}";
+    return $self->get_short_filename( $details );
 }
 method get_short_filename ( HashRef $details ) {
     my( $series, $season, $episode, $title );

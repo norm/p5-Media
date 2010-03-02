@@ -348,7 +348,6 @@ method get_movie_filename ( HashRef $details ) {
 }
 method get_processing_directory ( HashRef $details ) {
     my $path  = $self->get_movie_filename( $details );
-    my $base  = $self->get_config( 'base_directory' );
     my $extra = $details->{'extra'};
     
     if ( !defined $details->{'feature'} && !defined $extra ) {
@@ -359,7 +358,7 @@ method get_processing_directory ( HashRef $details ) {
         $path .= " - ${extra}";
     }
     
-    return "${base}/${path}";
+    return $path;
 }
 method get_movie_directory {
     my $media = $self->get_media();
