@@ -6,9 +6,10 @@ bin/media
 lib/Media.pm
 lib/Media/Config.pm
 lib/Media/Handler.pm
+lib/Media/Handler/DVD.pm
 lib/Media/Handler/Movie.pm
 lib/Media/Handler/TV.pm
-lib/Media/Handler/DVD.pm
+lib/Media/Handler/VHS.pm
 Makefile.PL
 t/01.parse_movie.t
 t/01.parse_tv.t

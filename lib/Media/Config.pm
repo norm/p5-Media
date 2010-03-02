@@ -62,6 +62,7 @@ sub get_default_config {
         '.mp4' => {},
         
         # original source based flags
+        default_source => {},
         VHS => {
             crop    => '4:10:0:8',  # cut out folded-back and fuzzy bits
             denoise => 'weak',      # smooth out tape noise

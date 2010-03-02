@@ -128,19 +128,6 @@ method strip_type_hint ( Str $type ) {
     my ( undef, $name ) = $media->parse_type_for_hint( $type );
     return $name;
 }
-method strip_leading_directories ( Str $path ) {
-    # only attempt this on actual filenames that
-    # contain more than one path element
-    if ( index( $path, '/' ) > -1 ) {
-        # strip trailing slashes
-        $path =~ s{/$}{};
-        
-        # strip leading path elements
-        $path =~ s{^ .*/ }{}x;
-    }
-    
-    return $path;
-}
 method get_file_extension ( Str $filename ) {
     my( undef, undef, $extension ) = $self->get_path_segments( $filename );
     
@@ -158,6 +145,10 @@ method get_path_segments ( Str $filename ) {
     return( $1, $2, $3 );
 }
 
+method strip_leading_directories ( Str $path ) {
+    my $media = $self->get_media();
+    return $media->strip_leading_directories( $path );
+}
 method safely_move_file ( Str $from, Str $directory, Str $to ) {
     my $media = $self->get_media();
     

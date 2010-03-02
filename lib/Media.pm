@@ -22,7 +22,7 @@ use Time::Elapsed   qw( elapsed );
 use TryCatch;
 use version;
 
-our $VERSION                     = qv( 0.9.3 );
+our $VERSION                     = qv( 0.9.4 );
 use constant MEDIA_TYPES         => qw( DVD Movie TV VHS );
 use constant QUEUE_POLL_TIMEOUT  => 0;
 use constant QUEUE_POLL_INTERVAL => 15;
@@ -170,11 +170,26 @@ method get_handler_type ( Str $type ) {
     return $handlers->{ $type };
 }
 method parse_type_for_hint ( Str $type ) {
+    my $directory = $self->strip_leading_directories( $type );
+
     # hinted types look like "VHS -- Midnight Caller - 1x01 - Pilot"
-    if ( $type =~ m{^ ( [A-Z]+ ) \s+ -- \s+ (.*) $}x ) {
+    if ( $directory =~ m{^ ( [A-Z]+ ) \s+ -- \s+ (.*) $}x ) {
         return( $1, $2 );
     }
     return( undef, $type );
+}
+method strip_leading_directories ( Str $path ) {
+    # only attempt this on actual filenames that
+    # contain more than one path element
+    if ( index( $path, '/' ) > -1 ) {
+        # strip trailing slashes
+        $path =~ s{/$}{};
+        
+        # strip leading path elements
+        $path =~ s{^ .*/ }{}x;
+    }
+    
+    return $path;
 }
 
 method queue_conversion ( HashRef $options, Int $priority = 50 ) {
@@ -271,7 +286,8 @@ method convert_file ( HashRef $job_data ) {
         
         # original source type can provide extra flags 
         # (enable denoise on VHS sources, for example)
-        my $source = $args->{'source_type'};
+        my $source = $args->{'source_type'} 
+                     // 'default_source';
         delete $args->{'source_type'};
         
         # get initial options -- this allows more specific options
