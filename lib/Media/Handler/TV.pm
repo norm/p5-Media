@@ -10,14 +10,7 @@ extends 'Media::Handler';
 
 
 method is_type ( Str $name ) {
-    # it is of TV type if:
-    # we have the hinted type at the start of the string
-    my ( $hint, undef ) = $self->parse_type_for_hint( $name );
-    if ( defined $hint ) {
-        return $hint;
-    }
-    
-    # or the string can be parsed into metadata
+    # is of type TV if the string can be parsed into metadata
     my ( $confidence, %details ) = $self->parse_type_string( $name );
     if ( %details ) {
         return ( 'TV', $confidence );

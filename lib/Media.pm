@@ -138,23 +138,26 @@ method get_handler ( Str $name ) {
     return;
 }
 method determine_type ( Str $name ) {
-    my $handlers = $self->get_handlers();
-    my %types;
+    my ( $type, undef ) = $self->parse_type_for_hint( $name );
     
-    foreach my $try ( keys %{ $handlers } ) {
-        my $handler = $handlers->{ $try };
-        my ( $type, $confidence ) = $handler->is_type( $name );
-         
-        $types{ $type } = ( $confidence // 0 )
-            if defined $type;
-    }
-    
-    my $type;
-    my $confidence = 0;
-    foreach my $instance ( keys %types ) {
-        if ( $confidence < $types{ $instance } ) {
-            $type       = $instance;
-            $confidence = $types{ $instance };
+    if ( !defined $type ) {
+        my $handlers = $self->get_handlers();
+        my %types;
+        
+        foreach my $try ( keys %{ $handlers } ) {
+            my $handler = $handlers->{ $try };
+            my ( $type, $confidence ) = $handler->is_type( $name );
+            
+            $types{ $type } = ( $confidence // 0 )
+                if defined $type;
+        }
+        
+        my $confidence = 0;
+        foreach my $instance ( keys %types ) {
+            if ( $confidence < $types{ $instance } ) {
+                $type       = $instance;
+                $confidence = $types{ $instance };
+            }
         }
     }
     
@@ -164,6 +167,13 @@ method get_handler_type ( Str $type ) {
     my $handlers = $self->get_handlers();
     
     return $handlers->{ $type };
+}
+method parse_type_for_hint ( Str $type ) {
+    # hinted types look like "VHS -- Midnight Caller - 1x01 - Pilot"
+    if ( $type =~ m{^ ( [A-Z]+ ) \s+ -- \s+ (.*) $}x ) {
+        return( $1, $2 );
+    }
+    return( undef, $type );
 }
 
 method queue_conversion ( HashRef $options, Int $priority = 50 ) {

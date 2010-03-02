@@ -109,14 +109,10 @@ method add_to_itunes ( Str $file ) {
 }
 
 method strip_type_hint ( Str $type ) {
-    my ( $hint, $name ) = $self->parse_type_for_hint( $type );
+    my $media = $self->get_media();
+    
+    my ( undef, $name ) = $media->parse_type_for_hint( $type );
     return $name;
-}
-method parse_type_for_hint ( Str $type ) {
-    if ( $type =~ m{^ ( [A-Z]+ ) \s+ -- \s+ (.*) $}x ) {
-        return( $1, $2 );
-    }
-    return( undef, $type );
 }
 method strip_leading_directories ( Str $path ) {
     # only attempt this on actual filenames that

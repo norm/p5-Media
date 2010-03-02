@@ -15,14 +15,7 @@ use IO::CaptureOutput   qw( capture_exec );
 
 
 method is_type ( Str $name ) {
-    # it is of DVD type if:
-    # we have the hinted type at the start of the string
-    my ( $hint, undef ) = $self->parse_type_for_hint( $name );
-    if ( defined $hint ) {
-        return $hint;
-    }
-    
-    # or the directory contains another directory 'VIDEO_TS'
+    # is DVD if the directory contains another directory 'VIDEO_TS'
     if ( -d $name ) {
         if ( -d "${name}/VIDEO_TS" ) {
             return( 'DVD', $self->high_confidence );
