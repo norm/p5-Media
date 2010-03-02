@@ -5,6 +5,7 @@ use MooseX::FollowPBP;
 use Moose;
 use MooseX::Method::Signatures;
 
+use File::Path;
 use File::Temp;
 use IO::All             -utf8;
 use IO::CaptureOutput   qw( capture_exec );
@@ -22,7 +23,7 @@ has media => (
 
 
 
-method install_from ( Str $directory, Int $priority ) {
+method install_from ( Str $directory, Int $priority, HashRef $options = {} ) {
     opendir( my $handle, $directory );
     
     ENTRY:
@@ -45,10 +46,15 @@ method install_from ( Str $directory, Int $priority ) {
         
         # add other video files to the conversion queue
         elsif ( $self->is_video_file( $entry ) ) {
-            $self->convert_video( $directory, $entry, $priority );
+            $self->convert_video( 
+                    directory => $directory, 
+                    file      => $entry, 
+                    priority  => $priority,
+                    options   => $options
+                );
         }
         
-        # 
+        # can have manually added poster images
         elsif ( 'poster.jpg' eq $entry ) {
             next ENTRY;
         }
@@ -83,22 +89,30 @@ method is_video_file ( Str $filename ) {
     return ( '.m4v' eq $extension ) ? 1
          : ( '.avi' eq $extension ) ? 1
          : ( '.mkv' eq $extension ) ? 1
+         : ( '.mp4' eq $extension ) ? 1
                                     : 0;
 }
-method convert_video ( Str $directory, Str $file, Int $priority ) {
+method convert_video ( 
+    Str :$directory, 
+    Str :$file, 
+    Int :$priority, 
+    HashRef :$options = {}
+) {
     my( undef, %details ) = $self->parse_type_string( $directory );
     
-    my $process = $self->get_processing_directory( \%details );
-    my $media   = $self->get_media();
+    my $target = $self->get_processing_directory( \%details );
+    my $media  = $self->get_media();
+    
+    mkpath( $target );
     
     $self->write_log( "queue conversion: ${directory}/${file}" );
-    $media->queue_conversion( 
-            {
-                'input'  => "${directory}/${file}",
-                'output' => $process,
-            },
-            $priority,
+    my %conversion = (
+            input   => "${directory}/${file}",
+            output  => $target,
+            options => $options,
         );
+    
+    $media->queue_conversion( \%conversion, $priority );
 }
 method add_to_itunes ( Str $file ) {
     my $add_to_itunes = $self->get_config( 'add_to_itunes' );
