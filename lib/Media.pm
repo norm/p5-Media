@@ -352,7 +352,13 @@ method get_audio_args ( HashRef $job_data, Str $type ) {
         }
     }
     else {
-        push @audio_streams, @{ $config->{ $type }{'audio'} };
+        if ( defined $config->{ $type }{'audio'} ) {
+            push @audio_streams, @{ $config->{ $type }{'audio'} };
+        }
+        else {
+            push @audio_streams, @{ $config->{'common'}{'audio'} };
+            
+        }
     }
     
     foreach my $stream ( @audio_streams ) {
