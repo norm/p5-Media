@@ -515,8 +515,11 @@ method get_dvd_details ( HashRef $config, Str $key ) {
         );
     
     if ( defined $config->{ $key }{'title'} ) {
-        $details{'episode'}  = sprintf '%02d', $config->{ $key }{'episode'};
-        $details{'title'}    = $config->{ $key }{'title'};
+        $details{'episode'} = sprintf '%02d', $config->{ $key }{'episode'};
+        $details{'title'}   = $config->{ $key }{'title'};
+    }
+    elsif ( !defined $config->{ $key }{'episode'} ) {
+        die "No details (neither title or episode number) for TV episode.";
     }
     
     return %details;
