@@ -82,6 +82,7 @@ method tag_file ( Str $file, HashRef $details ) {
     
     my $genre     = join( ', ', @{ $details->{'genre'} } );
     my $director  = join( ', ', @{ $details->{'director'} } );
+    my $rating    = $self->get_rating_string( $details->{'rating'} );
     my $movi_data = $self->get_movi_data( $details );
     
     my @arguments;
@@ -99,7 +100,7 @@ method tag_file ( Str $file, HashRef $details ) {
         q(--rDNSatom),      $movi_data, 
                             q(name=iTunMOVI), 
                             q(domain=com.apple.iTunes),
-        q(--contentRating), $details->{'rating'},
+        q(--contentRating), "$rating",
         q(--stik),          q(Movie);
     
     my $media = $self->get_media();
@@ -205,6 +206,13 @@ method parse_title_string ( $title ) {
     
     # no match
     return;
+}
+method get_rating_string ( Str $rating ) {
+    return 'PG' eq $rating ? 'PG (UK)'
+         : '12' eq $rating ? '12 (UK)'
+         : '15' eq $rating ? '15 (UK)'
+         : '18' eq $rating ? '18 (UK)'
+         : $rating;
 }
 method get_movi_data ( HashRef $details ) {
     my $studio    = $details->{'company'};
