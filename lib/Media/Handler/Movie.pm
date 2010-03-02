@@ -165,8 +165,11 @@ method parse_title_string ( $title ) {
                 cache => 1,
             );
         
+        my $looked_up_same_film = defined $imdb 
+                                  && $details{'title'} eq $imdb->title();
+        
         # make sure we've found the same thing
-        if ( $details{'title'} eq $imdb->title() ) {
+        if ( $looked_up_same_film ) {
             $confidence++;
             
             foreach my $director ( @{ $imdb->directors() } ) {
