@@ -5,7 +5,6 @@ use Modern::Perl;
 use Media;
 use IO::All;
 
-use constant HIGHEST_PRIORITY => 1;
 use constant PROCESS_ID_FILE  => "$ENV{'HOME'}/var/encoder.pid";
 use constant SIG_CHECK        => 0;
 use constant SIG_KILL         => 9;
@@ -99,7 +98,7 @@ sub list_encoder_queue {
     }
 }
 sub stop_encoder_after_current {
-    $media->queue_conversion( { end_queue => 1, }, HIGHEST_PRIORITY );
+    $media->queue_stop_job();
 }
 sub stop_encoder_immediately {
     my $pid < io( PROCESS_ID_FILE );

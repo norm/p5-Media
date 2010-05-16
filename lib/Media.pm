@@ -23,6 +23,9 @@ use TryCatch;
 use version;
 
 our $VERSION                     = qv( 0.9.4 );
+use constant RESERVED_PRIORITY   => 1;
+use constant HIGHEST_PRIORITY    => 2;
+use constant LOWEST_PRIORITY     => 100;
 use constant MEDIA_TYPES         => qw( DVD Movie TV VHS );
 use constant QUEUE_POLL_TIMEOUT  => 0;
 use constant QUEUE_POLL_INTERVAL => 15;
@@ -192,9 +195,20 @@ method strip_leading_directories ( Str $path ) {
     return $path;
 }
 
+method queue_stop_job {
+    my $queue   = $self->get_conversion_queue();
+    my $payload = freeze( { end_queue => 1, } );
+    
+    $queue->enqueue_string( $payload, undef, RESERVED_PRIORITY );
+}
 method queue_conversion ( HashRef $options, Int $priority = 50 ) {
     my $queue   = $self->get_conversion_queue();
     my $payload = freeze( $options );
+    
+    $priority = HIGHEST_PRIORITY
+        if $priority < HIGHEST_PRIORITY;
+    $priority = LOWEST_PRIORITY
+        if $priority > LOWEST_PRIORITY;
     
     $queue->enqueue_string( $payload, undef, $priority );
 }
