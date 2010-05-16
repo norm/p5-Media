@@ -193,23 +193,23 @@ method determine_title_config ( Str $handbrake_output ) {
     $titles{''}{'title_options'} .= "# type   = TV\n"
                                   . "# series = ???\n"
                                   . "# season = 0\n\n"
-                                  . "# type        = Movie\n"
-                                  . "# title       = ???\n"
-                                  . "# year        = 1900\n"
-                                  . "# poster      = http://blah\n"
-                                  . "# certificate = NR\n";
+                                  . "# type   = Movie\n"
+                                  . "# title  = ???\n"
+                                  . "# year   = 1900\n"
+                                  . "# poster = http://blah\n"
+                                  . "# rating = NR\n";
     
     foreach my $title ( keys %titles ) {
         next if $title eq '';
         
         delete $titles{ $title }{'duration'};
-        $titles{ $title }{'title_options'} .= "# decomb = 1\n\n"
+        $titles{ $title }{'title_options'} .= "# decomb   = 1\n\n"
                                             . "### for TV:\n"
                                             . "# title    = ???\n"
                                             . "# episode  = 0\n"
                                             . "### for Movies:\n"
-                                            . "# feature = 1\n"
-                                            . "# extra   = ???\n";
+                                            . "# feature  = 1\n"
+                                            . "# extra    = ???\n";
     }
     
     # assemble the string returned
