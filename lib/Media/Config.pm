@@ -47,8 +47,14 @@ sub get_default_config {
         
         # audio flags
         audio_aac => {},
+        audio_six => {
+            downmix => '6ch',
+        },
         audio_stereo => {
             downmix => 'stereo',
+        },
+        audio_mono => {
+            downmix => 'mono',
         },
         
         # file extension based flags
