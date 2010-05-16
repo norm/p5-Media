@@ -4,6 +4,7 @@ use Modern::Perl;
 
 use Media;
 use IO::All;
+use Pod::Usage;
 
 use constant PROCESS_ID_FILE  => "$ENV{'HOME'}/var/encoder.pid";
 use constant SIG_CHECK        => 0;
@@ -31,6 +32,7 @@ given ( $argument ) {
     
     when ( 'remove' ) { remove_from_queue( @ARGV );   }
     when ( 'clear'  ) { remove_from_queue( '-p', '0' ); }
+    when ( 'help'   ) { pod2usage();                    }
     
     default           { die "Unknown: $argument";     }
 }
@@ -189,3 +191,61 @@ sub convert_video {
         say "-> $input has since vanished";
     }
 }
+
+__END__
+
+=head1 ARGUMENTS
+
+=over
+
+=item B<encoder queue>
+
+List items in the encoder queue. This is the default action, if no arguments
+are provided.
+
+=item B<encoder run>
+
+Run a process that continually polls the queue and encodes the next job with
+the highest priority.
+
+=item B<encoder pause>
+
+Pauses any encoder processes currently running.
+
+=item B<encoder resume>
+
+Resumes any encoder processes currently paused.
+
+=item B<encoder stop>
+
+Sends a control message to the encoder that causes it to exit, but only after
+the current encode has finished processing.
+
+=item B<encoder abort>
+
+Exits the current encoder process immediately, even if an encode is currently
+processing.
+
+=item B<encoder remove C<regexp>>
+
+Removes any job from the queue that matches the perl regular expression
+C<regexp>. The expression is not anchored, so C<encoder remove Star> would
+remove jobs in the queue that matched all of F<Stargate>, F<Star Wars> and
+F<Dancing with the Stars>. It is case sensitive, so C<encoder remove star>
+would not match any of the previous examples.
+
+=item B<encoder clear>
+
+Removes all queued jobs.
+
+=back
+
+=head1 PRIORITY
+
+Each job in the queue has a priority, a numeric value between 2 and 100 (1 is
+reserved for control messages). The lower the number, the higher the priority.
+Jobs are queued by default with a priority of 50.
+
+=head1 SEE ALSO
+
+Run C<perldoc Media> to read more.
