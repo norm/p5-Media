@@ -83,7 +83,7 @@ method tag_file ( Str $file, HashRef $details ) {
     my $genre     = join( ', ', @{ $details->{'genre'} } );
     my $director  = join( ', ', @{ $details->{'director'} } );
     my $rating    = $self->get_rating_string( $details->{'rating'} );
-    my $movi_data = $self->get_movi_data( $details );
+    my $movi_data = $self->get_movie_data( $details );
     
     my @arguments;
     if ( -f "$directory/poster.jpg" ) {
@@ -152,6 +152,10 @@ method parse_title_string ( $title ) {
     if ( $title =~ $movie_title ) {
         %details = %+;
         
+        # 'feature' is a required attribute
+        $details{'feature'} = 1
+            unless defined $details{'extra'};
+        
         # traits that identify this as a legitimate movie
         $confidence++
             if defined $details{'rating'};
@@ -165,12 +169,11 @@ method parse_title_string ( $title ) {
                 cache => 1,
             );
         
-        my $looked_up_same_film = defined $imdb 
-                                  && $details{'title'} eq $imdb->title();
-        
-        # make sure we've found the same thing
-        if ( $looked_up_same_film ) {
-            $confidence++;
+        if ( defined $imdb->title() ) {
+            my $looked_up_same_film = $details{'title'} eq $imdb->title();
+            if ( $looked_up_same_film ) {
+                $confidence++;
+            }
             
             foreach my $director ( @{ $imdb->directors() } ) {
                 my $name = $director->{'name'};
@@ -217,7 +220,7 @@ method get_rating_string ( Str $rating ) {
          : '18' eq $rating ? '18 (UK)'
          : $rating;
 }
-method get_movi_data ( HashRef $details ) {
+method get_movie_data ( HashRef $details ) {
     my $studio    = $details->{'company'};
     my $cast      = '';
     my $directors = '';
@@ -300,6 +303,7 @@ method details_from_location ( Str $pathname ) {
         
         if ( $pathname =~ $full_details ) {
             my %details = %+;
+            $details{'feature'} = 1;
             return %details;
         }
         
@@ -320,6 +324,8 @@ method details_from_location ( Str $pathname ) {
         
         if ( $pathname =~ $extra_content ) {
             my %details = %+;
+            $details{'feature'} = 1
+                unless defined $details{'extra'};
             return %details;
         }
     }
