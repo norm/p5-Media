@@ -46,9 +46,12 @@ sub get_default_config {
         },
         
         # audio flags
-        audio_aac => {},
+        audio_aac => {
+            downmix => 'dpl2',
+        },
         audio_six => {
             downmix => '6ch',
+            bitrate => '256',
         },
         audio_stereo => {
             downmix => 'stereo',
