@@ -668,3 +668,22 @@ method get_config ( Str $key, Str $block = '' ) {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+B<Media> -- code and scripts for handling electronic media
+
+=head1 DESCRIPTION
+
+The C<Media> project is a workflow for transforming your existing digital
+media into new formats. Commonly, piles of DVDs into much smaller MPEG-4
+video files suitable for watching on an Apple TV and/or iPad.
+
+B<Note: Unless you are interested in writing scripts using the C<Media> code,
+you should be reading L<Media::Tutorial>, not this.>
+
+=head1 USAGE
+
+... TODO ...
