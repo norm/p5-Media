@@ -73,14 +73,30 @@ method process_dvd ( Str $directory, Int $priority ) {
                 },
             );
         
-        if ( defined $details{'chapters'} ) {
-            $conversion{'options'}{'markers'} = '';
-            $conversion{'options'}{'chapters'} = $details{'chapters'}
-                if '1' ne $details{'chapters'};
-        }
+        my $set_option_with_default = sub {
+                my $option = shift;
+                my $key    = shift // $option;
+                
+                my $value = $details{ $option };
+                return unless defined $value;
+                
+                # '1' just means turn on the option; anything else means
+                # to use that value as the argument to the option
+                $conversion{'options'}{ $key } = '';
+                $conversion{'options'}{ $key } = $value
+                    if '1' ne $value;
+            };
         
-        $conversion{'options'}{'decomb'} = ''
-            if defined $details{'decomb'};
+        # copy chapter markers, with optional description file
+        &$set_option_with_default( 'chapters', 'markers' );
+        
+        # only convert some chapters in the source title
+        &$set_option_with_default( 'range', 'chapters' );
+        
+        # visual effects
+        &$set_option_with_default( 'decomb'     );
+        &$set_option_with_default( 'detelecine' );
+        &$set_option_with_default( 'denoise'    );
         
         $media->queue_conversion( \%conversion, $priority );
     }
