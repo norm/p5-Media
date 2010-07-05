@@ -280,8 +280,8 @@ method remove_queued_job ( Str $path ) {
 method convert_file ( HashRef $job_data ) {
     my $input  = $job_data->{'input'} // '';
     my $output = $job_data->{'output'};
-    my $type   = $self->get_file_extension( $input );
     my $config = $self->get_configuration();
+    my( $directory, $filename, $type ) = $self->get_path_segments( $input );
     
     if ( -d "$input/VIDEO_TS" ) {
         $type = 'DVD';
@@ -323,10 +323,18 @@ method convert_file ( HashRef $job_data ) {
         delete $options{'audio'};
         delete $options{'subtitle'};
         
+        # try and find a poster image, either from the options
+        # hash, or the input processing directory (which
+        # overrides the options if both exist)
         if ( defined $options{'poster'} ) {
             $self->get_poster( $output, $options{'poster'} );
         }
         delete $options{'poster'};
+        
+        my $saved_poster = "${directory}/poster.jpg";
+        if ( -f $saved_poster ) {
+            copy( $saved_poster, $output );
+        }
         
         # turn arguments like "quality" into "--quality" (this 
         # makes the configuration file more readable), also notes
