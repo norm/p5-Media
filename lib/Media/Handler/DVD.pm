@@ -55,6 +55,11 @@ method process_dvd ( Str $directory, Int $priority ) {
         next if $key eq '';
         next if $config{ $key }{'ignore'};
         
+        # allow for multiple passes over the same title by ignoring
+        # letters in the config section key
+        my $title   = $key;
+           $title  =~ s{[a-z]+$}{};
+        
         my %details = $handler->get_dvd_details( \%config, $key );
         $details{'key'} = $key;
         
@@ -65,7 +70,7 @@ method process_dvd ( Str $directory, Int $priority ) {
                 'input'   => $directory,
                 'output'  => $process,
                 'options' => {
-                    '-t'       => $key,
+                    '-t'       => $title,
                     'audio'    => $details{'audio'},
                     'subtitle' => $details{'subtitle'},
                     'crop'     => $details{'crop'},
