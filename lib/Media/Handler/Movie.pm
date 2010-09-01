@@ -157,19 +157,29 @@ method parse_title_string ( $title ) {
             unless defined $details{'extra'};
         
         # traits that identify this as a legitimate movie
-        $confidence++
-            if defined $details{'rating'};
-        $confidence++
-            if defined $details{'year'};
+        $confidence = 1
+            if defined $details{'rating'} and defined $details{'year'};
 
         # look up extra information in the IMDB
-        my $imdb = IMDB::Film->new( 
-                crit  => $details{'title'}, 
+        my $found_movie = 1;
+        my $imdb        = IMDB::Film->new(
+                crit  => $details{'title'},
                 year  => $details{'year'},
                 cache => 1,
             );
         
-        if ( defined $imdb->title() ) {
+        $found_movie = 0
+            unless $imdb->title();
+        $found_movie = 0
+            if $imdb->kind() eq 'tv series';
+        $found_movie = 0
+            if $imdb->kind() eq 'tv mini series';
+        $found_movie = 0
+            if $imdb->kind() eq 'episode';
+        
+        if ( $found_movie ) {
+            $confidence++;
+            
             my $looked_up_same_film = 0;
             my $imdb_title          = $imdb->title();
             
@@ -180,7 +190,7 @@ method parse_title_string ( $title ) {
                 $looked_up_same_film = 1;
             }
             
-            $confidence++
+            $confidence += 2
                 if $looked_up_same_film;
             
             foreach my $director ( @{ $imdb->directors() } ) {
