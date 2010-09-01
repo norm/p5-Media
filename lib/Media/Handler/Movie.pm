@@ -170,10 +170,18 @@ method parse_title_string ( $title ) {
             );
         
         if ( defined $imdb->title() ) {
-            my $looked_up_same_film = $details{'title'} eq $imdb->title();
-            if ( $looked_up_same_film ) {
-                $confidence++;
+            my $looked_up_same_film = 0;
+            my $imdb_title          = $imdb->title();
+            
+            if ( $details{'title'} eq $imdb_title ) {
+                $looked_up_same_film = 1;
             }
+            elsif ( $imdb_title =~ $details{'title'} ) {
+                $looked_up_same_film = 1;
+            }
+            
+            $confidence++
+                if $looked_up_same_film;
             
             foreach my $director ( @{ $imdb->directors() } ) {
                 my $name = $director->{'name'};

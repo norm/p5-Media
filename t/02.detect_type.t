@@ -2,9 +2,9 @@ use Modern::Perl;
 
 use Data::Dumper::Concise;
 use Media;
-use Test::More  tests => 14;
+use Test::More  tests => 15;
 
-my $media = Media->new();
+my $media = Media->new( config_file => 't/test_media.conf' );
 
 
 
@@ -25,6 +25,7 @@ check_type( 'TV',  q(The Eloquent Ji Xiaolan IV - 18)                       );
 check_type( 'Movie',  q(Barbarella (1968))                                  );
 check_type( 'Movie',  q(Serenity - 15 (2005))                               );
 check_type( 'Movie',  q(Serenity - 15 (2005) - Deleted Scenes)              );
+check_type( 'Movie',  q(Interstate 60 - 12 (2002))                          );
 
 exit;
 

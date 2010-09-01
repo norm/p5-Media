@@ -2,10 +2,10 @@ use Modern::Perl;
 
 use Data::Dumper::Concise;
 use Media;
-use Test::More      tests => 9;
+use Test::More      tests => 12;
 
 
-my $media   = Media->new();
+my $media   = Media->new( config_file => 't/test_media.conf' );
 my $handler = $media->get_handler_type( 'Movie' );
 my $title;
 my $details;
@@ -16,9 +16,10 @@ my $confidence;
 
 $title   = q(Barbarella (1968));
 $details = {
-        title  => 'Barbarella',
-        rating => 'X',              # this will be filled in by IMDB
-        year   => '1968',
+        title   => 'Barbarella',
+        rating  => 'X',              # this will be filled in by IMDB
+        year    => '1968',
+        feature => 1,
     };
 $location = [
         '/files/movies/All/Barbarella - X (1968)',
@@ -30,9 +31,10 @@ check_parser( $title, $details, $location, $confidence );
 
 $title   = q(Serenity - 15 (2005));
 $details = {
-        title  => 'Serenity',
-        rating => '15',
-        year   => '2005',
+        title   => 'Serenity',
+        rating  => '15',
+        year    => '2005',
+        feature => 1,
     };
 $location = [
         '/files/movies/All/Serenity - 15 (2005)',
@@ -52,6 +54,21 @@ $details = {
 $location = [
         '/files/movies/All/Serenity - 15 (2005)',
         'Deleted Scenes.avi',
+    ];
+$confidence = 3;
+check_parser( $title, $details, $location, $confidence );
+
+
+$title   = q(Interstate 60 - 12 (2002));
+$details = {
+        title   => 'Interstate 60',
+        rating  => '12',
+        year    => '2002',
+        feature => 1,
+    };
+$location = [
+        '/files/movies/All/Interstate 60 - 12 (2002)',
+        'Interstate 60 - 12 (2002).avi',
     ];
 $confidence = 3;
 check_parser( $title, $details, $location, $confidence );
