@@ -69,6 +69,8 @@ sub get_default_config {
         },
         '.avi' => {},
         '.mp4' => {},
+        '.mpg' => {},
+        '.wmv' => {},
         
         # original source based flags
         default_source => {},

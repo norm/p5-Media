@@ -90,6 +90,8 @@ method is_video_file ( Str $filename ) {
          : ( '.avi' eq $extension ) ? 1
          : ( '.mkv' eq $extension ) ? 1
          : ( '.mp4' eq $extension ) ? 1
+         : ( '.mpg' eq $extension ) ? 1
+         : ( '.wmv' eq $extension ) ? 1
                                     : 0;
 }
 method convert_video ( 
