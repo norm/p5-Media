@@ -80,10 +80,11 @@ method tag_file ( Str $file, HashRef $details ) {
     my( $directory, undef, $extension ) = $self->get_path_segments( $file );
     return unless '.m4v' eq $extension;
     
-    my $genre     = join( ', ', @{ $details->{'genre'} } );
-    my $director  = join( ', ', @{ $details->{'director'} } );
     my $rating    = $self->get_rating_string( $details->{'rating'} );
     my $movi_data = $self->get_movie_data( $details );
+    my $genre     = join( ', ', @{ $details->{'genre'} } );
+    my $director  = join( ', ', @{ $details->{'director'} } )
+        if defined $details->{'director'};
     
     my @arguments;
     if ( -f "$directory/poster.jpg" ) {
@@ -236,6 +237,7 @@ method get_rating_string ( Str $rating ) {
          : '12' eq $rating ? '12 (UK)'
          : '15' eq $rating ? '15 (UK)'
          : '18' eq $rating ? '18 (UK)'
+         : 'NR' eq $rating ? 'UNRATED (UK)'
          : $rating;
 }
 method get_movie_data ( HashRef $details ) {
