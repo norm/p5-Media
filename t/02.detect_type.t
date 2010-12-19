@@ -41,4 +41,18 @@ sub check_type {
     
     ok( $required eq $type )
         or say "$title: should be $required, is $type";
+
+    # my $handler = $media->get_handler_type( 'TV' );
+    # my( $points, %details ) = $handler->parse_title_string( $title );
+    # say "-> CONFIDENCE $points";
+    # use Data::Dumper::Concise;
+    # print Dumper \%details;
+    # 
+    # $handler = $media->get_handler_type( 'Movie' );
+    # ( $points, %details ) = $handler->parse_title_string( $title );
+    # say "-> CONFIDENCE $points";
+    # use Data::Dumper::Concise;
+    # print Dumper \%details;
+
+    
 }
