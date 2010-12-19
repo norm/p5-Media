@@ -1,8 +1,8 @@
 package Media;
 
 use Modern::Perl;
-use MooseX::FollowPBP;
 use Moose;
+use MooseX::FollowPBP;
 use MooseX::Method::Signatures;
 
 use Config::Std;

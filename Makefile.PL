@@ -25,7 +25,7 @@ WriteMakefile(
         'LWP::UserAgent'             => 0,
         'Modern::Perl'               => 0,
         'Moose'                      => 0,
-        'MooseX::FollowPBP'          => 0,
+        'MooseX::FollowPBP'          => 0.04,
         'MooseX::Method::Signatures' => 0,
         'Readonly'                   => 0,
         'Storable'                   => 0,
