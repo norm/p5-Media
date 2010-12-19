@@ -122,6 +122,10 @@ method parse_title_string ( $title ) {
         $confidence++
             if defined $details{'disk'};
         $confidence++
+            if defined $details{'title'};
+        $confidence++
+            if defined $details{'episode'};
+        $confidence++
             if defined $details{'special'};
     }
     

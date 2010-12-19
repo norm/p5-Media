@@ -24,7 +24,7 @@ mkdir q(t/tv/House);
 
 # basic episode format
 $title      = q(House - 1x01 - Pilot);
-$confidence = 2;
+$confidence = 4;
 $details    = {
         series  => 'House',
         season  => '1',
@@ -39,7 +39,7 @@ check_parser( $title, $confidence, $details, $location );
 
 
 $title      = q(The Kevin Bishop Show - 1x05);
-$confidence = 1;
+$confidence = 2;
 $details    = {
         series  => 'The Kevin Bishop Show',
         season  => '1',
@@ -55,7 +55,7 @@ check_parser( $title, $confidence, $details, $location, \%check );
 
 
 $title      = q(Bones - 4x01-02 - Yanks in the U.K.);
-$confidence = 3;
+$confidence = 4;
 $details    = {
         series        => 'Bones',
         season        => '4',
@@ -94,7 +94,7 @@ check_parser( $title, $confidence, $details, $location, \%check );
 
 # do not choke on punctuation in titles
 $title      = q(House - 2x23 - Who's Your Daddy);
-$confidence = 2;
+$confidence = 4;
 $details    = {
         series  => 'House',
         season  => '2',
@@ -110,7 +110,7 @@ check_parser( $title, $confidence, $details, $location );
 
 # do not choke on punctuation in series names
 $title      = q(Grey's Anatomy - 5x03 - Here Comes the Flood);
-$confidence = 2;
+$confidence = 4;
 $details    = {
         series  => q(Grey's Anatomy),
         season  => '5',
@@ -125,7 +125,7 @@ check_parser( $title, $confidence, $details, $location );
 
 
 $title      = q(American Dad! - 5x12 - May the Best Stan Win);
-$confidence = 2;
+$confidence = 4;
 $details    = {
         series  => 'American Dad!',
         season  => '5',
@@ -141,7 +141,7 @@ check_parser( $title, $confidence, $details, $location );
 
 # sports series
 $title      = q(NASCAR Nationwide Series 2009 - Round 01 - Daytona (Race));
-$confidence = 1;
+$confidence = 3;
 $details    = {
         series  => 'NASCAR Nationwide Series',
         season  => '2009',
@@ -157,7 +157,7 @@ check_parser( $title, $confidence, $details, $location );
 
 # shows done by broadcast date, not season
 $title      = q(The Daily Show - 2009-08-13 - Rachel McAdams);
-$confidence = 1;
+$confidence = 3;
 $details    = {
         series  => 'The Daily Show',
         season  => '2009',
@@ -172,7 +172,7 @@ check_parser( $title, $confidence, $details, $location );
 
 
 $title      = q(Vil Du Bli Millionr Hot Seat - 2010.01.04);
-$confidence = 1;
+$confidence = 2;
 $details    = {
         series  => 'Vil Du Bli Millionr Hot Seat',
         season  => '2010',
@@ -395,7 +395,7 @@ check_parser( $title, $confidence, $details, $location, \%check );
 
 
 $title      = q(UFC 109: Relentless);
-$confidence = 0;
+$confidence = 2;
 $details    = {
         series  => 'UFC',
         episode => '109',
@@ -409,7 +409,7 @@ check_parser( $title, $confidence, $details, $location );
 
 
 $title      = q(Bundesliga 2010 - Week 20: Highlights);
-$confidence = 2;
+$confidence = 3;
 $details    = {
         series  => 'Bundesliga',
         season  => '2010',
@@ -424,7 +424,7 @@ check_parser( $title, $confidence, $details, $location );
 
 
 $title      = q(2010 AMA Supercross Series - Supercross Class Round 5);
-$confidence = 1;
+$confidence = 2;
 $details    = {
         series  => 'AMA Supercross Series',
         season  => '2010',
@@ -454,7 +454,7 @@ check_parser( $title, $confidence, $details, $location );
 
 $title
     = q(Time Team - Sx18 - Londinium, Greater London - Edge of Empire);
-$confidence = 1;
+$confidence = 3;
 $details    = {
         series  => 'Time Team',
         episode => '18',
@@ -469,7 +469,7 @@ check_parser( $title, $confidence, $details, $location );
 
 
 $title      = q(Top Gear - The Great Adventures Vietnam Special);
-$confidence = 1;
+$confidence = 2;
 $details    = {
         series  => 'Top Gear',
         title   => 'The Great Adventures Vietnam Special',
@@ -483,7 +483,7 @@ check_parser( $title, $confidence, $details, $location );
 
 
 $title      = q(Howard Stern On Demand (Heidi Baron));
-$confidence = 0;
+$confidence = 1;
 $details    = {
         series  => 'Howard Stern On Demand',
         title   => 'Heidi Baron',
@@ -496,7 +496,7 @@ check_parser( $title, $confidence, $details, $location );
 
 
 $title      = q(Crop To Shop - Jimmy's Supermarket Secrets);
-$confidence = 0;
+$confidence = 1;
 $details    = {
         series  => 'Crop To Shop',
         title   => "Jimmy's Supermarket Secrets",
@@ -509,7 +509,7 @@ check_parser( $title, $confidence, $details, $location );
 
 
 $title      = q(The Eloquent Ji Xiaolan IV - 18);
-$confidence = 0;
+$confidence = 1;
 $details    = {
         series  => 'The Eloquent Ji Xiaolan IV',
         episode => '18',

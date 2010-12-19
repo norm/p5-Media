@@ -20,6 +20,7 @@ check_type( 'TV',  q(Bundesliga 2010 - Week 20: Highlights)                 );
 check_type( 'TV',  q(Top Gear - The Great Adventures Vietnam Special)       );
 check_type( 'TV',  q(Battlestar Galactica (2004) - Season 4 [BD 4])         );
 check_type( 'TV',  q(The Eloquent Ji Xiaolan IV - 18)                       );
+check_type( 'TV',  q(Battlestar Galactica (2003) - 1x01 - 33)               );
 
 # the following should all be recognised as Movies
 check_type( 'Movie',  q(Barbarella (1968))                                  );
