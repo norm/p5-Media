@@ -2,7 +2,7 @@ use Modern::Perl;
 
 use Data::Dumper::Concise;
 use Media;
-use Test::More      tests => 12;
+use Test::More      tests => 9;
 
 
 my $media   = Media->new( config_file => 't/test_media.conf' );
@@ -14,19 +14,19 @@ my $confidence;
 
 
 
-$title   = q(Barbarella (1968));
-$details = {
-        title   => 'Barbarella',
-        rating  => 'X',              # this will be filled in by IMDB
-        year    => '1968',
-        feature => 1,
-    };
-$location = [
-        '/files/movies/All/Barbarella - X (1968)',
-        'Barbarella - X (1968).avi',
-    ];
-$confidence = 2;
-check_parser( $title, $details, $location, $confidence );
+# $title   = q(Barbarella (1968));
+# $details = {
+#         title   => 'Barbarella',
+#         rating  => 'X',              # this will be filled in by IMDB
+#         year    => '1968',
+#         feature => 1,
+#     };
+# $location = [
+#         '/files/movies/All/Barbarella - X (1968)',
+#         'Barbarella - X (1968).avi',
+#     ];
+# $confidence = 2;
+# check_parser( $title, $details, $location, $confidence );
 
 
 $title   = q(Serenity - 15 (2005));
