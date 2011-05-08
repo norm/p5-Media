@@ -1,0 +1,34 @@
+[09:55:24] hb_init: checking cpu count
+[09:55:24] hb_init: starting libhb thread
+HandBrake 0.9.5 (2011010300) - Darwin x86_64 - http://handbrake.fr
+8 CPUs detected
+Opening xt/input/ac3.vob...
+[09:55:24] hb_scan: path=xt/input/ac3.vob, title_index=0
+libbluray/bdnav/index_parse.c:157: indx_parse(): error opening xt/input/ac3.vob/BDMV/index.bdmv
+libbluray/bluray.c:960: nav_get_title_list(xt/input/ac3.vob) failed (0x101827a00)
+[09:55:24] bd: not a bd - trying as a stream/file instead
+libdvdnav: Using dvdnav version 4.1.3
+libdvdread: Encrypted DVD support unavailable.
+libdvdnav:DVDOpenFileUDF:UDFFindFile /VIDEO_TS/VIDEO_TS.IFO failed
+libdvdnav:DVDOpenFileUDF:UDFFindFile /VIDEO_TS/VIDEO_TS.BUP failed
+libdvdread: Can't open file VIDEO_TS.IFO.
+libdvdnav: vm: failed to read VIDEO_TS.IFO
+[09:55:24] dvd: not a dvd - trying as a stream/file instead
+[09:55:24] file is MPEG DVD Program Stream
+[09:55:24] add_audio_to_title: added AC3 audio stream 0x80bd
+[09:55:24] scan: decoding previews for title 1
+[09:55:24] scan: audio 0x80bd: AC-3, rate=48000Hz, bitrate=448000 Unknown (AC3) (5.1 ch)
+[09:55:24] scan: 10 previews, 720x576, 25.000 fps, autocrop = 2/0/0/0, aspect 16:9, PAR 64:45
+[09:55:24] scan: title (0) job->width:720, job->height:400
+[09:55:24] libhb: scan thread found 1 valid title(s)
++ title 1:
+  + stream: xt/input/ac3.vob
+  + duration: 00:01:08
+  + size: 720x576, pixel aspect: 64/45, display aspect: 1.78, 25.000 fps
+  + autocrop: 2/0/0/0
+  + chapters:
+    + 1: cells 0->0, 0 blocks, duration 00:01:08
+  + audio tracks:
+    + 1, Unknown (AC3) (5.1 ch) (iso639-2: und), 48000Hz, 448000bps
+  + subtitle tracks:
+HandBrake has exited.

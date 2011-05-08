@@ -1,0 +1,17 @@
+﻿ Major Brand: mp42  -  version 0
+ Compatible Brands: mp42 isom avc1
+ Tagging schemes available:
+   iTunes-style metadata allowed.
+   ID3 tags on ID32 atoms @ file/movie/track level allowed.
+   ISO-copyright notices @ movie and/or track level allowed.
+   uuid private user extension tags allowed.
+Atom "©too" contains: HandBrake 0.9.5 2011010300
+Atom "©ART" contains: Madness
+Atom "©alb" contains: Utter Madness
+Atom "©nam" contains: (Waiting for) The Ghost Train
+Atom "stik" contains: Music Video
+---------------------------
+free atom space: 264
+padding available: 0 bytes
+user data space: 257
+media data space: 35398440

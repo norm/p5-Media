@@ -1,159 +1,105 @@
-#!/ports/bin/perl
+#!/usr/bin/env perl
 
 use Modern::Perl;
-
+use IO::All         -utf8;
 use Media;
-use IO::All;
+use Getopt::Long    qw( :config bundling );
 use Pod::Usage;
+use Time::Elapsed   qw( elapsed );
 
-use constant PROCESS_ID_FILE  => "$ENV{'HOME'}/var/encoder.pid";
-use constant SIG_CHECK        => 0;
-use constant SIG_KILL         => 9;
-use constant SIG_STOP         => 17;
-use constant SIG_CONT         => 19;
+use constant OPTIONS   => qw(
+    config|c=s
+      help|h
+);
+use constant SIG_CHECK => 0;
+use constant SIG_KILL  => 9;
+use constant SIG_STOP  => 17;
+use constant SIG_CONT  => 19;
 
 
 
-my $media        = Media->new();
-my $encoder      = Media->new( log_file => 'encoder.log' );
-my $base         = $media->get_config( 'base_directory' );
-my $auto_install = $media->get_config( 'install_encodes' );
+my %option   = get_options_or_exit();
+my $media    = Media->new( $option{'config'} );
+my $argument = shift // 'run';
 
-my $argument = shift // 'queue';
 given ( $argument ) {
-    when ( 'run'    ) { run_encoder_queue();          }
+    when ( 'run'    )   { run_encoder();    }
     
-    when ( 'queue'  ) { list_encoder_queue();         }
+    when ( 'stop'   )   { stop_encoder();   }
+    when ( 'abort'  )   { abort_encoder();  }
     
-    when ( 'pause'  ) { pause_current_encode();       }
-    when ( 'stop'   ) { stop_encoder_after_current(); }
-    when ( 'abort'  ) { stop_encoder_immediately();   }
-    when ( 'resume' ) { resume_current_encode();      }
+    when ( 'pause'  )   { pause_encoder();  }
+    when ( 'resume' )   { resume_encoder(); }
     
-    when ( 'remove' ) { remove_from_queue( @ARGV );   }
-    when ( 'clear'  ) { remove_from_queue( '-p', '0' ); }
-    when ( 'help'   ) { pod2usage();                    }
-    
-    default           { die "Unknown: $argument";     }
+    default             { die "Uknown argument: $argument\n"; }
 }
 exit;
 
 
-
-sub run_encoder_queue {
-    # always start in the base
-    chdir $base
-        or die "chdir $base: $!";
-    say "-> Starting in $base";
+sub run_encoder {
+    setpriority 0, $$, 20;
+    $$ > io $media->encoder_pid_file;
     
-    # run the encoder at as low a priority as possible
-    setpriority( 0, $$, 20 );
-    
-    $$ > io( PROCESS_ID_FILE );
-    
-    while ( 1 ) {
-        my( $job, $data ) = $encoder->dequeue_conversion();
-        my $end_queue = $data->{'end_queue'} // 0;
+    my $running = 1;
+    while ( $running ) {
+        my( $job, $payload ) = $media->next_queue_job();
         
-        convert_video( $data )
-            unless $end_queue;
-        
-        $job->finish();
-        
-        last if $end_queue;
-    }
-}
-sub pause_current_encode {
-    my $pid < io( PROCESS_ID_FILE );
-    my @children = get_child_processes( $pid );
-    
-    kill SIG_STOP, @children;
-}
-sub resume_current_encode {
-    my $pid < io( PROCESS_ID_FILE );
-    my @children = get_child_processes( $pid );
-    
-    kill SIG_CONT, @children;
-}
-sub list_encoder_queue {
-    foreach my $job ( $media->list_all_in_queue() ) {
-        my $input    = $job->{'payload'}{'input'};
-        my $handler  = $job->{'active'};
-        my $active   = '';
-        my $priority = $job->{'priority'};
-        my $title    = $job->{'payload'}{'options'}{'-t'};
-        my $stop_job = $job->{'payload'}{'end_queue'};
-        
-        if ( defined $stop_job ) {
-            say "[--] STOP ENCODER AFTER CURRENT JOB";
+        if ( defined $payload->{'stop_encoder'} ) {
+            log_action( 'stop job received -- quitting' );
+            $running = 0;
         }
         else {
-            if ( defined $handler ) {
-                $active = ( kill 0, $handler ) ? 'active' : 'inactive'; 
-            }
-
-            say "[${priority}] $input"
-              . ( defined $title   ? " title $title"               : '' )
-              . ( defined $handler ? " (handler $handler $active)" : '' );
-            ;
+            my $start = time();
+            log_action( '"' . $payload->{'name'} . '" starting' );
+            
+            $media->encode_media( $payload );
+            
+            my $elapsed = elapsed( time() - $start );
+            log_action( '"' . $payload->{'name'} . "\" done, took $elapsed" );
         }
+        
+        $job->finish();
     }
+    
+    unlink $media->encoder_pid_file;
 }
-sub stop_encoder_after_current {
-    $media->queue_stop_job();
+sub stop_encoder {
+    $media->queue_stop_command();
 }
-sub stop_encoder_immediately {
-    my $pid < io( PROCESS_ID_FILE );
+sub abort_encoder {
+    signal_workers( SIG_KILL );
+}
+sub pause_encoder {
+    signal_workers( SIG_STOP );
+}
+sub resume_encoder {
+    signal_workers( SIG_CONT );
+}
+
+sub log_action {
+    my $message = shift;
+    
+    say " -> $message";
+    
+    my $log = $media->full_configuration->{''}{'encoder_log_file'};
+    return unless defined $log;
+    
+    my @time  = localtime( time() );
+    my $stamp = sprintf '%02d/%02d %02d:%02d',
+                     $time[4]+1,
+                     @time[3,2,1];
+    
+    trim_to_width( "$stamp $message\n" ) >> io $log
+        or die "io $log: $!";
+}
+sub signal_workers {
+    my $signal = shift;
+    
+    my $pid      < io( $media->encoder_pid_file );
     my @children = get_child_processes( $pid );
     
-    kill SIG_KILL, $pid, @children;
+    kill $signal, @children;
 }
-sub remove_from_queue {
-    my @removals = @_;
-    
-    my $first           = $removals[ 0 ];
-    my $by_name         = 1;
-    my $lowest_priority = 2;
-    
-    return unless defined $first;
-    
-    if ( '-p' eq $first ) {
-        shift @removals;
-        $lowest_priority = shift @removals;
-        
-        if ( ! @removals ) {
-            $by_name = 0;
-            unshift @removals, '';
-        }
-    }
-    
-    foreach my $job ( $media->list_all_in_queue() ) {
-        my $input = $job->{'payload'}{'input'};
-        my $title = $job->{'payload'}{'options'}{'-t'};
-        my $prio  = $job->{'priority'};
-        my $path  = $job->{'path'};
-        
-        $input = "$input title $title"
-            if defined $title;
-        
-        foreach my $arg ( @removals ) {
-            my $remove_job = 0;
-            
-            if ( $by_name ) {
-                $remove_job = $input =~ m{${arg}}
-                              &&
-                              $prio > $lowest_priority;
-            }
-            else {
-                $remove_job = $prio > $lowest_priority;
-            }
-
-            $media->remove_queued_job( $path )
-                if $remove_job;
-        }
-    }
-}
-
 sub get_child_processes {
     my $pid    = shift;
     my $signal = shift;
@@ -170,82 +116,78 @@ sub get_child_processes {
     
     return @processes;
 }
-sub convert_video {
-    my $data = shift;
+sub get_options_or_exit {
+    my %getopts = @_;
     
-    my $input  = $data->{'input'};
-    my $output = $data->{'output'};
+    my $known = GetOptions( \%getopts, OPTIONS );
+    my $usage = ! $known || $getopts{'help'};
     
-    if ( -f $input or -d $input ) {
-        $encoder->convert_file( $data );
-
-        if ( $auto_install ) {
-            # reprocess directory now that it contains the
-            # converted video (run as separate process)
-            say "-> process $output";
-            $media->process_directory( $output );
-        }
-    }
-    else {
-        # it is not an error if the item has since been removed
-        say "-> $input has since vanished";
-    }
+    pod2usage() if $usage;
+    
+    return %getopts;
+}
+sub trim_to_width {
+    my $text = shift;
+    
+    $text = sprintf( "%s...%s",
+            substr( $text, 0, 33 ),
+            substr( $text, -44 ),
+        ) if length $text > 80;
+    
+    return $text;
 }
 
 __END__
 
-=head1 ARGUMENTS
+=head1 NAME
+
+B<encoder> - queue runner for converting media
+
+=head1 SYNOPSIS
+
+    encoder [-c<file>] [run]
+    encoder stop
+    encoder abort
+    encoder pause
+    encoder resume
+
+=head1 OPTIONS
 
 =over
 
-=item B<encoder queue>
+=item -cI<file>, --config I<file>
 
-List items in the encoder queue. This is the default action, if no arguments
-are provided.
-
-=item B<encoder run>
-
-Run a process that continually polls the queue and encodes the next job with
-the highest priority.
-
-=item B<encoder pause>
-
-Pauses any encoder processes currently running.
-
-=item B<encoder resume>
-
-Resumes any encoder processes currently paused.
-
-=item B<encoder stop>
-
-Sends a control message to the encoder that causes it to exit, but only after
-the current encode has finished processing.
-
-=item B<encoder abort>
-
-Exits the current encoder process immediately, even if an encode is currently
-processing.
-
-=item B<encoder remove C<regexp>>
-
-Removes any job from the queue that matches the perl regular expression
-C<regexp>. The expression is not anchored, so C<encoder remove Star> would
-remove jobs in the queue that matched all of F<Stargate>, F<Star Wars> and
-F<Dancing with the Stars>. It is case sensitive, so C<encoder remove star>
-would not match any of the previous examples.
-
-=item B<encoder clear>
-
-Removes all queued jobs.
+Use I<file> as the configuration file to control the behaviour of C<queue>.
+Can also be set with the C<MEDIA_CONFIG> environment variable. Defaults to
+F<~/etc/media.conf>.
 
 =back
 
-=head1 PRIORITY
-
-Each job in the queue has a priority, a numeric value between 2 and 100 (1 is
-reserved for control messages). The lower the number, the higher the priority.
-Jobs are queued by default with a priority of 50.
-
 =head1 SEE ALSO
 
-Run C<perldoc Media> to read more.
+=over
+
+=item *
+
+perldoc queue
+
+=item *
+
+perldoc Media::Tutorial
+
+=item *
+
+perldoc Media::Config
+
+=back
+
+=head1 AUTHOR
+
+Mark Norman Francis, L<norm@cackhanded.net>.
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2011 Mark Norman Francis.
+
+This library is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.

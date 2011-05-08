@@ -1,0 +1,42 @@
+ Major Brand: mp42  -  version 0
+ Compatible Brands: mp42 isom avc1
+ Tagging schemes available:
+   iTunes-style metadata allowed.
+   ID3 tags on ID32 atoms @ file/movie/track level allowed.
+   ISO-copyright notices @ movie and/or track level allowed.
+   uuid private user extension tags allowed.
+Atom "©too" contains: HandBrake 0.9.5 2011010300
+Atom "stik" contains: Movie
+Atom "©nam" contains: Barbarella
+Atom "©day" contains: 1968
+Atom "----" [com.apple.iTunes;iTunEXTC] contains: X
+Atom "com.apple.iTunes;iTunMOVI" contains: <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>studio</key>
+    <key></key>
+    <key>cast</key>
+    <array>
+
+    </array>
+    <key>directors</key>
+    <array>
+
+    </array>
+    <key>screenwriters</key>
+    <array>
+
+    </array>
+</dict>
+</plist>
+
+Atom "©ART" contains: Roger Vadim
+Atom "©gen" contains: Adventure
+Atom "covr" contains: 1 piece of artwork
+---------------------------
+free atom space: 264
+padding available: 0 bytes
+user data space: 9643
+media data space: 9846991
+

@@ -1,0 +1,19 @@
+﻿ Major Brand: mp42  -  version 0
+ Compatible Brands: mp42 isom avc1
+ Tagging schemes available:
+   iTunes-style metadata allowed.
+   ID3 tags on ID32 atoms @ file/movie/track level allowed.
+   ISO-copyright notices @ movie and/or track level allowed.
+   uuid private user extension tags allowed.
+Atom "©too" contains: HandBrake 0.9.5 2011010300
+Atom "tvsh" contains: Battlestar Galactica (2003)
+Atom "tvsn" contains: 1
+Atom "tves" contains: 3
+Atom "tven" contains: 1x03
+Atom "©nam" contains: Bastille Day
+Atom "stik" contains: TV Show
+---------------------------
+free atom space: 264
+padding available: 0 bytes
+user data space: 300
+media data space: 10317458

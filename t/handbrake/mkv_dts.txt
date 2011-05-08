@@ -1,0 +1,49 @@
+[14:51:23] hb_init: checking cpu count
+[14:51:23] hb_init: starting libhb thread
+HandBrake 0.9.5 (2011010300) - Darwin x86_64 - http://handbrake.fr
+8 CPUs detected
+Opening xt/input/dts.mkv...
+[14:51:23] hb_scan: path=xt/input/dts.mkv, title_index=0
+libbluray/bdnav/index_parse.c:157: indx_parse(): error opening xt/input/dts.mkv/BDMV/index.bdmv
+libbluray/bluray.c:960: nav_get_title_list(xt/input/dts.mkv) failed (0x104800000)
+[14:51:23] bd: not a bd - trying as a stream/file instead
+libdvdnav: Using dvdnav version 4.1.3
+libdvdread: Encrypted DVD support unavailable.
+libdvdnav:DVDOpenFileUDF:UDFFindFile /VIDEO_TS/VIDEO_TS.IFO failed
+libdvdnav:DVDOpenFileUDF:UDFFindFile /VIDEO_TS/VIDEO_TS.BUP failed
+libdvdread: Can't open file VIDEO_TS.IFO.
+libdvdnav: vm: failed to read VIDEO_TS.IFO
+[14:51:23] dvd: not a dvd - trying as a stream/file instead
+Input #0, matroska,webm, from 'xt/input/dts.mkv':
+  Duration: 00:00:43.22, start: 0.000000, bitrate: 1536 kb/s
+    Stream #0.0(eng): Audio: dca, 48000 Hz, 5.1, s16, 1536 kb/s
+    Metadata:
+      title           : DTS 1509 Kbps
+    Stream #0.1(eng): Subtitle: [0][0][0][0] / 0x0000
+    Metadata:
+      title           : English
+    Stream #0.2: Video: h264, yuv420p, 1920x800 [PAR 1:1 DAR 12:5], 23.98 fps, 24 tbr, 1k tbn, 47.95 tbc
+    Stream #0.3(eng): Subtitle: [0][0][0][0] / 0x0000
+    Metadata:
+      title           : English HI
+[14:51:23] scan: decoding previews for title 1
+[14:51:23] scan: audio 0x0: DCA, rate=48000Hz, bitrate=1536000 English (DTS) (5.1 ch)
+Scanning title 1 of 1...
+Scanning title 1 of 1...
+[14:51:24] scan: 10 previews, 1920x800, 23.976 fps, autocrop = 0/0/0/0, aspect 2.40:1, PAR 1:1
+[14:51:24] scan: title (0) job->width:1920, job->height:800
+Scanning title 1 of 1...
+[14:51:24] libhb: scan thread found 1 valid title(s)
++ title 1:
+  + stream: xt/input/dts.mkv
+  + duration: 00:00:43
+  + size: 1920x800, pixel aspect: 1/1, display aspect: 2.40, 23.976 fps
+  + autocrop: 0/0/0/0
+  + chapters:
+    + 1: cells 0->0, 0 blocks, duration 00:00:43
+  + audio tracks:
+    + 1, English (DTS) (5.1 ch) (iso639-2: eng), 48000Hz, 1536000bps
+  + subtitle tracks:
+    + 1, English (iso639-2: eng) (Text)(UTF-8)
+    + 2, English (iso639-2: eng) (Text)(UTF-8)
+HandBrake has exited.

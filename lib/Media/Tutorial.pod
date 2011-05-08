@@ -16,18 +16,18 @@ There are two scripts you will use almost exclusively to convert your media.
 =head2 C<encoder>
 
 When run, the C<encoder> script will wait for encoding jobs to be queued up
-(using the C<media> script). It will convert them (using HandBrake) to 
-MPEG-4 video files (by default). Once converted, they will be installed
+(using the C<queue> script). It will convert them (using HandBrakeCLI) to 
+MPEG-4 video files (by default). Once converted, they can be installed
 in the right location (see below) and added to your iTunes library.
 
 Run C<perldoc encoder> for more information.
 
-=head2 C<media>
+=head2 C<queue>
 
-The C<media> script adds new video content to the queue for processing. 
+The C<queue> script adds new video content to the queue for processing.
 Content such as DVDs, downloaded YouTube videos and any other video files.
 
-Run C<perldoc media> for more information.
+Run C<perldoc queue> for more information.
 
 =head1 LOCATIONS
 
@@ -50,12 +50,12 @@ simple title "Pilot" would be found in:
 
 =head2 Movies
 
-Movies only have the one feature, but on DVD will often come with extras.
-Therefore, within the base location for storing movies, there will be a 
-folder with the name, rating and year of the movie; within which are stored
-the main feature (also with the name, rating and year of the movie as the 
-filename) and any extras. For example, the movie Serenity, stored with the
-out-takes would be stored as:
+Whilst movies are just one show, DVDs will often come with extras. Therefore,
+within the base location for storing movies, there will be a folder with the
+name, rating and year of the movie; within which are stored the main feature
+(also with the name, rating and year of the movie as the filename) and any
+extras. For example, the movie Serenity, stored with the out-takes would be
+stored as:
 
     /files/movies/All/Serenity - 12A (2005)/Serenity - 12A (2005).m4v
     /files/movies/All/Serenity - 12A (2005)/Out-takes.m4v
@@ -73,21 +73,56 @@ in it. That information is used to create a structure like:
 The movie is symbolically linked within these extra directories, so no disk
 space is wasted storing multiple copies of the same movie.
 
-=head1 FOLDER NAMES
+=head2 Music Videos
 
-The C<Media> code determines the details of the video content queued for 
-processing in the case of a single video file from the name of the containing
-folder, and in the case of a DVD image from the F<dvd.conf> description file
-(see L<Media::Handler::DVD> for more details).
+Music videos belong to an artist, and optionally an album. For example:
+
+    /files/music/Michael Jackson/Thriller.m4v
+    /files/music/Madness/Utter Madness/(Waiting for) The Ghost Train.m4v
+
+=head1 ENCODING DETAILS
+
+The C<Media> code determines the details of the video content queued for
+processing from one of three sources:
+
+=over
+
+=item *
+
+the command-line arguments passed to the C<queue> command
+
+=item *
+
+a F<media.conf> control file within the directory of the video content
+(either a directory containing a single video file, or a DVD image).
+
+=item *
+
+the directory name, when the video content is a single video file in a
+directory
+
+=back
+
+=head1 DIRECTORY NAME
 
 =head2 Television
 
-As noted above, television shows mostly have a series, season and episode. 
+As noted above, television shows mostly have a series, season and episode.
 When processing a single file which represents a single episode, it expects
-the directory containing it to be named in a specific format, like so:
+the directory containing it to be named in a specific format. The name of the
+series, followed by a spaced-out hyphen (ie. ' - '), the season and episode
+separated with an 'x' or the date of broadcast in ISO 8601 format, followed by
+another spaced-out hyphen and then the title of the episode.
+
+Some examples:
 
     Firefly - 1x01 - Serenity
     Firefly - 1x02 - The Train Job
+    The Kevin Bishop Show - 1x05
+    Bones - 4x01-02 - Yanks in the U.K.
+    The Daily Show - 2009-08-13 - Rachel McAdams
+    Bundesliga 2010 - Week 20: Highlights
+    Top Gear - The Great Adventures Vietnam Special
 
 It is not an error to leave out the episode title. It is not an error to leave
 out the season and/or the episode number. 
@@ -97,18 +132,91 @@ the episode number and episode title.
 
 =head2 Movies
 
-Individual files representing a feature or extra from a movie are expected to
-be named with the film, rating, year, and in the case of an extra, with the 
-title of the extra, like so:
+Movies have a title, followed by a spaced-out hyphen (ie. ' - '), the 
+rating or certificate, and the year of release surrounded by round brackets,
+then another spaced-out hyphen and the name of an extra about the movie.
 
-    Serenity - 12A (2005)
+Some examples:
+    
+    Star Wars
+    Barbarella - X (1968)
     Serenity - 12A (2005) - Outtakes
 
-It is not an error to leave out the rating, it will be taken from the 
-information found in the Internet Movie Database. 
+It is not an error to leave out the rating, the year or the extra name.
+The rating and year will be taken from the information found in the Internet 
+Movie Database if possible.
 
-It is an error to leave out the year. It is an error to leave out the title of
-the movie.
+It is an error to leave out the name of the movie.
+
+=head1 CONTROL FILE
+
+The control file should be fairly self explanatory, and is in the common INI
+format. Anything following a hash (#) on a line is ignored. The file starts
+with global options such as the TV series or movie name.
+
+Then each track of the input (which is always C<1> for a single video file,
+but DVDs commonly have multiple video tracks) has a section for describing it
+and including extra options, started with the track number in square brackets
+on a line by itself.
+
+HandBrake is used to determine basic information about the tracks, such as
+the size, duration, audio and subtitle tracks and these are included to
+help you identify content and to edit the defaults if you wish.
+
+=head2 Audio tracks
+
+Audio tracks are added to your output by means of audio profiles. The format
+of these are the number of the C<source audio track> followed by a colon (:),
+the encoder profile (see below) followed by a colon, and the name of the
+audio track.
+
+Source tracks can be used more than once, for example an input file with 5.1
+AC3 sound will produce two entries in the control file that look like:
+
+    audio    = 1:ac3pass:English
+    audio    = 1:dpl2:English
+
+This means HandBrake will produce two output audio tracks; the first is a 
+straight copy of the first audio track in the input, the second is a re-encode
+of the first audio track in the input to Dolby Pro Logic 2. 
+
+=head3 Audio profiles
+
+L<Media> comes with five audio profiles.
+
+=over 
+
+=item ac3pass
+
+simply copies the source AC3 audio without modification
+
+=item ac3
+
+converts the source audio to AC3 (really only useful for DTS 5.1)
+
+=item dpl2
+
+converts the source audio to Dolby Pro Logic 2 encoded stereo
+
+=item stereo
+
+converts the source audio to stereo
+
+=item mono
+
+converts the source audio to mono
+
+=back
+
+=head2 Subtitles
+
+Subtitles are not currently working in C<Media>.
+
+=head2 Video processing arguments
+
+Any argument that HandBrake can be given can also be entered into the
+control file. The most useful and common options are included in the produced
+file, commented out for your easy reference.
 
 =head1 SEE ALSO
 
@@ -120,13 +228,8 @@ C<perldoc L<Media::Config>> for configuration options
 
 =item
 
-C<perldoc L<Media::Handler::DVD>> for a description of the DVD description
-file
+C<perldoc L<encoder>> for the options the F<encoder> script accepts
 
 =item
 
-C<perldoc L<encoder>> for the list of arguments the F<encoder> script accepts
-
-=item
-
-C<perldoc L<media>> for a description of how the F<media> script works
+C<perldoc L<queue>> for the options the F<queue> script accepts

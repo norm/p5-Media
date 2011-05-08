@@ -1,3 +1,11 @@
 blib
 pm_to_blib
 Makefile
+*tar.gz
+xt/add
+xt/encode
+xt/movies
+xt/music
+xt/queue
+xt/source
+xt/tv

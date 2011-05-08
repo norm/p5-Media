@@ -1,0 +1,105 @@
+﻿Atom ftyp @ 0 of size: 28, ends @ 28
+Atom free @ 28 of size: 132, ends @ 160
+Atom moov @ 160 of size: 39009, ends @ 39169
+     Atom mvhd @ 168 of size: 108, ends @ 276
+     Atom iods @ 276 of size: 24, ends @ 300
+     Atom trak @ 300 of size: 18978, ends @ 19278
+         Atom tkhd @ 308 of size: 92, ends @ 400
+         Atom mdia @ 400 of size: 18842, ends @ 19242
+             Atom mdhd @ 408 of size: 32, ends @ 440
+             Atom hdlr @ 440 of size: 33, ends @ 473
+             Atom minf @ 473 of size: 18769, ends @ 19242
+                 Atom vmhd @ 481 of size: 20, ends @ 501
+                 Atom dinf @ 501 of size: 36, ends @ 537
+                     Atom dref @ 509 of size: 28, ends @ 537
+                         Atom url  @ 525 of size: 12, ends @ 537
+                 Atom stbl @ 537 of size: 18705, ends @ 19242
+                     Atom stsd @ 545 of size: 193, ends @ 738
+                         Atom avc1 @ 561 of size: 177, ends @ 738
+                             Atom avcC @ 647 of size: 57, ends @ 704
+                             Atom colr @ 704 of size: 18, ends @ 722			 ~
+                     Atom stts @ 738 of size: 4856, ends @ 5594
+                     Atom stsz @ 5594 of size: 4164, ends @ 9758
+                     Atom stsc @ 9758 of size: 1408, ends @ 11166
+                     Atom stco @ 11166 of size: 996, ends @ 12162
+                     Atom ctts @ 12162 of size: 5976, ends @ 18138
+                     Atom stss @ 18138 of size: 56, ends @ 18194
+                     Atom sdtp @ 18194 of size: 1048, ends @ 19242
+         Atom edts @ 19242 of size: 36, ends @ 19278
+             Atom elst @ 19250 of size: 28, ends @ 19278
+     Atom trak @ 19278 of size: 1319, ends @ 20597
+         Atom tkhd @ 19286 of size: 92, ends @ 19378
+         Atom mdia @ 19378 of size: 1192, ends @ 20570
+             Atom mdhd @ 19386 of size: 32, ends @ 19418
+             Atom hdlr @ 19418 of size: 33, ends @ 19451
+             Atom minf @ 19451 of size: 1119, ends @ 20570
+                 Atom smhd @ 19459 of size: 16, ends @ 19475
+                 Atom dinf @ 19475 of size: 36, ends @ 19511
+                     Atom dref @ 19483 of size: 28, ends @ 19511
+                         Atom url  @ 19499 of size: 12, ends @ 19511
+                 Atom stbl @ 19511 of size: 1059, ends @ 20570
+                     Atom stsd @ 19519 of size: 63, ends @ 19582
+                         Atom ac-3 @ 19535 of size: 47, ends @ 19582			 ~
+                     Atom stts @ 19582 of size: 24, ends @ 19606
+                     Atom stsz @ 19606 of size: 20, ends @ 19626
+                     Atom stsc @ 19626 of size: 28, ends @ 19654
+                     Atom stco @ 19654 of size: 916, ends @ 20570
+         Atom udta @ 20570 of size: 27, ends @ 20597
+             Atom name @ 20578 of size: 19, ends @ 20597
+     Atom trak @ 20597 of size: 9592, ends @ 30189
+         Atom tkhd @ 20605 of size: 92, ends @ 20697
+         Atom mdia @ 20697 of size: 9464, ends @ 30161
+             Atom mdhd @ 20705 of size: 32, ends @ 20737
+             Atom hdlr @ 20737 of size: 33, ends @ 20770
+             Atom minf @ 20770 of size: 9391, ends @ 30161
+                 Atom smhd @ 20778 of size: 16, ends @ 20794
+                 Atom dinf @ 20794 of size: 36, ends @ 20830
+                     Atom dref @ 20802 of size: 28, ends @ 20830
+                         Atom url  @ 20818 of size: 12, ends @ 20830
+                 Atom stbl @ 20830 of size: 9331, ends @ 30161
+                     Atom stsd @ 20838 of size: 103, ends @ 20941
+                         Atom mp4a @ 20854 of size: 87, ends @ 20941
+                             Atom esds @ 20890 of size: 51, ends @ 20941
+                     Atom stts @ 20941 of size: 24, ends @ 20965
+                     Atom stsz @ 20965 of size: 8124, ends @ 29089
+                     Atom stsc @ 29089 of size: 40, ends @ 29129
+                     Atom stco @ 29129 of size: 1032, ends @ 30161
+         Atom udta @ 30161 of size: 28, ends @ 30189
+             Atom name @ 30169 of size: 20, ends @ 30189
+     Atom udta @ 30189 of size: 8980, ends @ 39169
+         Atom meta @ 30197 of size: 8972, ends @ 39169
+             Atom hdlr @ 30209 of size: 33, ends @ 30242
+             Atom ilst @ 30242 of size: 8927, ends @ 39169
+                 Atom ©too @ 30250 of size: 50, ends @ 30300
+                     Atom data @ 30258 of size: 42, ends @ 30300
+                 Atom stik @ 30300 of size: 25, ends @ 30325
+                     Atom data @ 30308 of size: 17, ends @ 30325
+                 Atom ©nam @ 30325 of size: 34, ends @ 30359
+                     Atom data @ 30333 of size: 26, ends @ 30359
+                 Atom ©day @ 30359 of size: 28, ends @ 30387
+                     Atom data @ 30367 of size: 20, ends @ 30387
+                 Atom ---- @ 30387 of size: 459, ends @ 30846
+                     Atom mean @ 30395 of size: 28, ends @ 30423
+                     Atom name @ 30423 of size: 20, ends @ 30443
+                     Atom data @ 30443 of size: 403, ends @ 30846
+                 Atom covr @ 30846 of size: 8323, ends @ 39169
+                     Atom data @ 30854 of size: 8315, ends @ 39169
+Atom mdat @ 39169 of size: 9846991, ends @ 9886160
+Atom free @ 9886160 of size: 132, ends @ 9886292
+
+ ~ denotes an unknown atom
+------------------------------------------------------
+Total size: 9886292 bytes; 87 atoms total. AtomicParsley from svn built on Mar  9 2008 (utf8)
+Media data: 9846991 bytes; 39301 bytes all other atoms (0.398% atom overhead).
+Total free atom space: 264 bytes; 0.003% waste. Padding available: 0 bytes.
+------------------------------------------------------
+Movie duration: 43.221 seconds (0:43.22) - 1822.62* kbp/sec bitrate (*=approximate)
+Low-level details. Total tracks: 3 
+Trk  Type  Handler                    Kind  Lang  Bytes
+1    vide  [none listed]              avc1  und   5520808
+     1022.14* kbp/s  43.210 sec  AVC High Profile,  Level 3.1  1280x528  (2640 macroblocks)
+2    soun  [none listed]              ac-3  eng   3456000
+     640.00* kbp/s  43.200 sec    channels: (2)
+
+3    soun  [none listed]              mp4a  eng   870175
+     161.06 kbp/s  MPEG-4 AAC Low Complexity/LC Profile    channels: [2]

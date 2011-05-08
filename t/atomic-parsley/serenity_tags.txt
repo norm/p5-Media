@@ -1,0 +1,91 @@
+﻿ Major Brand: mp42  -  version 0
+ Compatible Brands: mp42 isom avc1
+ Tagging schemes available:
+   iTunes-style metadata allowed.
+   ID3 tags on ID32 atoms @ file/movie/track level allowed.
+   ISO-copyright notices @ movie and/or track level allowed.
+   uuid private user extension tags allowed.
+Atom "©too" contains: HandBrake 0.9.5 2011010300
+Atom "stik" contains: Movie
+Atom "©nam" contains: Serenity
+Atom "©day" contains: 2005
+Atom "----" [com.apple.iTunes;iTunMOVI] contains: <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>studio</key>
+    <key>Universal Pictures</key>
+    <key>cast</key>
+    <array>
+    <dict>
+        <key>name</key>
+        <string>Nathan Fillion</string>
+    </dict>
+    <dict>
+        <key>name</key>
+        <string>Gina Torres</string>
+    </dict>
+    <dict>
+        <key>name</key>
+        <string>Alan Tudyk</string>
+    </dict>
+    <dict>
+        <key>name</key>
+        <string>Morena Baccarin</string>
+    </dict>
+    <dict>
+        <key>name</key>
+        <string>Adam Baldwin</string>
+    </dict>
+    <dict>
+        <key>name</key>
+        <string>Jewel Staite</string>
+    </dict>
+    <dict>
+        <key>name</key>
+        <string>Sean Maher</string>
+    </dict>
+    <dict>
+        <key>name</key>
+        <string>Summer Glau</string>
+    </dict>
+    <dict>
+        <key>name</key>
+        <string>Ron Glass</string>
+    </dict>
+    <dict>
+        <key>name</key>
+        <string>Chiwetel Ejiofor</string>
+    </dict>
+
+    </array>
+    <key>directors</key>
+    <array>
+    <dict>
+        <key>name</key>
+        <string>Joss Whedon</string>
+    </dict>
+
+    </array>
+    <key>screenwriters</key>
+    <array>
+    <dict>
+        <key>name</key>
+        <string>Joss Whedon</string>
+    </dict>
+
+    </array>
+</dict>
+</plist>
+
+Atom "desc" contains: In the future, a spaceship called Serenity is harboring a passenger with a deadly secret. Six rebels on the run. An assassin in pursuit. When the renegade crew of Serenity agrees to hide a fugitive on their ship, they find themselves in an awesome action-p
+Atom "ldes" contains: In the future, a spaceship called Serenity is harboring a passenger with a deadly secret. Six rebels on the run. An assassin in pursuit. When the renegade crew of Serenity agrees to hide a fugitive on their ship, they find themselves in an awesome action-packed battle between the relentless military might of a totalitarian regime who will destroy anything - or anyone - to get the girl back and the bloodthirsty creatures who roam the uncharted areas of space. But, the greatest danger of all may be on their ship.
+Atom "©ART" contains: Joss Whedon
+Atom "©gen" contains: Action
+Atom "----" [com.apple.iTunes;iTunEXTC] contains: uk-movie|15|350|
+Atom "covr" contains: 1 piece of artwork
+---------------------------
+free atom space: 2313
+padding available: 2049 bytes
+user data space: 12987
+media data space: 9846991

@@ -1,0 +1,279 @@
+#!/usr/bin/env perl
+
+use Modern::Perl;
+use Cwd;
+use Getopt::Long    qw( :config bundling );
+use Media;
+use Pod::Usage;
+use Term::ANSIColor;
+
+use constant OPTIONS => qw(
+          config|c=s
+            help|h
+        priority|p=i
+         verbose|v
+           first|n=i
+    make-control|m
+    edit-control|e
+
+          season=s
+          series=s
+         episode=s
+           title=s
+
+            year=s
+          rating=s
+
+          artist=s
+           album=s
+     );
+use constant HINTS => qw(
+    season  series  episode  title  year  rating  artist  album
+);
+
+
+
+my %option   = get_options_or_exit();
+my $media    = Media->new( $option{'config'} );
+my $argument = shift // 'list';
+my $editor   = $ENV{'VISUAL'} // $ENV{'EDITOR'} // 'vi';
+
+
+while ( $argument ) {
+    given ( $argument ) {
+        when ( 'list' )     { list_queue(); }
+        when ( 'inspect' )  { inspect_queue(); }
+        when ( 'remove' )   {
+            while ( scalar @ARGV ) {
+                $media->remove_from_queue( shift );
+            }
+        }
+        when ( 'clear'  )   { $media->queue_clear( $option{'verbose'} ); }
+        default {
+            if ( $argument !~ m{^/} ) {
+                $argument = sprintf '%s/%s',
+                                getcwd(),
+                                $argument;
+            }
+            
+            my %hints;
+            foreach my $hint ( HINTS ) {
+                $hints{$hint} = $option{$hint}
+                    if defined $option{$hint};
+            }
+            
+            if ( $option{'make-control'} ) {
+                my $control = "$argument/media.conf";
+                my $handler = $media->get_empty_handler( undef, 'VideoFile' );
+                $handler->create_config_file( $argument )
+                    unless -f $control;
+                
+                system( $editor, $control )
+                    if $option{'edit-control'};
+            }
+            else {
+                $media->queue_media(
+                        $argument,
+                        $option{'priority'},
+                        \%hints,
+                    );
+            }
+        }
+    }
+    
+    $argument = shift;
+}
+
+exit;
+
+
+
+sub list_queue {
+    my $count = 0;
+    
+    printf( "Queue count: %s item(s)\n", $media->queue_count() )
+        if $option{'first'};
+    
+    JOB:
+    foreach my $job ( $media->queue_list_jobs() ) {
+        my $name     = $job->{'payload'}{'name'};
+        my $priority = $job->{'priority'};
+        my $handler  = $job->{'handler'};
+        my $running  = $job->{'running'};
+        my $stop_job = defined $job->{'payload'}{'stop_encoder'};
+        my $activity = '';
+        my $colour   = '';
+        
+        my $active   = defined $handler && $running;
+        my $inactive = defined $handler && !$running;
+        
+        $colour   = 'yellow'                  if $option{'verbose'};
+        
+        $activity = " (handler %s)"           if $active;
+        $colour   = 'green'                   if $active;
+        $activity = " (handler %s, inactive)" if $inactive;
+        $colour   = 'cyan'                    if $inactive;
+        
+        if ( $stop_job ) {
+            $colour   = 'bold red';
+            $name     = 'ENCODER WILL STOP AFTER CURRENT JOB';
+            $priority = '--';
+        }
+        
+        
+        my $output = sprintf "[%02s] %s${activity}\n",
+                        $priority,
+                        $name,
+                        $handler;
+        $output = trim_to_width( $output );
+        print colored( $output, $colour );
+        
+        if ( $option{'verbose'} ) {
+            KEY:
+            foreach my $key ( keys %{ $job->{'payload'}{'input'} } ) {
+                next KEY if $key eq 'config';
+                
+                $output = sprintf "     %s: %s\n",
+                            $key,
+                            $job->{'payload'}{'input'}{$key};
+                print trim_to_width( $output );
+            }
+        }
+        
+        $count++;
+        last if defined $option{'first'} && $option{'first'} == $count;
+    }
+}
+sub inspect_queue {
+    foreach my $job ( $media->queue_list_jobs() ) {
+        use Data::Dumper::Concise;
+        print Dumper $job;
+    }
+}
+
+sub trim_to_width {
+    my $text = shift;
+    
+    $text = sprintf( "%s...%s",
+            substr( $text, 0, 33 ),
+            substr( $text, -44 ),
+        ) if length $text > 80;
+    
+    return $text;
+}
+sub get_options_or_exit {
+    my %getopts = @_;
+    
+    my $known = GetOptions( \%getopts, OPTIONS );
+    my $usage = ! $known || $getopts{'help'};
+    
+    pod2usage() if $usage;
+    
+    $getopts{'make-control'} = 1
+        if defined $getopts{'edit-control'};
+    
+    return %getopts;
+}
+
+__END__
+
+=head1 NAME
+
+queue - add media to the encoding queue
+
+=head1 SYNOPSIS
+
+    queue [-n<num>] [list]
+    queue [-m | -e] <media> [...]
+    queue [-p<num>] [-c<config>] <media> [...]
+    queue remove <match>
+
+The first form lists the jobs in the queue. The second form creates a control
+file for each argument. The third form adds jobs to the queue. The fourth form
+removes jobs from the queue.
+
+=head1 OPTIONS
+
+=over
+
+=item -cI<file>, --config I<file>
+
+Use I<file> as the configuration file to control the behaviour of C<queue>.
+Can also be set with the C<MEDIA_CONFIG> environment variable. Defaults to
+F<~/etc/media.conf>.
+
+=item -pI<num>, --priority I<num>
+
+When adding media to the queue, add it at priority I<num>. Valid priorities
+are 2 through 99 inclusive (1 is reserved for control jobs). Lower numbers
+are processed first. Defaults to 50.
+
+=item -nI<num>, --first I<num>
+
+When listing the queue, you can restrict the output to a summary of just the
+first <num> jobs. The queue is sorted into priority order, so C<-n1> would
+show the job to be processed next (which may already be being processed
+if the encoder is running).
+
+=item -m, --make-control
+
+Makes a control file for each argument, rather than queueing it for 
+processing. The input is scanned by HandBrake to pre-populate the control
+file, so it cannot be used before video content exists. Will not overwrite
+an existing control file.
+
+=item -e, --edit-control
+
+Edits the control file using the editor specified in the environment variable
+F<VISUAL> (or F<EDITOR> if that is unset). Implies C<-m> if the file does
+not exist.
+
+=item -v, --verbose
+
+Include more information in the output.
+
+=item --season I<num>, --series I<name>, --title I<name>, --episode I<num>
+
+When queueing a TV show, provide more information about it if it cannot be
+deduced from the directory name or description file.
+
+=item --title I<name>, --year I<num>, --rating I<value>
+
+When queueing a Movie, provide more information about it if it cannot be
+deduced from the directory name or description file.
+
+=item --title I<name>, --artist I<name>, --album I<name>
+
+When queueing a music video, provide more information about it if it
+cannot be deduced from the directory name or description file.
+
+=back
+
+=head1 SEE ALSO
+
+=over
+
+=item *
+
+perldoc encoder
+
+=item *
+
+perldoc Media::Tutorial
+
+=item *
+
+perldoc Media::Config
+
+=back
+
+=head1 AUTHOR
+
+Mark Norman Francis, L<norm@cackhanded.net>.
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2011 Mark Norman Francis.
+
+This library is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.

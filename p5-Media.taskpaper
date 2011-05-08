@@ -1,0 +1,33 @@
+queue CLI:
+	- --type option to bypass tests/internet lookups
+	- --strip-extensions to allow use of filenames rather than directories
+encoder:
+	- option to sleep the encoder during certain hours
+	- pause/stop the encoder if disk space runs low
+	Subtitles:
+		- re-introduce SRT handling
+		- burn-in for forced subs
+		- document clean-srt
+	Chapters:
+		- provide chapter CSV to name chapters
+		- produce chapter preview images
+Types:
+	- add "Plain" type for straight video encodes without any other metadata (eg. YouTube)
+Media locations:
+	- custom paths (eg. "{series}/Season {season}/{episode} - {title}.{extension}")
+Ebooks:
+	- add "Ebook" type and handling semantics
+		- books can have multiple editions
+		- ebooks can be kept in multiple formats (PDF, mobi, etc)
+	- conversion code for Markdown -> epub, mobi, etc.
+	- find open source convertors for other formats
+control file web service:
+	- option to look up DVD using Net::Discident, fetches:
+		- control data
+		- chapters
+		- subtitles
+		- poster images
+series names:
+	- make rationalise work again
+audio:
+	- re-introduce custom audio profiles
