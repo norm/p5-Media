@@ -7,17 +7,18 @@ use Test::More      tests => 6;
 # check that the config files are read correctly and override the 
 # built-in defaults when applied
 my $default_config     = {
-    queue_directory  => "$ENV{'HOME'}/Downloads/queue",
+    add_to_itunes    => 1,
     cache_directory  => "$ENV{'HOME'}/Downloads/queue/cache",
-    encoder_pid_file => "$ENV{'HOME'}/Downloads/queue/encoder.pid",
     encoder_log_file => "$ENV{'HOME'}/Downloads/queue/encoder.log",
+    encoder_pid_file => "$ENV{'HOME'}/Downloads/queue/encoder.pid",
     encode_directory => "$ENV{'HOME'}/Downloads",
-    trash_directory  => "$ENV{'HOME'}/.Trash",
-    tv_directory     => '/files/tv',
+    language_code    => 'eng',
     movies_directory => '/files/movies',
     music_directory  => '/files/music',
-    language_code    => 'eng',
-    add_to_itunes    => 1,
+    queue_directory  => "$ENV{'HOME'}/Downloads/queue",
+    trash_directory  => "$ENV{'HOME'}/.Trash",
+    trash_files      => 0,
+    tv_directory     => '/files/tv',
 };
 my %audio_profiles     = (
     audio_ac3pass => {
@@ -64,19 +65,20 @@ my $default_handbrake  = {
                         . 'vbv-bufsize=9500',
 };
 my $test_config        = {
-    encode_directory => 'xt/encode',
+    add_to_itunes    => '0',
     cache_directory  => 'xt/encode/cache',
-    encoder_pid_file => 'xt/queue/encoder.pid',
     encoder_log_file => 'xt/queue/encoder.log',
+    encoder_pid_file => 'xt/queue/encoder.pid',
+    encode_directory => 'xt/encode',
+    language_code    => 'eng',
     log_directory    => 'xt/log',
-    queue_directory  => 'xt/queue',
-    tv_directory     => 'xt/tv',
     movies_directory => 'xt/movies',
     music_directory  => 'xt/music',
-    use_imdb         => 'true',
+    queue_directory  => 'xt/queue',
     trash_directory  => 'xt/trash',
-    language_code    => 'eng',
-    add_to_itunes    => '0',
+    trash_files      => '0',
+    tv_directory     => 'xt/tv',
+    use_imdb         => 'true',
 };
 
 # default config

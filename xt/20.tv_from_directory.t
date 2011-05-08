@@ -18,11 +18,11 @@ if ( !-f $input_file ) {
     exit;
 }
 
-plan tests => 15;
+plan tests => 16;
 
 # ensure a clean directory structure
-my $result = system 'rm -rf xt/encode xt/tv xt/queue xt/trash';
-die "'rm -rf xt/encode xt/tv xt/queue xt/trash': $!"
+my $result = system 'rm -rf xt/encode xt/source xt/tv xt/queue xt/trash';
+die "'rm -rf xt/encode xt/source xt/tv xt/queue xt/trash': $!"
     if $result >> 8;
 
 
@@ -45,6 +45,10 @@ $media->queue_media( $source );
 ok( !-f "$source/file.nfo" );
 ok( !-f "$source/file.srr" );
 ok( !-f "$source/bsg-sample.m4v" );
+ok( $media->queue_count() == 1, 'queue created' );
+
+# infinite wait without the queue job
+die unless $media->queue_count() == 1;
 
 my( $job, $payload ) = $media->next_queue_job();
 isa_ok( $job, 'IPC::DirQueue::Job' );

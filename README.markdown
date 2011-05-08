@@ -61,8 +61,11 @@ I will run either `encoder stop` to let the current encode finish first, or
 Installing
 ----------
 Media requires [HandBrakeCLI][handbrake] 0.9.5,
-[AtomicParsley][atomicparsley] 0.9.4,
+[AtomicParsley][atomicparsley] 0.9.4, aspell
 and a _lot_ of other perl modules to be installed.
+
+AtomicParsley and aspell are most commonly installed using a ports system,
+such as [homebrew] on the Mac.
 
 If you are not comfortable installing perl modules from CPAN, I would 
 unequivocally recommend you do it using [cpanminus][cpanm], which makes
@@ -115,7 +118,7 @@ Slightly altered from code found at
 [handbrake]:http://handbrake.fr/
 [atomicparsley]:https://bitbucket.org/wez/atomicparsley/overview/
 [cpanm]:https://github.com/miyagawa/cpanminus/
-
+[homebrew]:http://mxcl.github.com/homebrew/
 
 Read more
 ---------
