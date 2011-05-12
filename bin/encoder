@@ -55,7 +55,7 @@ sub run_encoder {
             $media->encode_media( $payload );
             
             my $elapsed = elapsed( time() - $start );
-            log_action( '"' . $payload->{'name'} . "\" done, took $elapsed" );
+            log_action( '"' . $payload->{'name'} . "\" took $elapsed" );
         }
         
         $job->finish();
