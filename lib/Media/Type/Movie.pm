@@ -272,21 +272,39 @@ XML
         # Bill & Ted's Excellent Adventure (1989) - Outtakes
         my $movie_title = qr{
                 ^
-                    (?<title> .*? )
                     (?:
-                        \s+ - \s+
-                        (?<rating> \w+ )
-                    )?
-                    (?:
-                        \s+
-                        \(
-                        (?<year> \d+ )
-                        \)
-                    )?
-                    (?:
-                        \s+ - \s+
-                        (?<extra> .* )
-                    )?
+                        (?<title> .*? )
+                        (?:
+                            \s+ - \s+
+                            (?<rating> \w+ )?
+                        )
+                        (?:
+                            \s+
+                            \(
+                            (?<year> \d+ )
+                            \)
+                        )
+                        (?:
+                            \s+ - \s+
+                            (?<extra> .* )
+                        )?
+                    |
+                        (?<title> .*? )
+                        (?:
+                            \s+ - \s+
+                            (?<rating> \w+ )
+                        )?
+                        (?:
+                            \s+
+                            \(
+                            (?<year> \d+ )
+                            \)
+                        )?
+                        (?:
+                            \s+ - \s+
+                            (?<extra> .* )
+                        )?
+                    )
                 $
             }x;
 

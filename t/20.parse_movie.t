@@ -1,6 +1,6 @@
 use Modern::Perl;
 use Media;
-use Test::More      tests => 93;
+use Test::More      tests => 98;
 
 
 
@@ -179,5 +179,17 @@ my $handler = $media->get_empty_handler( 'Movie' );
     is( 'Twister',          $details{'title'} );
     is( '1996',             $details{'year'} );
     is( 'PG',               $details{'rating'} );
+    ok( defined $details{'feature'} );
+}
+
+# Movie name containing hyphens
+{
+    my $title = q(Harry Potter and the Deathly Hallows - Part 1 - 12A (2010));
+    my( $confidence, %details ) = $handler->parse_title_string( $title );
+    is( 5,          $confidence );
+    is( 'Harry Potter and the Deathly Hallows - Part 1',
+                    $details{'title'} );
+    is( '2010',     $details{'year'} );
+    is( '12A',      $details{'rating'} );
     ok( defined $details{'feature'} );
 }
