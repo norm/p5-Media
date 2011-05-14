@@ -29,30 +29,35 @@ role Media::Queue {
     }
     
     
-    method queue_conversion ( $handler, $priority ) {
+    method queue_conversion ( $handler, $priority, $extra_args? ) {
         my @titles = $handler->list_titles();
         
         foreach my $title ( @titles ) {
             # populate this before the next use of $handler so values are set 
             # correctly when using a config file rather than the title string
-            my $details;
+            my $source_details;
             if ( $handler->can( 'get_details' ) ) {
-                $details = $handler->get_details( $title );
+                $source_details = $handler->get_details( $title );
             }
             else {
-                $details = $handler->get_input_track_details();
+                $source_details = $handler->get_input_track_details();
             }
             
             my %input = %{ $handler->input };
             $input{'media_conf'} = $self->config_file;
             
+            my %details = (
+                    %$source_details,
+                    %$extra_args,
+                );
+            
             my $name    = $handler->get_job_name();
             my %payload = (
-                    type    => $handler->type,
-                    medium  => $handler->medium,
-                    input   => \%input,
-                    details => $details,
-                    name    => $name,
+                    details    => \%details,
+                    input      => \%input,
+                    medium     => $handler->medium,
+                    name       => $name,
+                    type       => $handler->type,
                 );
             
             $priority = $handler->get_default_priority()

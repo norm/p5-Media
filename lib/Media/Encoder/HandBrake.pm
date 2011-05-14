@@ -317,11 +317,18 @@ role Media::Encoder::HandBrake {
         my %args = %{ $self->config->{'handbrake'} };
         my @not_video_args = NOT_VIDEO_ARGS;
         
+        KEY:
         foreach my $key ( keys %$title ) {
-            my $not_video_arg = first { $key eq $_ } @not_video_args;
+            next KEY if first { $key eq $_ } @not_video_args;
             
-            $args{$key} = $title->{$key}
-                unless defined $not_video_arg;
+            given ( $key ) {
+                when ( m{ (?: start | stop ) -at }x ) {
+                    $args{$key} = 'duration:' . $title->{$key};
+                }
+                default {
+                    $args{$key} = $title->{$key};
+                }
+            }
         }
         
         return %args;

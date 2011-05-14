@@ -81,11 +81,11 @@ class Media::Object {
         $handler->add_to_itunes();
         $handler->clean_up_conversion();
     }
-    method queue_media ( $input, $priority?, $hints? ) {
+    method queue_media ( $input, $priority?, $hints?, $extra_args? ) {
         my $handler = $self->get_handler_for( $input, $hints );
         
         if ( defined $handler ) {
-            $self->queue_conversion( $handler, $priority );
+            $self->queue_conversion( $handler, $priority, $extra_args );
         }
         else {
             say STDERR "Unknown input: $input";

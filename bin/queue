@@ -15,20 +15,17 @@ use constant OPTIONS => qw(
            first|n=i
     make-control|m
     edit-control|e
-
-          season=s
-          series=s
-         episode=s
-           title=s
-
-            year=s
-          rating=s
-
-          artist=s
-           album=s
-     );
+);
 use constant HINTS => qw(
-    season  series  episode  title  year  rating  artist  album
+    album=s    artist=s   episode=s  rating=s
+    season=s   series=s   title=s    year=s
+);
+use constant ENCODER => qw(
+    chapters=s     deblock        decomb         deinterlace
+    denoise        detelecine     grayscale      height=s
+    maxHeight=s    maxWidth=s     quality=s      size=s
+    start-at=s     stop-at=s      turbo          two-pass
+    vb=s           width=s
 );
 
 
@@ -58,8 +55,16 @@ while ( $argument ) {
             
             my %hints;
             foreach my $hint ( HINTS ) {
+                $hint =~ s{ [=:]s $}{}x;
                 $hints{$hint} = $option{$hint}
                     if defined $option{$hint};
+            }
+            
+            my %encoder;
+            foreach my $arg ( ENCODER ) {
+                $arg =~ s{ [=:]s $}{}x;
+                $encoder{$arg} = $option{$arg}
+                    if defined $option{$arg};
             }
             
             if ( $option{'make-control'} ) {
@@ -76,6 +81,7 @@ while ( $argument ) {
                         $argument,
                         $option{'priority'},
                         \%hints,
+                        \%encoder,
                     );
             }
         }
@@ -164,8 +170,9 @@ sub trim_to_width {
 sub get_options_or_exit {
     my %getopts = @_;
     
-    my $known = GetOptions( \%getopts, OPTIONS );
-    my $usage = ! $known || $getopts{'help'};
+    my @options = ( OPTIONS, HINTS, ENCODER );
+    my $known   = GetOptions( \%getopts, @options );
+    my $usage   = ! $known || $getopts{'help'};
     
     pod2usage() if $usage;
     
@@ -246,6 +253,44 @@ deduced from the directory name or description file.
 
 When queueing a music video, provide more information about it if it
 cannot be deduced from the directory name or description file.
+
+=item --chapters I<first-last>
+
+=item --deblock
+
+=item --decomb
+
+=item --deinterlace
+
+=item --denoise
+
+=item --detelecine
+
+=item --grayscale
+
+=item --height I<pixels>
+
+=item --maxHeight I<pixels>
+
+=item --maxWidth I<pixels>
+
+=item --quality I<0-51>
+
+=item --size I<MB>
+
+=item --start-at I<seconds>
+
+=item --stop-at I<seconds>
+
+=item --turbo
+
+=item --two-pass
+
+=item --vb I<kb/s>
+
+=item --width I<pixels>
+
+These arguments are passed through to the HandBrakeCLI encoder.
 
 =back
 
