@@ -536,8 +536,8 @@ role Media::Encoder::HandBrake {
                             $title->{'crop'};
             
             $config .= sprintf(
-                    "markers = 1\n# chapters = 1-%s\n",
-                        $title->{'chapters'}
+                    "markers  = 1\n# chapters = 1-%s\n",
+                        $title->{'chapter_count'}
                 ) if defined $title->{'chapter_count'};
             
             $config .= COMBING_OPTIONS

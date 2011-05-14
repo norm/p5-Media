@@ -42,7 +42,7 @@ my $default_config < io 'xt/conf/ds9_s7d7.conf';
 my $created_config < io $config_file;
 is( $default_config, $created_config, 'config created properly' );
 
-# second attempt files because the config hasn't been edited
+# second attempt fails because the config hasn't been edited
 $media->queue_media( $input_image );
 ok( $media->queue_count() == 0, 'queue is still empty' );
 my $ds9_conf < io 'xt/conf/ds9_s7d7.edited.conf';
