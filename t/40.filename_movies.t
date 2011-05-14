@@ -120,7 +120,7 @@ my $media_tv = Media->new( 't/conf/movie_extras_as_tv.conf' );
     is( $handler->get_destination_directory(),
         q(xt/movies/All/Serenity - 15 (2005)) );
     is( $handler->get_destination_filename(),
-        q(Serenity - 15 (2005) - Deleted Scenes.m4v) );
+        q(Deleted Scenes.m4v) );
     is( $handler_tv->get_conversion_directory(),
         q(xt/encode/Serenity - 15 (2005) - Deleted Scenes) );
     is( $handler_tv->get_destination_directory(),
@@ -141,7 +141,7 @@ my $media_tv = Media->new( 't/conf/movie_extras_as_tv.conf' );
     is( $handler->get_destination_directory(),
         q(xt/movies/All/Serenity) );
     is( $handler->get_destination_filename(),
-        q(Serenity - Gag Reel.m4v) );
+        q(Gag Reel.m4v) );
     is( $handler_tv->get_conversion_directory(),
         q(xt/encode/Serenity - Gag Reel) );
     is( $handler_tv->get_destination_directory(),

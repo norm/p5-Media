@@ -61,7 +61,7 @@ role Media::Encoder::HandBrake {
     use constant NOT_VIDEO_ARGS        => qw(
         title series season episode 
         year rating feature director genre actor writer studio plot company
-        artist album poster
+        artist album poster extra
         audio subtitles track duration size angles chapter_count
     );
     use constant STANDARD_CONFIG_INTRO => q(

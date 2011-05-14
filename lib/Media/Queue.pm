@@ -46,6 +46,9 @@ role Media::Queue {
             my %input = %{ $handler->input };
             $input{'media_conf'} = $self->config_file;
             
+            $extra_args = {}
+                if !defined $extra_args;
+            
             my %details = (
                     %$source_details,
                     %$extra_args,

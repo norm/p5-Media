@@ -96,9 +96,7 @@ role Media::Type::Movie {
     }
     method get_destination_filename {
         return $self->get_extra_filename()
-            if ( $self->get_config( 'movie_extras_as_tv')
-                 && $self->details->{'extra'} );
-        
+            if $self->details->{'extra'};
         return $self->get_full_movie_filename();
     }
     method get_job_name {

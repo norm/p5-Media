@@ -10,7 +10,7 @@ use Media;
 use Test::More;
 
 
-my $input_image = "$ENV{'MEDIA_TESTING'}/ANEWHOPE";
+my $input_image = "$ENV{'MEDIA_TESTING'}/JB1_DRNO";
 my $config_file = "$input_image/media.conf";
 my $cwd         = getcwd();
 
@@ -19,13 +19,8 @@ if ( !-d $input_image ) {
     exit;
 }
 
-plan tests => 1;
-ok( 1 == 1, 'tests yet to be written' );
 
-__END__
-
-
-plan tests => 19;
+plan tests => 20;
 
 # ensure a clean directory structure
 my $result = system 'rm -rf xt/encode xt/movies xt/queue xt/trash';
@@ -44,13 +39,15 @@ $media->queue_media( $input_image );
 ok( -f $config_file, 'config has been created' );
 ok( $media->queue_count() == 0, 'queue is still empty' );
 
-__END__
+my $default_config < io 'xt/conf/dr_no.conf';
+my $created_config < io $config_file;
+is( $default_config, $created_config, 'config created properly' );
 
-# second attempt files because the config hasn't been edited
+# second attempt fails because the config hasn't been edited
 $media->queue_media( $input_image );
 ok( $media->queue_count() == 0, 'queue is still empty' );
-my $ds9_conf < io 'xt/conf/ds9_s7d7.conf';
-$ds9_conf > io $config_file;
+my $drno_conf < io 'xt/conf/dr_no.edited.conf';
+$drno_conf > io $config_file;
 
 # third attempt adds every non-ignored item in the DVD to the queue
 $media->queue_media( $input_image );
@@ -62,35 +59,37 @@ is_deeply(
         $payload,
         {
             details => {
-                audio   => [
-                    "1:ac3pass:English",
-                    "1:dpl2:English",
+                audio    => [
+                    "1:stereo:English",
+                    "2:stereo:Director, Cast and Crew Commentary",
                 ],
-                crop    => '0/0/0/0',
-                episode => '99',
-                quality => '35',
-                season  => '7',
-                series  => 'Star Trek - Deep Space Nine',
-                title   => 'Extras - Section 31 Hidden File 1',
+                chapters => '8-9',
+                crop     => '0/0/6/10',
+                feature  => '1',
+                quality  => '50',
+                rating   => 'PG',
+                title    => 'Dr. No',
+                year     => '1962',
             },
             input   => {
                 media_conf => "$cwd/t/conf/trash.conf",
                 config     => $config_file,
                 image      => $input_image,
-                title      => '7',
+                poster     => 'http://2.bp.blogspot.com/_VXNWSr1UpT4/'
+                            . 'TEnXYI6S_CI/AAAAAAAAEQE/IYG3MS0DZX8/'
+                            . 's1600/Dr+No+poster.jpg',
+                title      => '2',
             },
             medium  => 'DVD',
-            name    => 'Star Trek - Deep Space Nine - 7x99 - '
-                     . 'Extras - Section 31 Hidden File 1',
-            type    => 'TV',
+            name    => 'Dr. No - PG (1962)',
+            type    => 'Movie',
         },
         'first job payload matches',
     );
 
 $media->encode_media( $payload );
 $job->finish();
-my $target_file = 'xt/tv/Star Trek - Deep Space Nine/Season 7/'
-                . '99 - Extras - Section 31 Hidden File 1.m4v';
+my $target_file = 'xt/movies/All/Dr. No - PG (1962)/Dr. No - PG (1962).m4v';
 ok( -f $target_file, 'file installed' );
 
 my $handler          = $media->get_empty_handler( undef, 'VideoFile' );
@@ -104,9 +103,9 @@ is_deeply(
             1                 => {
                 audio     => [
                     {
-                        channels => 'Dolby Surround',
+                        channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AC3',
+                        format   => 'AAC',
                         language => 'English',
                         track    => '1',
                     },
@@ -118,10 +117,10 @@ is_deeply(
                         track    => '2',
                     },
                 ],
-                crop      => '70/68/8/8',       # crazy numbers!
-                duration  => '00:02:25',
-                size      => '720x576, pixel aspect: 16/15, display '
-                           . 'aspect: 1.33, 25.000 fps',
+                crop      => '0/0/0/2',
+                duration  => '00:04:39',
+                size      => '704x576, pixel aspect: 64/45, display '
+                           . 'aspect: 1.74, 24.988 fps',
                 subtitles => []
             },
         },
@@ -137,30 +136,32 @@ is_deeply(
         {
             details => {
                 audio   => "1:stereo:English",
-                crop    => '0/0/0/0',
-                episode => '99',
-                quality => '35',
-                season  => '7',
-                series  => 'Star Trek - Deep Space Nine',
-                title   => 'Extras - Section 31 Hidden File 8',
+                crop    => '0/0/34/34',
+                extra   => 'Trailer 1',
+                quality => '50',
+                rating   => 'PG',
+                title    => 'Dr. No',
+                year     => '1962',
             },
             input   => {
-                config => $config_file,
-                image  => $input_image,
-                title  => '14',
+                media_conf => "$cwd/t/conf/trash.conf",
+                config     => $config_file,
+                image      => $input_image,
+                poster     => 'http://2.bp.blogspot.com/_VXNWSr1UpT4/'
+                            . 'TEnXYI6S_CI/AAAAAAAAEQE/IYG3MS0DZX8/'
+                            . 's1600/Dr+No+poster.jpg',
+                title      => '12',
             },
             medium  => 'DVD',
-            name    => 'Star Trek - Deep Space Nine - 7x99 - '
-                     . 'Extras - Section 31 Hidden File 8',
-            type    => 'TV',
+            name    => 'Dr. No - PG (1962) - Trailer 1',
+            type    => 'Movie',
         },
         'second job payload matches',
     );
 
 $media->encode_media( $payload );
 $job->finish();
-$target_file = 'xt/tv/Star Trek - Deep Space Nine/Season 7/'
-                . '99 - Extras - Section 31 Hidden File 8.m4v';
+$target_file = 'xt/movies/All/Dr. No - PG (1962)/Trailer 1.m4v';
 ok( -f $target_file, 'file installed' );
 
 $handler          = $media->get_empty_handler( undef, 'VideoFile' );
@@ -181,10 +182,10 @@ is_deeply(
                         track    => '1',
                     },
                 ],
-                crop      => '0/2/12/20',
-                duration  => '00:02:24',
-                size      => '720x576, pixel aspect: 16/15, display '
-                           . 'aspect: 1.33, 25.000 fps',
+                crop      => '0/0/0/0',
+                duration  => '00:03:12',
+                size      => '656x576, pixel aspect: 652/615, display '
+                           . 'aspect: 1.21, 25.000 fps',
                 subtitles => []
             },
         },
@@ -199,38 +200,33 @@ is_deeply(
         $payload,
         {
             details => {
-                audio     => [
-                    "1:stereo:English",
-                    "2:stereo:German",
-                ],
-                chapters  => '4-5',
-                crop      => '0/0/0/0',
-                episode   => '25',
-                markers   => 1,
-                maxHeight => '240',
-                maxWidth  => '320',
-                quality   => '50',
-                season    => '7',
-                series    => 'Star Trek - Deep Space Nine',
-                title     => 'What You Leave Behind',
+                audio   => "1:stereo:English",
+                crop    => '8/4/0/2',
+                extra   => 'Trailer 2',
+                quality => '50',
+                rating   => 'PG',
+                title    => 'Dr. No',
+                year     => '1962',
             },
             input   => {
-                config => $config_file,
-                image  => $input_image,
-                title  => '18',
+                media_conf => "$cwd/t/conf/trash.conf",
+                config     => $config_file,
+                image      => $input_image,
+                poster     => 'http://2.bp.blogspot.com/_VXNWSr1UpT4/'
+                            . 'TEnXYI6S_CI/AAAAAAAAEQE/IYG3MS0DZX8/'
+                            . 's1600/Dr+No+poster.jpg',
+                title      => '13',
             },
             medium  => 'DVD',
-            name    => 'Star Trek - Deep Space Nine - 7x25 - '
-                     . 'What You Leave Behind',
-            type    => 'TV',
+            name    => 'Dr. No - PG (1962) - Trailer 2',
+            type    => 'Movie',
         },
         'third job payload matches',
     );
 
 $media->encode_media( $payload );
 $job->finish();
-$target_file = 'xt/tv/Star Trek - Deep Space Nine/Season 7/'
-                . '25 - What You Leave Behind.m4v';
+$target_file = 'xt/movies/All/Dr. No - PG (1962)/Trailer 2.m4v';
 ok( -f $target_file, 'file installed' );
 
 ok( $media->queue_count() == 0, 'queue is empty again' );
@@ -255,29 +251,12 @@ is_deeply(
                         language => 'English',
                         track    => '1',
                     },
-                    {
-                        channels => '2.0 ch',
-                        code     => 'deu',
-                        format   => 'AAC',
-                        language => 'Deutsch',
-                        track    => '2',
-                    },
                 ],
-                chapters  => 2,
-                crop      => '0/0/0/0',
-                duration  => '00:10:13',
-                size      => '304x240, pixel aspect: 20/19, '
-                           . 'display aspect: 1.33, 24.999 fps',
-                
-                # not a subtitle -- this is the chapters file
-                subtitles => [
-                    {
-                        code     => 'und',
-                        language => 'Unknown',
-                        track    => 1,
-                        type     => 'Text',
-                    },
-                ],
+                crop      => '8/0/0/0',
+                duration  => '00:03:08',
+                size      => '720x560, pixel aspect: 20104/19035, '
+                           . 'display aspect: 1.36, 25.000 fps',
+                subtitles => [],
             },
         },
         'third file appears to have been encoded correctly',
