@@ -16,7 +16,7 @@ use constant OPTIONS => qw(
     make-control|m
     edit-control|e
 );
-use constant HINTS => qw(
+use constant HINTS   => qw(
     album=s    artist=s   episode=s  rating=s
     season=s   series=s   title=s    year=s
 );
@@ -66,6 +66,9 @@ while ( $argument ) {
                 $encoder{$arg} = $option{$arg}
                     if defined $option{$arg};
             }
+            
+            $hints{'strip_extension'} = 1
+                if -f $argument;
             
             if ( $option{'make-control'} ) {
                 my $control = "$argument/media.conf";
