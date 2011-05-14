@@ -1,11 +1,13 @@
 #!/usr/bin/env perl
 
 use Modern::Perl;
+use Capture::Tiny   qw( capture_merged );
 use IO::All         -utf8;
 use Media;
 use Getopt::Long    qw( :config bundling );
 use Pod::Usage;
 use Time::Elapsed   qw( elapsed );
+use Term::ANSIColor;
 
 use constant OPTIONS   => qw(
     config|c=s
@@ -15,6 +17,8 @@ use constant SIG_CHECK => 0;
 use constant SIG_KILL  => 9;
 use constant SIG_STOP  => 17;
 use constant SIG_CONT  => 19;
+use constant MEGABYTE  => 1024 * 1024;
+use constant GIGABYTE  => 1024 * 1024 * 1024;
 
 
 
@@ -49,6 +53,8 @@ sub run_encoder {
             $running = 0;
         }
         else {
+            pause_if_low_disk_space();
+            
             my $start = time();
             log_action( '"' . $payload->{'name'} . '" starting' );
             
@@ -76,6 +82,28 @@ sub resume_encoder {
     signal_workers( SIG_CONT );
 }
 
+sub pause_if_low_disk_space {
+    my $low = lc $media->full_configuration->{''}{'low_disk_space'};
+    my $dir = $media->full_configuration->{''}{'encode_directory'};
+    
+    return unless defined $low && $low;
+    
+    $low =~ m{^ (\d+) ([mg]) $}x;
+    my $threshold = $1 * ( $2 eq 'm' ? MEGABYTE : GIGABYTE );
+
+    my $df        = capture_merged { system( '/bin/df', '-k', $dir ); };
+    my @lines     = split m{\n}, $df;
+    my @df        = split m{\s+}, $lines[1];
+    my $available = $df[3] * 1024;
+    
+    if ( $available < $threshold ) {
+        say '';
+        say colored( 'Available space below threshold, pausing.',
+                     'bold red' );
+        say 'Press [Return] to continue.';
+        my $wait = <>;
+    }
+}
 sub log_action {
     my $message = shift;
     

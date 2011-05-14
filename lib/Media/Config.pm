@@ -20,6 +20,7 @@ sub get_configuration {
             encoder_pid_file => "$ENV{'HOME'}/Downloads/queue/encoder.pid",
             encode_directory => "$ENV{'HOME'}/Downloads",
             language_code    => 'eng',
+            low_disk_space   => '5G',
             movies_directory => "/files/movies",
             music_directory  => "/files/music",
             queue_directory  => "$ENV{'HOME'}/Downloads/queue",

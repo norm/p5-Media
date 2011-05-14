@@ -3,7 +3,6 @@ queue CLI:
 	- --strip-extensions to allow use of filenames rather than directories
 encoder:
 	- option to sleep the encoder during certain hours
-	- pause/stop the encoder if disk space runs low
 	Subtitles:
 		- re-introduce SRT handling
 		- burn-in for forced subs

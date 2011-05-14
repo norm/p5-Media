@@ -13,6 +13,7 @@ my $default_config     = {
     encoder_pid_file => "$ENV{'HOME'}/Downloads/queue/encoder.pid",
     encode_directory => "$ENV{'HOME'}/Downloads",
     language_code    => 'eng',
+    low_disk_space   => '5G',
     movies_directory => '/files/movies',
     music_directory  => '/files/music',
     queue_directory  => "$ENV{'HOME'}/Downloads/queue",
@@ -72,6 +73,7 @@ my $test_config        = {
     encode_directory => 'xt/encode',
     language_code    => 'eng',
     log_directory    => 'xt/log',
+    low_disk_space   => '5G',
     movies_directory => 'xt/movies',
     music_directory  => 'xt/music',
     queue_directory  => 'xt/queue',
@@ -172,7 +174,8 @@ my $test_config        = {
             {
                 '' => {
                     %$test_config,
-                    trash_files => 'true',
+                    low_disk_space => '200M',
+                    trash_files    => 'true',
                 },
                 handbrake => $default_handbrake,
                 %audio_profiles,
