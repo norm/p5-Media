@@ -52,34 +52,34 @@ sub get_configuration {
         
         # NAMED SECTIONS - audio profiles
         audio_ac3pass => {
-            '-E' => 'copy',
-            '-B' => '640',
-            '-6' => '6ch',
-            '-R' => 'Auto',
+            ab       => '640',
+            aencoder => 'copy',
+            arate    => 'Auto',
+            mixdown  => '6ch',
         },
         audio_ac3 => {
-            '-E' => 'ac3',
-            '-B' => '640',
-            '-6' => '6ch',
-            '-R' => 'Auto',
+            ab       => '640',
+            aencoder => 'ac3',
+            arate    => 'Auto',
+            mixdown  => '6ch',
         },
         audio_dpl2 => {
-            '-E' => 'ca_aac',
-            '-B' => '160',
-            '-6' => 'dpl2',
-            '-R' => '48',
+            ab       => '160',
+            aencoder => 'ca_aac',
+            arate    => '48',
+            mixdown  => 'dpl2',
         },
         audio_stereo => {
-            '-E' => 'ca_aac',
-            '-B' => '160',
-            '-6' => 'stereo',
-            '-R' => '48',
+            ab       => '160',
+            aencoder => 'ca_aac',
+            arate    => '48',
+            mixdown  => 'stereo',
         },
         audio_mono => {
-            '-E' => 'ca_aac',
-            '-B' => '80',
-            '-6' => 'mono',
-            '-R' => '48',
+            ab       => '80',
+            aencoder => 'ca_aac',
+            arate    => '48',
+            mixdown  => 'mono',
         },
     );
     
@@ -299,19 +299,19 @@ The options available are:
 
 =over
 
-=item -E
+=item aencoder
 
 the encoder to use
 
-=item -B
+=item ab
 
 the bitrate to use
 
-=item -6
+=item mixdown
 
 the mixdown setting
 
-=item -R
+=item arate
 
 the audio samplerate
 

@@ -48,12 +48,12 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
     is_deeply(
             \%audio_args,
             {
-                '-6' => 'stereo',
-                '-A' => 'Unknown Stereo',
-                '-B' => '160',
-                '-E' => 'ca_aac',
-                '-R' => '48',
-                '-a' => '1'
+                mixdown => 'stereo',
+                aname => 'Unknown Stereo',
+                ab => '160',
+                aencoder => 'ca_aac',
+                arate => '48',
+                audio => '1'
             }
         );
     is_deeply(
@@ -126,12 +126,12 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
     is_deeply(
             \%audio_args,
             {
-                '-6' => '6ch,dpl2',
-                '-A' => 'English 5.1 ch AC3,English 5.1 ch',
-                '-B' => '640,160',
-                '-E' => 'ac3,ca_aac',
-                '-R' => 'Auto,48',
-                '-a' => '1,1'
+                mixdown => '6ch,dpl2',
+                aname => 'English 5.1 ch AC3,English 5.1 ch',
+                ab => '640,160',
+                aencoder => 'ac3,ca_aac',
+                arate => 'Auto,48',
+                audio => '1,1'
             }
         );
     is_deeply(
@@ -191,12 +191,12 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
     is_deeply(
             \%audio_args,
             {
-                '-6' => '6ch,dpl2',
-                '-A' => 'Unknown 5.1 ch AC3,Unknown 5.1 ch',
-                '-B' => '640,160',
-                '-E' => 'copy,ca_aac',
-                '-R' => 'Auto,48',
-                '-a' => '1,1'
+                mixdown => '6ch,dpl2',
+                aname => 'Unknown 5.1 ch AC3,Unknown 5.1 ch',
+                ab => '640,160',
+                aencoder => 'copy,ca_aac',
+                arate => 'Auto,48',
+                audio => '1,1'
             }
         );
     is_deeply(
@@ -544,12 +544,12 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
     is_deeply(
             \%audio_args,
             {
-                '-6' => '6ch,dpl2',
-                '-A' => 'English Dolby Surround AC3,English Dolby Surround',
-                '-B' => '640,160',
-                '-E' => 'copy,ca_aac',
-                '-R' => 'Auto,48',
-                '-a' => '1,1'
+                mixdown => '6ch,dpl2',
+                aname => 'English Dolby Surround AC3,English Dolby Surround',
+                ab => '640,160',
+                aencoder => 'copy,ca_aac',
+                arate => 'Auto,48',
+                audio => '1,1'
             }
         );
     is_deeply(
@@ -609,12 +609,12 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
     is_deeply(
             \%audio_args,
             {
-                '-6' => '6ch,dpl2',
-                '-A' => 'English 5.1 ch AC3,English 5.1 ch',
-                '-B' => '640,160',
-                '-E' => 'copy,ca_aac',
-                '-R' => 'Auto,48',
-                '-a' => '1,1'
+                mixdown => '6ch,dpl2',
+                aname => 'English 5.1 ch AC3,English 5.1 ch',
+                ab => '640,160',
+                aencoder => 'copy,ca_aac',
+                arate => 'Auto,48',
+                audio => '1,1'
             }
         );
     is_deeply(
@@ -799,12 +799,12 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
     is_deeply(
             \%audio_args,
             {
-                '-6' => '6ch,dpl2,6ch,dpl2,6ch,dpl2',
-                '-A' => "English 5.1 ch AC3,English 5.1 ch,English Dolby Surround AC3,English Dolby Surround,Director's Commentary 1 AC3,Director's Commentary 1",
-                '-B' => '640,160,640,160,640,160',
-                '-E' => 'copy,ca_aac,copy,ca_aac,copy,ca_aac',
-                '-R' => 'Auto,48,Auto,48,Auto,48',
-                '-a' => '1,1,2,2,3,3'
+                mixdown => '6ch,dpl2,6ch,dpl2,6ch,dpl2',
+                aname => "English 5.1 ch AC3,English 5.1 ch,English Dolby Surround AC3,English Dolby Surround,Director's Commentary 1 AC3,Director's Commentary 1",
+                ab => '640,160,640,160,640,160',
+                aencoder => 'copy,ca_aac,copy,ca_aac,copy,ca_aac',
+                arate => 'Auto,48,Auto,48,Auto,48',
+                audio => '1,1,2,2,3,3'
             }
         );
     is_deeply(

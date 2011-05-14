@@ -282,8 +282,8 @@ role Media::Encoder::HandBrake {
     }
     method get_audio_args ( $profiles ) {
         my %audio_args = (
-                '-a' => [], '-E' => [], '-B' => [],
-                '-A' => [], '-R' => [], '-6' => [],
+                ab       => [], aencoder => [], aname    => [],
+                arate    => [], audio    => [], mixdown  => [],
             );
         
         # can be an array or a single item - FIXME should always be an array
@@ -296,8 +296,8 @@ role Media::Encoder::HandBrake {
         foreach my $profile ( @profiles ) {
             my( $track, $audio_type, $name ) = split m{:}, $profile;
             
-            push @{ $audio_args{'-a'} }, $track;
-            push @{ $audio_args{'-A'} }, $name;
+            push @{ $audio_args{'audio'} }, $track;
+            push @{ $audio_args{'aname'} }, $name;
             
             my $lookup = "audio_${audio_type}";
             foreach my $key ( keys %{ $self->config->{$lookup} } ) {
