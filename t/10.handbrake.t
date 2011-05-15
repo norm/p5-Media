@@ -1,7 +1,7 @@
 use Modern::Perl;
 use IO::All;
 use Media;
-use Test::More      tests => 25;
+use Test::More      tests => 26;
 
 
 
@@ -853,6 +853,38 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
                 'srt-lang'      => 'eng,eng',
                 subtitle        => '1',
                 'subtitle-burn' => '1',
+            }
+        );
+}
+{
+    my %details    = (
+            markers => 'chapters.csv',
+        );
+    my $subhandler = $media->get_handler(
+            'Movie',
+            'DVD',
+            \%details,
+            {
+                image  => '/files/source/movie',
+                title  => '1',
+            },
+        );
+    my %video_args = $subhandler->get_video_args( \%details );
+    
+    is_deeply(
+            \%video_args,
+            {
+                encoder            => 'x264',
+                format             => 'mp4',
+                "loose-anamorphic" => '',
+                markers            => '/files/source/movie/chapters.csv',
+                maxHeight          => '720',
+                maxWidth           => '1280',
+                quality            => '22',
+                x264opts           => 'cabac=0:ref=2:me=umh:b-adapt=2:'
+                                    . 'weightb=0:trellis=0:weightp=0:'
+                                    . 'b-pyramid=none:vbv-maxrate=9500:'
+                                    . 'vbv-bufsize=9500',
             }
         );
 }

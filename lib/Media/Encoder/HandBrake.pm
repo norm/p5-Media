@@ -328,6 +328,23 @@ role Media::Encoder::HandBrake {
                 when ( m{ (?: start | stop ) -at }x ) {
                     $args{$key} = 'duration:' . $title->{$key};
                 }
+                when ( 'markers' ) {
+                    my $source = $title->{'markers'};
+                    
+                    if ( $source eq '1' ) {
+                        $args{$key} = $title->{$key};
+                    }
+                    else {
+                        my $base_dir = $self->input_file;
+                        $base_dir = dirname $base_dir
+                            if -f $base_dir;
+                        
+                        $source = "${base_dir}/${source}"
+                            if $source !~ m{^/};
+                        
+                        $args{$key} = $source;
+                    }
+                }
                 default {
                     $args{$key} = $title->{$key};
                 }
@@ -518,8 +535,9 @@ role Media::Encoder::HandBrake {
                             $title->{'crop'};
             
             $config .= sprintf(
-                    "markers  = 1\n# chapters = 1-%s\n",
-                        $title->{'chapter_count'}
+                      "# chapters = 1-%s\nmarkers  = 1\n"
+                    . "# markers  = chapters.csv\n",
+                          $title->{'chapter_count'}
                 ) if defined $title->{'chapter_count'};
             
             $config .= COMBING_OPTIONS
