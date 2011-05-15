@@ -20,7 +20,7 @@ if ( !-d $input_image ) {
 }
 
 
-plan tests => 20;
+plan tests => 23;
 
 # ensure a clean directory structure
 my $result = system 'rm -rf xt/encode xt/movies xt/queue xt/trash';
@@ -53,23 +53,28 @@ $drno_conf > io $config_file;
 $media->queue_media( $input_image );
 ok( $media->queue_count() == 3, 'queue now has 3 items' );
 
+# infinite wait without the queue job
+die unless $media->queue_count() >= 1;
+
 my( $job, $payload ) = $media->next_queue_job();
 isa_ok( $job, 'IPC::DirQueue::Job' );
 is_deeply(
         $payload,
         {
             details => {
-                audio    => [
+                audio     => [
                     "1:stereo:English",
                     "2:stereo:Director, Cast and Crew Commentary",
                 ],
-                chapters => '8-9',
-                crop     => '0/0/6/10',
-                feature  => '1',
-                quality  => '50',
-                rating   => 'PG',
-                title    => 'Dr. No',
-                year     => '1962',
+                chapters  => '8-9',
+                crop      => '0/0/6/10',
+                feature   => '1',
+                maxWidth  => '320',
+                maxHeight => '240',
+                quality   => '50',
+                rating    => 'PG',
+                title     => 'Dr. No',
+                year      => '1962',
             },
             input   => {
                 media_conf => "$cwd/t/conf/trash.conf",
@@ -117,14 +122,27 @@ is_deeply(
                         track    => '2',
                     },
                 ],
-                crop      => '0/0/0/2',
+                crop      => '0/0/0/0',
                 duration  => '00:04:39',
-                size      => '704x576, pixel aspect: 64/45, display '
+                size      => '288x240, pixel aspect: 352/243, display '
                            . 'aspect: 1.74, 24.988 fps',
                 subtitles => []
             },
         },
         'first file appears to have been encoded correctly',
+    );
+
+my %metadata = $handler->extract_metadata( $target_file );
+is_deeply(
+        \%metadata,
+        {
+            artwork_count => 1,
+            kind          => 'Movie',
+            rating        => 'PG',
+            title         => 'Dr. No',
+            year          => '1962',
+        },
+        "first file's metadata is correct"
     );
 
 
@@ -135,13 +153,15 @@ is_deeply(
         $payload,
         {
             details => {
-                audio   => "1:stereo:English",
-                crop    => '0/0/34/34',
-                extra   => 'Trailer 1',
-                quality => '50',
-                rating   => 'PG',
-                title    => 'Dr. No',
-                year     => '1962',
+                audio     => "1:stereo:English",
+                crop      => '0/0/34/34',
+                extra     => 'Trailer 1',
+                maxWidth  => '320',
+                maxHeight => '240',
+                quality   => '50',
+                rating    => 'PG',
+                title     => 'Dr. No',
+                year      => '1962',
             },
             input   => {
                 media_conf => "$cwd/t/conf/trash.conf",
@@ -184,12 +204,25 @@ is_deeply(
                 ],
                 crop      => '0/0/0/0',
                 duration  => '00:03:12',
-                size      => '656x576, pixel aspect: 652/615, display '
+                size      => '272x240, pixel aspect: 163/153, display '
                            . 'aspect: 1.21, 25.000 fps',
                 subtitles => []
             },
         },
         'second file appears to have been encoded correctly',
+    );
+
+%metadata = $handler->extract_metadata( $target_file );
+is_deeply(
+        \%metadata,
+        {
+            artwork_count => 1,
+            kind          => 'Movie',
+            rating        => 'PG',
+            title         => 'Trailer 1',
+            year          => '1962',
+        },
+        "second file's metadata is correct"
     );
 
 
@@ -200,13 +233,15 @@ is_deeply(
         $payload,
         {
             details => {
-                audio   => "1:stereo:English",
-                crop    => '8/4/0/2',
-                extra   => 'Trailer 2',
-                quality => '50',
-                rating   => 'PG',
-                title    => 'Dr. No',
-                year     => '1962',
+                audio     => "1:stereo:English",
+                crop      => '8/4/0/2',
+                extra     => 'Trailer 2',
+                maxWidth  => '320',
+                maxHeight => '240',
+                quality   => '50',
+                rating    => 'PG',
+                title     => 'Dr. No',
+                year      => '1962',
             },
             input   => {
                 media_conf => "$cwd/t/conf/trash.conf",
@@ -252,12 +287,27 @@ is_deeply(
                         track    => '1',
                     },
                 ],
-                crop      => '8/0/0/0',
+                crop      => '0/0/0/0',
                 duration  => '00:03:08',
-                size      => '720x560, pixel aspect: 20104/19035, '
+                size      => '304x240, pixel aspect: 2872/2679, '
                            . 'display aspect: 1.36, 25.000 fps',
                 subtitles => [],
             },
         },
         'third file appears to have been encoded correctly',
     );
+
+%metadata = $handler->extract_metadata( $target_file );
+is_deeply(
+        \%metadata,
+        {
+            artwork_count => 1,
+            kind          => 'Movie',
+            rating        => 'PG',
+            title         => 'Trailer 2',
+            year          => '1962',
+        },
+        "third file's metadata is correct"
+    );
+
+

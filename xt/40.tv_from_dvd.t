@@ -52,6 +52,9 @@ $ds9_conf > io $config_file;
 $media->queue_media( $input_image );
 ok( $media->queue_count() == 3, 'queue now has 3 items' );
 
+# infinite wait without the queue job
+die unless $media->queue_count() >= 1;
+
 my( $job, $payload ) = $media->next_queue_job();
 isa_ok( $job, 'IPC::DirQueue::Job' );
 is_deeply(
