@@ -3,6 +3,7 @@ use MooseX::Declare;
 
 role Media::Encoder::HandBrake {
     use Capture::Tiny   qw( capture_merged tee_merged );
+    use File::Basename;
     use File::Copy;
     use File::Path      qw( mkpath );
     use IO::All         -utf8;
@@ -128,11 +129,13 @@ role Media::Encoder::HandBrake {
                                 $dir,
                                 CONVERTED_FILE;
         
-        my %audio_args = $self->get_audio_args( $self->details->{'audio'} );
-        my %video_args = $self->get_video_args( $self->details );
-        my %args       = (
+        my %audio_args    = $self->get_audio_args( $self->details->{'audio'} );
+        my %video_args    = $self->get_video_args( $self->details );
+        my %subtitle_args = $self->get_subtitle_args( $self->details );
+        my %args          = (
                 %audio_args,
                 %video_args,
+                %subtitle_args,
             );
         
         my @arguments = $self->get_handbrake_args( %args );
@@ -333,70 +336,49 @@ role Media::Encoder::HandBrake {
         
         return %args;
     }
-    method get_subtitle_args ( HashRef $job_data ) {
-        # FIXME - none of this is being used yet
+    method get_subtitle_args ( $details ) {
+        my %srt_files = (
+            'srt-file'    => [],
+            'srt-codeset' => [],
+            'srt-lang'    => [],
+        );
+        my %args;
         
-        my $config        = $self->get_configuration();
-        my $input         = $job_data->{'input'};
-        my $options       = $job_data->{'options'}{'subtitle'};
-        my %subtitle_args = ( '--srt-file' => [], '--srt-lang' => [] );
-        my $default       = 0;
-        my @subtitle_streams;
-
-        if ( 'ARRAY' eq ref $options ) {
-            push @subtitle_streams, @{ $options };
-        }
-        else {
-            push @subtitle_streams, $options;
-        }
-
-        # HACK: So ... my Apple TV refuses to properly let me switch between
-        # subtitles that are all marked 'eng' or 'und'. So I forcibly mark things
-        # as different languages. The labels are now wrong, but the functionality
-        # is at least there (and the file can always be edited later by a tool
-        # such as Subler, once the ATV does something approaching "right").
-        my @lang_codes      = qw( . eng fra spa ger ita );
-        my $count           = 1;
-        my $subtitle_regexp = qr{
-                ( default \: )?     # optional 'default:'
-                ( .* )              # filename
-            }x;
-
-        foreach my $stream ( @subtitle_streams ) {
-            last unless defined $stream;
-
-            if ( $stream =~ $subtitle_regexp ) {
-                my $flagged  = $1;
-                my $sub_file = $2;
-
-                if ( $flagged ) {
-                    $default = $count;
-                }
-
-                if ( -d "$input/VIDEO_TS" ) {
-                    $sub_file = "${input}/${sub_file}";
-                }
-
-                push @{ $subtitle_args{'--srt-file'} }, $sub_file;
-                push @{ $subtitle_args{'--srt-lang'} }, $lang_codes[ $count ];
-                $count++;
+        # can be an array or a single item - FIXME should always be an array
+        my @streams;
+        my $subtitle = $details->{'subtitle'};
+        push @streams, $subtitle
+            if '' eq ref $subtitle;
+        push @streams, @$subtitle
+            if 'ARRAY' eq ref $subtitle;
+        
+        my $base_dir = $self->input_file;
+        $base_dir = dirname $base_dir
+            if -f $base_dir;
+        
+        foreach my $stream ( @streams ) {
+            next unless defined $stream;
+            
+            my( $lang, $source ) = split m{:}, $stream;
+            
+            if ( $lang eq 'burn' ) {
+                $args{'subtitle'}      = $source;
+                $args{'subtitle-burn'} = 1;
+            }
+            else {
+                $source = "${base_dir}/${source}"
+                    if $source !~ m{^/};
+                
+                push @{ $srt_files{'srt-file'}    }, $source;
+                push @{ $srt_files{'srt-codeset'} }, 'UTF-8';
+                push @{ $srt_files{'srt-lang'}    }, $lang;
+            }
+            
+            foreach my $arg ( keys %srt_files ) {
+                $args{ $arg } = join ',', @{ $srt_files{$arg} };
             }
         }
-
-        # don't return empty "--srt-file ''" args if no subtitles specified
-        return 
-            if 1 == $count;
-
-        my %args;
-        foreach my $arg ( keys %subtitle_args ) {
-            $args{ $arg } = join( ',', @{ $subtitle_args{ $arg } } );
-        }
-
-        if ( $default ) {
-            $args{'--srt-default'} = $default;
-            $args{'--srt-codeset'} = 'UTF-8';
-        }
-
+        
         return %args;
     }
     
@@ -564,14 +546,24 @@ role Media::Encoder::HandBrake {
                                         $stream->{'language'};
                     }
                 }
-                
             }
+            
             foreach my $subtitle ( @{ $title->{'subtitles'} } ) {
-                $config .= sprintf "### subtitle track %d: %s (%s) %s\n",
+                my $name = '';
+                $name = sprintf ' "%s"', $subtitle->{'name'}
+                    if defined $subtitle->{'name'};
+                
+                $config .= sprintf "### subtitle track %d: %s%s (%s) %s\n",
                                 $subtitle->{'track'},
                                 $subtitle->{'language'},
+                                $name,
                                 $subtitle->{'code'},
                                 $subtitle->{'type'};
+                
+                $config .= sprintf(
+                        "subtitle = burn:%s\n",
+                        $subtitle->{'track'}
+                    ) if $name =~ m{Forced};
             }
         }
         

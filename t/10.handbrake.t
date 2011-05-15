@@ -1,7 +1,7 @@
 use Modern::Perl;
 use IO::All;
 use Media;
-use Test::More      tests => 24;
+use Test::More      tests => 25;
 
 
 
@@ -821,6 +821,38 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
                                     . 'weightb=0:trellis=0:weightp=0:'
                                     . 'b-pyramid=none:vbv-maxrate=9500:'
                                     . 'vbv-bufsize=9500',
+            }
+        );
+}
+{
+    my %details = (
+            subtitle => [
+                'burn:1',
+                'eng:/files/subs/movie.srt',
+                'eng:commentary.srt',
+            ],
+        );
+    my $subhandler = $media->get_handler(
+            'Movie',
+            'DVD',
+            \%details,
+            {
+                image  => '/files/source/movie',
+                poster => 'xt/poster.png',
+                title  => '1',
+            },
+        );
+    my %subtitle_args = $subhandler->get_subtitle_args( \%details );
+    
+    is_deeply(
+            \%subtitle_args,
+            {
+                'srt-codeset'   => 'UTF-8,UTF-8',
+                'srt-file'      => '/files/subs/movie.srt,'
+                                 . '/files/source/movie/commentary.srt',
+                'srt-lang'      => 'eng,eng',
+                subtitle        => '1',
+                'subtitle-burn' => '1',
             }
         );
 }
