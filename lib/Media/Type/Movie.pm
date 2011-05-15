@@ -18,52 +18,59 @@ role Media::Type::Movie {
     );
     
     method get_tag_elements {
-        # FIXME
-        # fix extras to be 'Documentary' genre and a TV show
-        # if setting "movie_extras_as_tv" set
-        # 
-        # if ( $self->get_config( 'movie_extras_as_tv' ) ) {
-        #     $genre = 'Documentary';
-        #     
-        #     '--TVShowName',     'DVD Extras',
-        #     '--TVSeasonNum',    1,
-        #     '--TVEpisodeNum',   0,
-        #     '--title',          'Barbarella - X (1968) - Extra',
-        #     '--stik',           'TV Show',
-        # }
-
-        my @elements = (
-                '--stik',           'Movie',
-                '--title',          $self->details->{'title'},
-                '--year',           $self->details->{'year'},
-                '--rDNSatom',       $self->get_uk_rating_string(),
-                                    'name=iTunEXTC',
-                                    'domain=com.apple.iTunes',
-                '--rDNSatom',       $self->get_movie_data(),
-                                    'name=iTunMOVI',
-                                    'domain=com.apple.iTunes',
-            );
+        my $extras_as_tv     = $self->get_config( 'movie_extras_as_tv' )
+                               && defined $self->details->{'extra'};
         
-        my $plot = $self->details->{'plot'};
-        if ( defined $plot ) {
-            push @elements, '--longdesc', $plot;
-            substr $plot, 252, length($plot), ' …'
-                if length $plot > 254;
-            push @elements, '--description', $plot;
+        my @elements;
+        if ( $extras_as_tv ) {
+            my $show  = sprintf 'DVD Extras - %s',
+                $self->get_movie_filename();
+            
+            @elements = (
+                    '--TVShowName',     $show,
+                    '--title',          $self->details->{'extra'},
+                    '--stik',           'TV Show',
+                    '--genre',          'Documentary',
+                );
         }
-        
-        push( @elements, '--artist',      $self->details->{'director'}[0] )
-            if defined $self->details->{'director'}
-               && scalar @{ $self->details->{'director'} } >= 1;
-        push( @elements, '--genre',       $self->details->{'genre'}[0] )
-            if defined $self->details->{'genre'}
-               && scalar @{ $self->details->{'genre'} } >= 1;
+        else {
+            my $title = $self->details->{'extra'}
+                        // $self->details->{'title'};
+            @elements = (
+                    '--stik',           'Movie',
+                    '--year',           $self->details->{'year'},
+                    '--title',          $title,
+                    '--rDNSatom',       $self->get_uk_rating_string(),
+                                        'name=iTunEXTC',
+                                        'domain=com.apple.iTunes',
+                    '--rDNSatom',       $self->get_movie_data(),
+                                        'name=iTunMOVI',
+                                        'domain=com.apple.iTunes',
+                );
+            
+            my $plot = $self->details->{'plot'};
+            if ( defined $plot ) {
+                push @elements, '--longdesc', $plot;
+                substr $plot, 252, length($plot), ' …'
+                    if length $plot > 254;
+                push @elements, '--description', $plot;
+            }
+            
+            push( @elements, '--artist', $self->details->{'director'}[0] )
+                if defined $self->details->{'director'}
+                   && scalar @{ $self->details->{'director'} } >= 1;
+            
+            push( @elements, '--genre', $self->details->{'genre'}[0] )
+                if defined $self->details->{'genre'}
+                   && scalar @{ $self->details->{'genre'} } >= 1;
+        }
         
         return @elements;
     }
     method post_install {
         $self->create_symlinks()
-            unless defined $self->get_config( 'single_directory' );
+            unless defined $self->get_config( 'single_directory' )
+                or defined $self->details->{'extra'};
     }
     
     method get_default_priority {
