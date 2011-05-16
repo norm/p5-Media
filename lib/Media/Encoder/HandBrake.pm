@@ -78,16 +78,17 @@ role Media::Encoder::HandBrake {
         rating = RATING_OF_MOVIE
         
         # other options you can use globally, or per-video include:
-        # denoise  = ( 1 | weak | medium | strong | <SL:SC:TL:TC> )
-        # start-at = <seconds>
-        # stop-at  = <seconds>
-        # quality  = ( 0-51 )   # 0 highest, 51 lowest, in 0.25 increments
-        # size     = <MB>       # target size for output video
-        # vb       = <kb/s>     # fixed bitrate for output video
-        # two-pass = 1
-        # turbo    = 1
-        # width    = <pixels>
-        # height   = <pixels>
+        # large-file = 1          # support output file bigger than 4GB
+        # denoise    = ( 1 | weak | medium | strong | <SL:SC:TL:TC> )
+        # start-at   = <seconds>
+        # stop-at    = <seconds>
+        # quality    = ( 0-51 )   # 0 highest, 51 lowest, in 0.25 increments
+        # size       = <MB>       # target size for output video
+        # vb         = <kb/s>     # fixed bitrate for output video
+        # two-pass   = 1
+        # turbo      = 1
+        # width      = <pixels>
+        # height     = <pixels>
         # ... see `HandBrakeCLI -h` for more
     );
     use constant STANDARD_CONFIG_TITLE => q(

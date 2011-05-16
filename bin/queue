@@ -21,11 +21,11 @@ use constant HINTS   => qw(
     season=s   series=s   title=s    year=s
 );
 use constant ENCODER => qw(
-    chapters=s     deblock        decomb         deinterlace
-    denoise        detelecine     grayscale      height=s
-    maxHeight=s    maxWidth=s     quality=s      size=s
-    start-at=s     stop-at=s      turbo          two-pass
-    vb=s           width=s
+    chapters=s     deblock        decomb         deinterlace    
+    denoise        detelecine     grayscale      height=s       
+    large-file     maxHeight=s    maxWidth=s     quality=s      
+    size=s         start-at=s     stop-at=s      turbo          
+    two-pass       vb=s           width=s
 );
 
 
