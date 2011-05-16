@@ -342,7 +342,8 @@ role Media::Encoder::HandBrake {
                         $source = "${base_dir}/${source}"
                             if $source !~ m{^/};
                         
-                        $args{$key} = $source;
+                        # HandBrake is screwed in the brain to require this
+                        $args{"$key=$source"} = '';
                     }
                 }
                 default {

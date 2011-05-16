@@ -6,7 +6,7 @@ use Media::Config;
 use Media::Object;
 
 use version;
-our $VERSION = qv( 0.10.0 );
+our $VERSION = qv( 0.10.1 );
 
 sub new {
     my $class       = shift;

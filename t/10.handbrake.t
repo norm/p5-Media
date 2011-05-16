@@ -877,7 +877,10 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
                 encoder            => 'x264',
                 format             => 'mp4',
                 "loose-anamorphic" => '',
-                markers            => '/files/source/movie/chapters.csv',
+                
+                # HandBrake is screwed in the brain to require this
+                'markers=/files/source/movie/chapters.csv' => '',
+                
                 maxHeight          => '720',
                 maxWidth           => '1280',
                 quality            => '22',
