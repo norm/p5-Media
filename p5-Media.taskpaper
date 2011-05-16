@@ -1,15 +1,12 @@
 queue CLI:
 	- --type option to bypass tests/internet lookups
-	- --strip-extensions to allow use of filenames rather than directories
 encoder:
 	- option to sleep the encoder during certain hours
+	- pull chapters and subtitle files from the web, like posters
 	- clean up "poster-resized..."
 	Subtitles:
-		- re-introduce SRT handling
-		- burn-in for forced subs
 		- document clean-srt
 	Chapters:
-		- provide chapter CSV to name chapters
 		- produce chapter preview images
 Types:
 	- add "Plain" type for straight video encodes without any other metadata (eg. YouTube)
