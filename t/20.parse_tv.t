@@ -96,7 +96,7 @@ my $handler = $media->get_empty_handler( 'TV' );
 {
     my $title = q(Battlestar Galactica (2003) - 1x01 - 33);
     my( $confidence, %details ) = $handler->parse_title_string( $title );
-    is( 5.4, $confidence );
+    is( 6, $confidence );
     is_deeply( 
             \%details,
             {
@@ -128,7 +128,7 @@ my $handler = $media->get_empty_handler( 'TV' );
 {
     my $title = q(Tyler Perry's Meet the Browns - 1x10-01x20);
     my( $confidence, %details ) = $handler->parse_title_string( $title );
-    is( 4.60714285714286, $confidence );
+    is( 6, $confidence );
     is_deeply( 
             \%details,
             {
@@ -203,7 +203,7 @@ my $handler = $media->get_empty_handler( 'TV' );
 {
     my $title = q(Vil du bli millionær - 2010.01.04);
     my( $confidence, %details ) = $handler->parse_title_string( $title );
-    is( 5.7, $confidence );
+    is( 5.71428571428571, $confidence );
     is_deeply( 
             \%details,
             {
@@ -219,7 +219,7 @@ my $handler = $media->get_empty_handler( 'TV' );
 {
     my $title = q(UFC 52: Couture vs. Liddell 2);
     my( $confidence, %details ) = $handler->parse_title_string( $title );
-    is( 4, $confidence );
+    is( 2.3, $confidence );
     is_deeply( 
             \%details,
             {
@@ -231,7 +231,7 @@ my $handler = $media->get_empty_handler( 'TV' );
     
     $title = q(UFC 52 - Couture vs. Liddell 2);
     ( $confidence, %details ) = $handler->parse_title_string( $title );
-    is( 4, $confidence );
+    is( 2.3, $confidence );
     is_deeply( 
             \%details,
             {
@@ -272,7 +272,7 @@ my $handler = $media->get_empty_handler( 'TV' );
 {
     my $title = q(Bundesliga 2010 - Week 20: Highlights);
     my( $confidence, %details ) = $handler->parse_title_string( $title );
-    is( 6, $confidence );
+    is( 4.15384615384615, $confidence );
     is_deeply( 
             \%details,
             {

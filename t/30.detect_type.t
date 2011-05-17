@@ -1,6 +1,6 @@
 use Modern::Perl;
 use Media;
-use Test::More      tests => 22;
+use Test::More      tests => 23;
 
 
 
@@ -37,6 +37,11 @@ check_type( 'ConfigFile', q(t/hinted) );
 check_type(
         'TV',
         '1x20 - Walter',
+        { series => 'Seven Days' },
+    );
+check_type(
+        'TV',
+        '/Volumes/asimov/not-done/Seven Days/Season 1/1x20 - Walter',
         { series => 'Seven Days' },
     );
 check_type(

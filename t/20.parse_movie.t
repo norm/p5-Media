@@ -36,7 +36,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     
     $title = q(Barbarlla);
     ( $confidence, %details ) = $handler->parse_title_string( $title );
-    is( 2.66666666666667,   $confidence );
+    is( 2.7,                $confidence );
     is( 'Barbarella',       $details{'title'} );
     is( '1968',             $details{'year'} );
     is( 'X',                $details{'rating'} );
@@ -63,7 +63,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     
     $title = q(Star Trek 2 The Wrath of Khan);
     ( $confidence, %details ) = $handler->parse_title_string( $title );
-    is( 2.79310344827586,                       $confidence );
+    is( 2.8,                                    $confidence );
     is( 'Star Trek II - The Wrath of Khan',     $details{'title'} );
     is( '1982',                                 $details{'year'} );
     is( '12',                                   $details{'rating'} );
@@ -71,7 +71,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     
     $title = q(Star Trek Wrath of Khan);
     ( $confidence, %details ) = $handler->parse_title_string( $title );
-    is( 2.21739130434783,                       $confidence );
+    is( 2.3,                                    $confidence );
     is( 'Star Trek II - The Wrath of Khan',     $details{'title'} );
     is( '1982',                                 $details{'year'} );
     is( '12',                                   $details{'rating'} );
@@ -79,7 +79,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     
     $title = q(The Wrath of Khan);
     ( $confidence, %details ) = $handler->parse_title_string( $title );
-    is( 3,                                      $confidence );
+    is( 1.7,                                    $confidence );
     is( 'Star Trek II - The Wrath of Khan',     $details{'title'} );
     is( '1982',                                 $details{'year'} );
     is( '12',                                   $details{'rating'} );
@@ -87,7 +87,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     
     $title = q(Star Trek Wrath Khan);
     ( $confidence, %details ) = $handler->parse_title_string( $title );
-    is( 1.95,                                   $confidence );
+    is( 2,                                      $confidence );
     is( 'Star Trek II - The Wrath of Khan',     $details{'title'} );
     is( '1982',                                 $details{'year'} );
     is( '12',                                   $details{'rating'} );
@@ -95,7 +95,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     
     $title = q(Wrath Khan);
     ( $confidence, %details ) = $handler->parse_title_string( $title );
-    is( 2.1,                                    $confidence );
+    is( 1,                                      $confidence );
     is( 'Star Trek II - The Wrath of Khan',     $details{'title'} );
     is( '1982',                                 $details{'year'} );
     is( '12',                                   $details{'rating'} );

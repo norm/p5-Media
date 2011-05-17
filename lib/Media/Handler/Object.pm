@@ -56,7 +56,7 @@ class Media::Handler::Object {
         $imdb_title =~ s{[^\w\s]+}{}g;
         $imdb_title =~ s{\s+}{ }g;
         
-        return abs adistr( $title, $imdb_title );
+        return abs adistr( $imdb_title, $title );
     }
     method move_file_with_unique_filename ( $source, $dir, $target? ) {
         $target = basename $source
