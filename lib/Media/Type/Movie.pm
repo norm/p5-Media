@@ -257,6 +257,9 @@ XML
     
     
     method parse_title_string ( $title, $hints? ) {
+        my $type = $hints->{'type'};
+        return if defined $type && $type ne 'Movie';
+        
         # strip a potential pathname into the last element
         $title =~ s{ (?: .*? / )? ([^/]+) (?: / )? $}{$1}x;
         
@@ -267,7 +270,11 @@ XML
         
         my $confidence = 0;
         my %details;
-
+        
+        # hints affect confidence
+        $confidence += 2 if defined $hints->{'year'};
+        $confidence += 2 if defined $hints->{'rating'};
+        
         # movie title looks like:
         # Gone With the Wind
         # Ghostbusters (1984)

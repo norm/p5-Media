@@ -139,6 +139,10 @@ class Media::Object {
             my( $score, %d )
                 = $handler->parse_title_string( $string, $hints );
             
+            # use Data::Dumper::Concise;
+            # print " -> $try ($score)";
+            # print Dumper \%d;
+            
             if ( defined $score ) {
                 # score of -1 means "I know what I am, but there's a problem"
                 return if $score == -1;

@@ -158,7 +158,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     my( $confidence, %details )
         = $handler->parse_title_string( $title, $hints );
     
-    is( 4,                  $confidence );
+    is( 6,                  $confidence );
     is( 'Barbarella',       $details{'title'} );
     is( '1968',             $details{'year'} );
     is( 'X',                $details{'rating'} );
@@ -175,7 +175,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     my( $confidence, %details )
         = $handler->parse_title_string( $title, $hints );
     
-    is( 5,                  $confidence );
+    is( 9,                  $confidence );
     is( 'Twister',          $details{'title'} );
     is( '1996',             $details{'year'} );
     is( 'PG',               $details{'rating'} );

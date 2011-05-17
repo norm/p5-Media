@@ -1,6 +1,6 @@
 use Modern::Perl;
 use Media;
-use Test::More      tests => 20;
+use Test::More      tests => 22;
 
 
 
@@ -32,6 +32,18 @@ check_type( 'MusicVideo', q(Thriller [Michael Jackson])               );
 check_type( 'MusicVideo', q(Jizz In My Pants [The Lonely Island])     );
 
 check_type( 'ConfigFile', q(t/hinted) );
+
+# hinted checks
+check_type(
+        'TV',
+        '1x20 - Walter',
+        { series => 'Seven Days' },
+    );
+check_type(
+        'TV',
+        'Serenity - Gag Reel',
+        { type => 'TV', },
+    );
 exit;
 
 
@@ -39,8 +51,9 @@ exit;
 sub check_type {
     my $required = shift;
     my $title    = shift;
+    my $hints    = shift;
     
-    my( $type, $details ) = $media->determine_type( $title );
+    my( $type, $details ) = $media->determine_type( $title, $hints );
     $type = 'undefined' unless defined $type;
     
     ok( $required eq $type )

@@ -20,6 +20,7 @@ use constant OPTIONS => qw(
 use constant HINTS   => qw(
     album=s    artist=s   episode=s  rating=s
     season=s   series=s   title=s    year=s
+    type=s
 );
 use constant ENCODER => qw(
     chapters=s     deblock        decomb         deinterlace    

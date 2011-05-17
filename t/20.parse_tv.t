@@ -1,6 +1,6 @@
 use Modern::Perl;
 use Media;
-use Test::More      tests => 46;
+use Test::More      tests => 48;
 use utf8;
 
 
@@ -317,7 +317,7 @@ my $handler = $media->get_empty_handler( 'TV' );
     my( $confidence, %details )
         = $handler->parse_title_string( $title, $hints );
     
-    is( 6, $confidence );
+    is( 9, $confidence );
     is_deeply( 
             \%details,
             {
@@ -325,6 +325,26 @@ my $handler = $media->get_empty_handler( 'TV' );
                 season       => '1',
                 episode      => '01',
                 title        => 'Pilot',
+            },
+        );
+}
+{
+    my $title = q(1x19 - EBEs.avi);
+    my $hints = {
+            series          => 'Seven Days',
+            strip_extension => 1
+        };
+    my( $confidence, %details )
+        = $handler->parse_title_string( $title, $hints );
+    
+    is( 5, $confidence );
+    is_deeply(
+            \%details,
+            {
+                series       => 'Seven Days',
+                season       => '1',
+                episode      => '19',
+                title        => 'EBEs',
             },
         );
 }
@@ -339,7 +359,7 @@ my $handler = $media->get_empty_handler( 'TV' );
     my( $confidence, %details )
         = $handler->parse_title_string( $title, $hints );
     
-    is( 6, $confidence );
+    is( 11, $confidence );
     is_deeply( 
             \%details,
             {

@@ -217,6 +217,9 @@ role Media::Type::TV {
     
     
     method parse_title_string ( $title, $hints? ) {
+        my $type = $hints->{'type'};
+        return if defined $type && $type ne 'TV';
+        
         # strip a potential pathname into the last element
         $title =~ s{ (?: .*? / )? ([^/]+) (?: / )? $}{$1}x;
         
@@ -227,6 +230,11 @@ role Media::Type::TV {
         
         my %details    = $self->get_title_string_elements( $title, $hints );
         my $confidence = 0;
+        
+        # hints affect confidence
+        $confidence += 3 if defined $hints->{'series'};
+        $confidence += 1 if defined $hints->{'season'};
+        $confidence += 1 if defined $hints->{'episode'};
         
         if ( %details or defined $hints->{'series'} ) {
             if ( defined $hints ) {

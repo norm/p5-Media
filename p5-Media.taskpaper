@@ -1,5 +1,3 @@
-queue CLI:
-	- --type option to bypass tests/internet lookups
 encoder:
 	- option to sleep the encoder during certain hours
 	- pull chapters and subtitle files from the web, like posters

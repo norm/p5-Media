@@ -56,7 +56,7 @@ my $handler = $media->get_empty_handler( 'MusicVideo' );
     my( $confidence, %details )
         = $handler->parse_title_string( $title, $hints );
     
-    is( 6,                                  $confidence );
+    is( 8,                                  $confidence );
     is( '(Waiting for) The Ghost Train',    $details{'title'} );
     is( 'Madness',                          $details{'artist'} );
     is( undef,                              $details{'album'} );
@@ -72,7 +72,7 @@ my $handler = $media->get_empty_handler( 'MusicVideo' );
     my( $confidence, %details )
         = $handler->parse_title_string( $title, $hints );
     
-    is( 8.5,                                $confidence );
+    is( 12.5,                               $confidence );
     is( '(Waiting for) The Ghost Train',    $details{'title'} );
     is( 'Madness',                          $details{'artist'} );
     is( 'Utter Madness',                    $details{'album'} );

@@ -72,6 +72,9 @@ role Media::Type::MusicVideo {
     }
     
     method parse_title_string ( $title, $hints? ) {
+        my $type = $hints->{'type'};
+        return if defined $type && $type ne 'MusicVideo';
+        
         # strip a potential pathname into the last element
         $title =~ s{ (?: .*? / )? ([^/]+) (?: / )? $}{$1}x;
         
@@ -82,6 +85,10 @@ role Media::Type::MusicVideo {
         
         my $confidence = 0;
         my %details;
+        
+        # hints affect confidence
+        $confidence += 2 if defined $hints->{'album'};
+        $confidence += 2 if defined $hints->{'artist'};
         
         # music video title looks like:
         # (Waiting for) The Ghost Train [Madness]
