@@ -9,12 +9,13 @@ use Term::ANSIColor;
 
 use constant OPTIONS => qw(
           config|c=s
+    edit-control|e
             help|h
+    make-control|m
+           first|n=i
         priority|p=i
          verbose|v
-           first|n=i
-    make-control|m
-    edit-control|e
+    edit-payload|y
 );
 use constant HINTS   => qw(
     album=s    artist=s   episode=s  rating=s
@@ -80,6 +81,9 @@ while ( $argument ) {
                     if $option{'edit-control'};
             }
             else {
+                $encoder{'edit-before'} = 1
+                    if $option{'edit-payload'};
+                
                 $media->queue_media(
                         $argument,
                         $option{'priority'},

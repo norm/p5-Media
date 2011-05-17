@@ -2,9 +2,13 @@ use Modern::Perl;
 use MooseX::Declare;
 
 role Media::Queue {
+    use Data::Dumper::Concise;
+    use File::Temp;
+    use IO::All         -utf8;
     use IPC::DirQueue;
     use POSIX;
     use Storable        qw( freeze thaw );
+    use Try::Tiny;
     
     use constant LOWEST_PRIORITY  => 99;
     use constant HIGHEST_PRIORITY => 2;
@@ -49,17 +53,18 @@ role Media::Queue {
             $extra_args = {}
                 if !defined $extra_args;
             
+            my $edit_before_queueing = delete $extra_args->{'edit-before'};
+            
             my %details = (
                     %$source_details,
                     %$extra_args,
                 );
             
-            my $name    = $handler->get_job_name();
             my %payload = (
                     details    => \%details,
                     input      => \%input,
                     medium     => $handler->medium,
-                    name       => $name,
+                    name       => $handler->get_job_name(),
                     type       => $handler->type,
                 );
             
@@ -70,13 +75,16 @@ role Media::Queue {
             $priority = LOWEST_PRIORITY
                 if $priority > LOWEST_PRIORITY;
             
+            %payload = $self->edit_before_queueing( %payload )
+                if $edit_before_queueing;
+            
             $self->queue->enqueue_string(
                     freeze( \%payload ),
                     undef,
                     $priority
                 );
             
-            say " -> queued [$priority] $name";
+            say " -> queued [$priority] $payload{'name'}";
         }
     }
     method queue_stop_command {
@@ -86,6 +94,28 @@ role Media::Queue {
                 undef,
                 1
             );
+    }
+    
+    method edit_before_queueing ( %payload ) {
+        my $temp_file = tmpnam();
+        my $output    = Dumper \%payload;
+        
+        $output > io $temp_file;
+        system(
+                $ENV{'VISUAL'} // $ENV{'EDITOR'} // 'vi',
+                $temp_file,
+            );
+        
+        my $eval < io $temp_file;
+        
+        try {
+            my $VAR1;
+            
+            eval "\$VAR1 = $eval";
+            %payload = %$VAR1;
+        };
+        
+        return %payload;
     }
     
     method next_queue_job {
