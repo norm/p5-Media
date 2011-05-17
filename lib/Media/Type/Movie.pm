@@ -274,6 +274,7 @@ XML
         # hints affect confidence
         $confidence += 2 if defined $hints->{'year'};
         $confidence += 2 if defined $hints->{'rating'};
+        $confidence += 2 if defined $hints->{'extra'};
         
         # movie title looks like:
         # Gone With the Wind

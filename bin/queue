@@ -18,8 +18,9 @@ use constant OPTIONS => qw(
     edit-payload|y
 );
 use constant HINTS   => qw(
-    album=s    artist=s   episode=s  rating=s
-    season=s   series=s   title=s    year=s
+    album=s    artist=s   episode=s  extra=s    
+    rating=s   season=s   series=s   title=s    
+    year=s     
     type=s
 );
 use constant ENCODER => qw(
