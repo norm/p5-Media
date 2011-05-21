@@ -452,11 +452,6 @@ role Media::Type::TV {
         
         if ( $title =~ $multiple_episode_title ) {
             %details = %+;
-            
-            foreach my $episode ( $+{'first_episode'}..$+{'last_episode'} ) {
-                push @{ $details{'episodes'} }, $episode;
-            }
-            
             return %details;
         }
         

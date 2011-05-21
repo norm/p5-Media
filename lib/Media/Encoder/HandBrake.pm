@@ -60,7 +60,7 @@ role Media::Encoder::HandBrake {
         $
     }x;
     use constant NOT_VIDEO_ARGS        => qw(
-        title series season episode 
+        title series season episode first_episode last_episode
         year rating feature director genre actor writer studio plot company
         artist album poster extra
         audio subtitles track duration size angles chapter_count

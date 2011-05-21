@@ -36,14 +36,14 @@ copy( $input_file, $source )
 # these files should be deleted by the queue process
 '' > io "$source/file.nfo";
 '' > io "$source/file.srr";
-'' > io "$source/bsg-sample.m4v";
+'' > io "$source/bones-sample.m4v";
 
 my $handler = $media->get_empty_handler( undef, 'VideoFile' );
 $handler->create_config_file( $source );
 
 ok( -f "$source/file.nfo", 'nfo file exists' );
 ok( -f "$source/file.srr", 'srr file exists' );
-ok( -f "$source/bsg-sample.m4v", 'sample file exists' );
+ok( -f "$source/bones-sample.m4v", 'sample file exists' );
 
 my $default_config < io 'xt/conf/flibble.conf';
 my $created_config < io $config_file;
@@ -55,20 +55,21 @@ $media->queue_media( $source );
 ok( $media->queue_count() == 0, 'queue is still empty' );
 
 # update config file means queue should occur
-my $bsg_conf < io 'xt/conf/bsg.conf';
-$bsg_conf > io $config_file;
+my $bones_conf < io 'xt/conf/bones.conf';
+$bones_conf > io $config_file;
 $created_config < io $config_file;
-is( $bsg_conf, $created_config, 'config updated properly' );
+is( $bones_conf, $created_config, 'config updated properly' );
 
 $media->queue_media( $source );
 ok( $media->queue_count() == 1, 'queue created' );
+
 
 # infinite wait without the queue job
 die unless $media->queue_count() == 1;
 
 ok( !-f "$source/file.nfo", 'nfo file removed' );
 ok( !-f "$source/file.srr", 'srr file removed' );
-ok( !-f "$source/bsg-sample.m4v", 'sample file removed' );
+ok( !-f "$source/bones-sample.m4v", 'sample file removed' );
 ok( -f "$source/media.conf", 'config not removed' );
 
 my( $job, $payload ) = $media->next_queue_job();
@@ -77,11 +78,12 @@ is_deeply(
         $payload,
         {
             details => {
-                audio   => '1:stereo:English',
-                episode => '3',
-                season  => '1',
-                series  => 'Battlestar Galactica (2003)',
-                title   => 'Bastille Day',
+                audio         => '1:stereo:English',
+                first_episode => '01',
+                last_episode  => '02',
+                season        => '4',
+                series        => 'Bones',
+                title         => 'Yanks in the U.K.',
             },
             input   => {
                 config     => "$source/media.conf",
@@ -90,22 +92,20 @@ is_deeply(
                 title      => '1',
             },
             medium  => 'VideoFile',
-            name    => 'Battlestar Galactica (2003) - 1x03 - Bastille Day',
+            name    => 'Bones - 4x01-02 - Yanks in the U.K.',
             type    => 'TV',
         }
     );
-
 
 $media->encode_media( $payload );
 
 
 # check the output
-my $target_file = 'xt/tv/Battlestar Galactica (2003)/Season 1/'
-                . '03 - Bastille Day.m4v';
+my $target_file = 'xt/tv/Bones/Season 4/01-02 - Yanks in the U.K..m4v';
 ok( -f $target_file, 'file installed' );
 exit unless -f $target_file;
 
-ok( ! -d 'xt/encode/Battlestar Galactica (2003) - 1x03 - Bastille Day',
+ok( ! -d 'xt/encode/Bones - 4x01-02 - Yanks in the U.K.',
     'encoder clears up after itself' );
 ok( -f 'xt/trash/ac3.vob',
     'encoder trashes source files' );
@@ -120,11 +120,11 @@ is_deeply(
         \%metadata,
         {
             kind       => 'TV Show',
-            series     => 'Battlestar Galactica (2003)',
-            season     => '1',
-            episode    => '3',
-            episode_id => '1x03',
-            title      => 'Bastille Day',
+            series     => 'Bones',
+            season     => '4',
+            episode    => '1',
+            episode_id => '4x01-02',
+            title      => 'Yanks in the U.K.',
         },
         'metadata'
     );

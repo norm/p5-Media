@@ -136,7 +136,6 @@ my $media = Media->new( 't/conf/media.conf' );
             season        => '4',
             first_episode => '01',
             last_episode  => '02',
-            episodes      => [ qw( 01 02 ) ],
             title         => 'Yanks in the U.K.',
         );
     my $handler = $media->get_handler( 'TV', 'Empty', \%details, undef );
@@ -163,7 +162,6 @@ my $media = Media->new( 't/conf/media.conf' );
             season        => '1',
             first_episode => '10',
             last_episode  => '20',
-            episodes      => [ qw( 10 11 12 13 14 15 16 17 18 19 20 ) ],
         );
     my $handler = $media->get_handler( 'TV', 'Empty', \%details, undef );
     
