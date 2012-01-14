@@ -324,7 +324,7 @@ XML
         if ( $title =~ $movie_title ) {
             %details = %+;
             
-            if ( defined %$hints ) {
+            if ( %$hints ) {
                 %details = (
                         %details,
                         %$hints,

@@ -108,7 +108,7 @@ role Media::Type::MusicVideo {
         if ( $title =~ $video_title ) {
             %details = %+;
             
-            if ( defined %$hints ) {
+            if ( %$hints ) {
                 %details = (
                         %details,
                         %$hints,
