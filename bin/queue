@@ -15,6 +15,7 @@ use constant OPTIONS => qw(
            first|n=i
         priority|p=i
          verbose|v
+       no-colour|w
     edit-payload|y
 );
 use constant HINTS   => qw(
@@ -141,7 +142,12 @@ sub list_queue {
                         $name,
                         $handler;
         $output = trim_to_width( $output );
-        print colored( $output, $colour );
+        if ( $option{'no-colour'} ) {
+            print $output;
+        }
+        else {
+            print colored( $output, $colour );
+        }
         
         if ( $option{'verbose'} ) {
             KEY:
@@ -247,6 +253,10 @@ not exist.
 =item -v, --verbose
 
 Include more information in the output.
+
+=item -w, --no-colour
+
+Suppress colour coding of the queue listing.
 
 =item --season I<num>, --series I<name>, --title I<name>, --episode I<num>
 
