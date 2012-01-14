@@ -65,7 +65,7 @@ Media requires [HandBrakeCLI][handbrake] 0.9.5,
 and a _lot_ of other perl modules to be installed.
 
 AtomicParsley and aspell are most commonly installed using a ports system,
-such as [homebrew] on the Mac.
+such as [homebrew][homebrew] on the Mac.
 
 If you are not comfortable installing perl modules from CPAN, I would 
 unequivocally recommend you do it using [cpanminus][cpanm], which makes
@@ -73,10 +73,25 @@ it trivial to install CPAN modules. First, install cpanminus:
 
     curl -L http://cpanmin.us | sudo perl - --self-upgrade
 
-then use it to install Media and all of its dependencies:
+then use it to attempt to install Media and all of its dependencies:
 
     sudo cpanm https://github.com/norm/p5-Media/tarball/master
 
+The first time, Media will fail to install as some tests do not pass.
+
+Other things that can go wrong include `WebService::MusicBrainz` failing to 
+install. This can be worked around with:
+
+    sudo cpanm -n WebService::MusicBrainz
+
+(`-n` skips tests; ordinarily this is inadvisable, but in this case the
+MusicBrainz module fails its tests quite often because of timeouts on 
+the MusicBrainz site)
+
+[handbrake]:http://handbrake.fr/
+[atomicparsley]:https://bitbucket.org/wez/atomicparsley/overview/
+[cpanm]:https://github.com/miyagawa/cpanminus/
+[homebrew]:http://mxcl.github.com/homebrew/
 
 ### Patching `IMDB::Film`
 
@@ -115,10 +130,18 @@ matters to you, replace the existing `certifications` method in the Film.pm
 Slightly altered from code found at
 <https://rt.cpan.org/Public/Bug/Display.html?id=65201>.
 
-[handbrake]:http://handbrake.fr/
-[atomicparsley]:https://bitbucket.org/wez/atomicparsley/overview/
-[cpanm]:https://github.com/miyagawa/cpanminus/
-[homebrew]:http://mxcl.github.com/homebrew/
+### Continuing the `Media` installation
+
+Once you have patched `IMDB::Film`, the Media tests will pass and it should
+install fine.
+
+    sudo cpanm https://github.com/norm/p5-Media/tarball/master
+
+If they still fail, please can you send me the log file from `cpanm` at
+`norm@cackhanded.net`. You can install anyway, even if the tests fail with:
+
+    sudo cpanm -n https://github.com/norm/p5-Media/tarball/master
+
 
 Read more
 ---------
