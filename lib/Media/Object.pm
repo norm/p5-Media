@@ -6,6 +6,7 @@ class Media::Object {
     use Media::Handler;
     
     use File::Path      qw( mkpath );
+    use Storable        qw( nstore retrieve );
     
     use constant AVAILABLE_HANDLERS => qw( ConfigFile TV Movie MusicVideo );
     use constant AVAILABLE_MEDIA    => qw( DVD VideoFile );
@@ -58,23 +59,28 @@ class Media::Object {
     
     
     method encode_media ( $payload ) {
-        my $type    = $payload->{'type'};
-        my $medium  = $payload->{'medium'};
-        my $details = $payload->{'details'};
-        my $input   = $payload->{'input'};
-        
-        my $config = $input->{'media_conf'} // $self->config_file;
-        my $handler;
-        
-        if ( $config ne $self->config_file ) {
-            my $media = Media->new( $config );
-            $handler = $media->get_handler( $type, $medium, $details, $input );
-        }
-        else {
-            $handler = $self->get_handler( $type, $medium, $details, $input );
-        }
+        my $handler = $self->get_handler_from_payload( $payload );
+        my $install = $payload->{'details'}{'install'};
         
         $handler->encode_content();
+        if ( !defined $install || $install ) {
+            $self->install_media( $handler );
+        }
+        else {
+            my $dir    = $handler->get_conversion_directory();
+            my $p_file = "$dir/payload.store";
+            
+            nstore $payload, $p_file;
+        }
+    }
+    method install_converted_media ( $dir ) {
+        my $p_file  = "$dir/payload.store";
+        my $payload = retrieve $p_file;
+        my $handler = $self->get_handler_from_payload( $payload );
+        
+        $self->install_media( $handler );
+    }
+    method install_media ( $handler ) {
         $handler->add_metadata_to_content();
         $handler->install_content();
         $handler->post_install();
@@ -100,6 +106,25 @@ class Media::Object {
                 input       => $input,
                 config      => $self->full_configuration,
             );
+    }
+    method get_handler_from_payload( $payload ) {
+        my $type    = $payload->{'type'};
+        my $medium  = $payload->{'medium'};
+        my $details = $payload->{'details'};
+        my $input   = $payload->{'input'};
+        
+        my $config = $input->{'media_conf'} // $self->config_file;
+        my $handler;
+        
+        if ( $config ne $self->config_file ) {
+            my $media = Media->new( $config );
+            $handler = $media->get_handler( $type, $medium, $details, $input );
+        }
+        else {
+            $handler = $self->get_handler( $type, $medium, $details, $input );
+        }
+        
+        return $handler;
     }
     method get_empty_handler ( $type?, $medium? ) {
         $type   = 'Empty' unless defined $type;

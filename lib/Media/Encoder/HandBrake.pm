@@ -64,6 +64,7 @@ role Media::Encoder::HandBrake {
         year rating feature director genre actor writer studio plot company
         artist album poster extra
         audio subtitles track duration size angles chapter_count
+        install
     );
     use constant STANDARD_CONFIG_INTRO => q(
         # fill out one or the other of:
@@ -153,7 +154,9 @@ role Media::Encoder::HandBrake {
         move( $in_progress, $completed );
     }
     method clean_up_conversion {
-        rmdir $self->get_conversion_directory();
+        my $dir = $self->get_conversion_directory();
+        unlink "$dir/payload.store";
+        rmdir $dir;
         $self->clean_up_input();
     }
     
