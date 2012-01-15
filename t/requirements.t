@@ -1,6 +1,6 @@
 use Modern::Perl;
 use Capture::Tiny   qw( capture_merged );
-use Test::More      tests => 4;
+use Test::More      tests => 5;
 
 
 
@@ -16,8 +16,22 @@ my $return;
     
     is( 0, $return, 'HandBrakeCLI installed' );
     
-    $output =~ m{^HandBrake ([\d\.]+)}m;
-    is( '0.9.5', $1, 'HandBrakeCLI is the right version' );
+    # Check the version of HandbrakeCLI releases
+    SKIP: {
+        skip "HandbrakeCLI is built from source",
+             1 if $output =~ m{^HandBrake rev([\d]+)}m;
+        
+        $output =~ m{^HandBrake ([\d\.]+)}m;
+        is( '0.9.5', $1, 'HandBrakeCLI is the right version' );
+    }
+    # Check the version of HandbrakeCLI built from source
+    SKIP: {
+        skip "HandbrakeCLI is an official release",
+             1 if $output =~ m{^HandBrake ([\d\.]+)}m;
+        
+        $output =~ m{^HandBrake rev([\d\.]+)}m;
+        cmp_ok( '3736', '<=', $1, 'HandBrakeCLI is the right version' );
+    }
 }
 {
     $output = capture_merged {
