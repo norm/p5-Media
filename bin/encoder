@@ -58,10 +58,14 @@ sub run_encoder {
             my $start = time();
             log_action( '"' . $payload->{'name'} . '" starting' );
             
-            $media->encode_media( $payload );
-            
-            my $elapsed = elapsed( time() - $start );
-            log_action( '"' . $payload->{'name'} . "\" took $elapsed" );
+            my $done = $media->encode_media( $payload );
+            if ( !defined $done ) {
+                log_action( '"' . $payload->{'name'} . "\" disappeared" );
+            }
+            else {
+                my $elapsed = elapsed( time() - $start );
+                log_action( '"' . $payload->{'name'} . "\" took $elapsed" );
+            }
         }
         
         $job->finish();

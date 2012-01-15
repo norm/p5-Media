@@ -62,7 +62,9 @@ class Media::Object {
         my $handler = $self->get_handler_from_payload( $payload );
         my $install = $payload->{'details'}{'install'};
         
-        $handler->encode_content();
+        my $done = $handler->encode_content();
+        return unless defined $done;
+        
         if ( !defined $install || $install ) {
             $self->install_media( $handler );
         }
@@ -72,6 +74,8 @@ class Media::Object {
             
             nstore $payload, $p_file;
         }
+        
+        return 1;
     }
     method install_converted_media ( $dir ) {
         my $p_file  = "$dir/payload.store";

@@ -142,6 +142,9 @@ role Media::Encoder::HandBrake {
         
         my @arguments = $self->get_handbrake_args( %args );
         
+        # flag missing files
+        return if !-f $input && !-d $input;
+        
         my $start = time();
         $self->run_handbrake(
                 NOISY,
@@ -152,6 +155,7 @@ role Media::Encoder::HandBrake {
             );
         
         move( $in_progress, $completed );
+        return 1;
     }
     method clean_up_conversion {
         my $dir = $self->get_conversion_directory();

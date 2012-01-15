@@ -60,6 +60,8 @@ role Media::Queue {
                     %$extra_args,
                 );
             
+            $priority = delete $details{'priority'};
+            
             my %payload = (
                     details    => \%details,
                     input      => \%input,
