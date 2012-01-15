@@ -148,6 +148,16 @@ class Media::Object {
         # print Dumper \$medium;
         # print Dumper \$input;
         
+        my $edit_created_config = defined $input
+                                    && $input->{'config_created'}
+                                    && $hints->{'edit-control'};
+        
+        if ( $edit_created_config ) {
+            $self->edit_control_file( $target );
+            ( $type, $details ) = $self->determine_type( $target, $hints );
+            ( $medium, $input ) = $self->determine_medium( $target );
+        }
+        
         return $self->get_handler( $type, $medium, $details, $input )
             if defined $type && defined $medium;
         
@@ -190,5 +200,11 @@ class Media::Object {
             return( $try, $input )
                 if defined $input;
         }
+    }
+    method edit_control_file ( $input ) {
+        system(
+                $ENV{'VISUAL'} // $ENV{'EDITOR'} // 'vi',
+                "$input/media.conf",
+            );
     }
 }

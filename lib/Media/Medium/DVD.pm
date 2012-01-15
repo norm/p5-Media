@@ -86,6 +86,9 @@ role Media::Medium::DVD {
             else {
                 say STDERR "$input has no configuration file -- creating one";
                 $self->create_config_file( $input );
+                return {
+                    config_created => 1,
+                }
             }
         }
         
