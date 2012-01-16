@@ -22,12 +22,15 @@ role Media::Type::TV {
         
         my @elements = (
                 '--TVShowName',     $self->details->{'series'},
-                '--TVSeasonNum',    $self->details->{'season'},
-                '--TVEpisodeNum',   $episode_number,
                 '--TVEpisode',      $self->get_episode_id(),
                 '--title',          $self->details->{'title'},
                 '--stik',           'TV Show',
             );
+        
+        push( @elements, '--TVSeasonNum', $self->details->{'season'} )
+            if defined $self->details->{'season'};
+        push( @elements, '--TVEpisodeNum', $episode_number )
+            if defined $episode_number;
         
         return @elements;
     }
