@@ -116,6 +116,7 @@ sub list_queue {
     JOB:
     foreach my $job ( $media->queue_list_jobs() ) {
         my $name     = $job->{'payload'}{'name'};
+        my $install  = $job->{'payload'}{'details'}{'install'};
         my $priority = $job->{'priority'};
         my $handler  = $job->{'handler'};
         my $running  = $job->{'running'};
@@ -133,6 +134,8 @@ sub list_queue {
         $activity = " (handler %s, inactive)" if $inactive;
         $colour   = 'cyan'                    if $inactive;
         
+        $install = ( defined $install && !$install ) ? ' ' : '*';
+        
         if ( $stop_job ) {
             $colour   = 'bold red';
             $name     = 'ENCODER WILL STOP AFTER CURRENT JOB';
@@ -140,8 +143,9 @@ sub list_queue {
         }
         
         
-        my $output = sprintf "[%02s] %s${activity}\n",
+        my $output = sprintf "[%02s] %s %s${activity}\n",
                         $priority,
+                        $install,
                         $name,
                         $handler;
         $output = trim_to_width( $output );
