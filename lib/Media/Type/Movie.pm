@@ -5,6 +5,7 @@ use MooseX::Declare;
 role Media::Type::Movie {
     use File::Path      qw( mkpath );
     use IMDB::Film;
+    use Try::Tiny;
     
     has type => (
         isa     => 'Str',
@@ -346,19 +347,30 @@ XML
             my $data_dir    = $self->config->{''}{'cache_directory'};
             my $imdb;
             
-            $imdb = IMDB::Film->new(
-                    crit       => $details{'title'},
-                    year       => $details{'year'},
-                    cache      => 1,
-                    cache_root => "${data_dir}/imdb",
-                );
+            foreach my $attempt ( 1..3 ) {
+                try {
+                    $imdb = IMDB::Film->new(
+                            crit       => $details{'title'},
+                            year       => $details{'year'},
+                            cache      => 1,
+                            cache_root => "${data_dir}/imdb",
+                        );
+                }
+                catch {
+                    # from IMDB::Film "in some case it can be returned 
+                    # critical error", so try again in a moment
+                    say STDERR 'IMDB 500 error on ' . $details{'title'};
+                    sleep 5;
+                };
+                last if defined $imdb;
+            }
             
-            if ( defined $imdb->error && length $imdb->error ) {
+            return unless defined $imdb;
+            
+            if ( !defined $imdb->title() && defined $imdb->error ) {
                 $found_movie = 0;
             }
             else {
-                $found_movie = 0
-                    unless $imdb->title();
                 $found_movie = 0
                     if $imdb->kind() eq 'tv series';
                 $found_movie = 0
@@ -381,9 +393,9 @@ XML
                 
                 if ( !defined $details{'rating'} || $use_imdb ) {
                     my $certs = $imdb->certifications();
-                    $details{'rating'} = $certs->{'UK'} 
-                                      // $certs->{'USA'} 
-                                      // 'Unrated';
+                    $details{'rating'} = $self->get_normalised_rating(
+                        $certs->{'UK'} // $certs->{'USA'}
+                    );
                 }
                 
                 foreach my $director ( @{ $imdb->directors() } ) {
@@ -421,5 +433,11 @@ XML
         $title =~ s{\s*:\s*}{ - }g;
         
         return $title;
+    }
+    method get_normalised_rating ( $rating ) {
+        return '12' if $rating eq '12A';
+        return 'PG' if $rating eq 'A';
+        return '15' if $rating eq 'X';
+        return $rating;
     }
 }

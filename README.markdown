@@ -111,16 +111,33 @@ matters to you, replace the existing `certifications` method in the Film.pm
     
     	while ($tag = $parser->get_tag('h5')) {
     		my $txt = $parser->get_text;
+    		my($country, $range, $has_advisory);
     		if ($txt =~ /certification/i) {
     			$parser->get_tag('div');
     			while ($tag = $parser->get_tag()) {
     				last if ($tag->[0] eq 'h3');
     				if ($tag->[0] eq 'a') {
     					$txt = $parser->get_text;
-    					my($country, $range) = split /\:/, $txt;
-    					$cert_list{$country} = $range;
+    					($country, $range) = split /\:/, $txt;
+    					$has_advisory = 0;
+    				}
+    				elsif ($tag->[0] eq 'i') {
+    					$has_advisory = $parser->get_text;
+    					if ( $has_advisory =~ m{original rating}i ) {
+    						undef $country; undef $range;
+    					}
+    				}
+    				elsif ($tag->[0] ne 'div') {
+    					$txt = $parser->get_text;
+    					if ( $txt !~ m{^\s*$} ) {
+    						$cert_list{$country} = $range
+    							if defined $country;
+    						undef $country; undef $range;
+    					}
     				}
     			}
+    			$cert_list{$country} = $range
+    				if defined $country;
     			$self->{_certifications} = \%cert_list;
     		}
     	}

@@ -57,18 +57,18 @@ name, rating and year of the movie; within which are stored the main feature
 extras. For example, the movie Serenity, stored with the out-takes would be
 stored as:
 
-    /files/movies/All/Serenity - 12A (2005)/Serenity - 12A (2005).m4v
-    /files/movies/All/Serenity - 12A (2005)/Out-takes.m4v
+    /files/movies/All/Serenity - 12 (2005)/Serenity - 12 (2005).m4v
+    /files/movies/All/Serenity - 12 (2005)/Out-takes.m4v
 
 You will notice an extra "All" directory before the movie. When a movie is
 stored, C<Media> will look the movie up in the Internet Movie Database
 to determine the genre(s), director(s), writer(s) and major actors appearing
 in it. That information is used to create a structure like:
 
-    /files/movies/Director/Joss Whedon/Serenity - 12A (2005).m4v
-    /files/movies/Writer/Joss Whedon/Serenity - 12A (2005).m4v
-    /files/movies/Genre/Science Fiction/Serenity - 12A (2005).m4v
-    /files/movies/Actor/Nathan Fillion/Serenity - 12A (2005).m4v
+    /files/movies/Director/Joss Whedon/Serenity - 12 (2005).m4v
+    /files/movies/Writer/Joss Whedon/Serenity - 12 (2005).m4v
+    /files/movies/Genre/Science Fiction/Serenity - 12 (2005).m4v
+    /files/movies/Actor/Nathan Fillion/Serenity - 12 (2005).m4v
     
 The movie is symbolically linked within these extra directories, so no disk
 space is wasted storing multiple copies of the same movie.
@@ -140,7 +140,7 @@ Some examples:
     
     Star Wars
     Barbarella - X (1968)
-    Serenity - 12A (2005) - Outtakes
+    Serenity - 12 (2005) - Outtakes
 
 It is not an error to leave out the rating, the year or the extra name.
 The rating and year will be taken from the information found in the Internet 

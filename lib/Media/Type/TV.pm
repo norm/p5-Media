@@ -3,6 +3,7 @@ use MooseX::Declare;
 
 role Media::Type::TV {
     use IMDB::Film;
+    use Try::Tiny;
     
     has type => (
         isa     => 'Str',
@@ -250,11 +251,26 @@ role Media::Type::TV {
             return unless defined $details{'series'};
             
             my $data_dir    = $self->config->{''}{'cache_directory'};
-            my $imdb        = IMDB::Film->new(
-                    crit       => $details{'series'},
-                    cache      => 1,
-                    cache_root => "${data_dir}/imdb",
-                );
+            my $imdb;
+            
+            foreach my $attempt ( 1..3 ) {
+                try {
+                    $imdb = IMDB::Film->new(
+                            crit       => $details{'series'},
+                            cache      => 1,
+                            cache_root => "${data_dir}/imdb",
+                        );
+                }
+                catch {
+                    # from IMDB::Film "in some case it can be returned 
+                    # critical error", so try again in a moment
+                    say STDERR 'IMDB 500 error on ' . $details{'series'};
+                    sleep 5;
+                };
+                last if defined $imdb;
+            }
+            
+            return unless defined $imdb;
             
             if ( defined $imdb->title() || scalar @{$imdb->matched} > 1 ) {
                 # try for the 2nd match if 1st is movie, as IMDB prefers them

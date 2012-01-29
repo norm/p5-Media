@@ -15,7 +15,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     is( 4,                  $confidence );
     is( 'Barbarella',       $details{'title'} );
     is( '1968',             $details{'year'} );
-    is( 'X',                $details{'rating'} );
+    is( '15',               $details{'rating'} );
     ok( defined $details{'feature'} );
     
     $title = q(Barbarella);
@@ -23,7 +23,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     is( 3,                  $confidence );
     is( 'Barbarella',       $details{'title'} );
     is( '1968',             $details{'year'} );
-    is( 'X',                $details{'rating'} );
+    is( '15',               $details{'rating'} );
     ok( defined $details{'feature'} );
     
     $title = q(Barbarella - 12 (1970));
@@ -31,7 +31,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     is( 5,                  $confidence );
     is( 'Barbarella',       $details{'title'} );
     is( '1968',             $details{'year'} );
-    is( 'X',                $details{'rating'} );
+    is( '15',               $details{'rating'} );
     ok( defined $details{'feature'} );
     
     $title = q(Barbarlla);
@@ -39,7 +39,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     is( 2.7,                $confidence );
     is( 'Barbarella',       $details{'title'} );
     is( '1968',             $details{'year'} );
-    is( 'X',                $details{'rating'} );
+    is( '15',               $details{'rating'} );
     ok( defined $details{'feature'} );
     
     $title = q(Berbirella);
@@ -47,7 +47,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     is( 2.4,                $confidence );
     is( 'Barbarella',       $details{'title'} );
     is( '1968',             $details{'year'} );
-    is( 'X',                $details{'rating'} );
+    is( '15',               $details{'rating'} );
     ok( defined $details{'feature'} );
 }
 
@@ -161,7 +161,7 @@ my $handler = $media->get_empty_handler( 'Movie' );
     is( 6,                  $confidence );
     is( 'Barbarella',       $details{'title'} );
     is( '1968',             $details{'year'} );
-    is( 'X',                $details{'rating'} );
+    is( '15',               $details{'rating'} );
     ok( defined $details{'feature'} );
 }
 {
@@ -184,12 +184,12 @@ my $handler = $media->get_empty_handler( 'Movie' );
 
 # Movie name containing hyphens
 {
-    my $title = q(Harry Potter and the Deathly Hallows - Part 1 - 12A (2010));
+    my $title = q(Harry Potter and the Deathly Hallows - Part 1 - 12 (2010));
     my( $confidence, %details ) = $handler->parse_title_string( $title );
     is( 5,          $confidence );
     is( 'Harry Potter and the Deathly Hallows - Part 1',
                     $details{'title'} );
     is( '2010',     $details{'year'} );
-    is( '12A',      $details{'rating'} );
+    is( '12',       $details{'rating'} );
     ok( defined $details{'feature'} );
 }

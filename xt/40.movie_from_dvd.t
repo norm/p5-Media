@@ -62,18 +62,44 @@ is_deeply(
         $payload,
         {
             details => {
+                actor     => [
+                  'Sean Connery',
+                  'Ursula Andress',
+                  'Joseph Wiseman',
+                  'Jack Lord',
+                  'Bernard Lee',
+                  'Anthony Dawson',
+                  'Zena Marshall',
+                  'John Kitzmiller',
+                  'Eunice Gayson',
+                  'Lois Maxwell',
+                ],
                 audio     => [
                     "1:stereo:English",
                     "2:stereo:Director, Cast and Crew Commentary",
                 ],
+                company   => "Eon Productions",
                 chapters  => '8-9',
                 crop      => '0/0/6/10',
+                director  => [
+                    'Terence Young'
+                ],
                 feature   => '1',
+                genre     => [
+                    'Action',
+                    'Adventure',
+                    'Thriller'
+                ],
                 maxWidth  => '320',
                 maxHeight => '240',
+                plot      => "James Bond (007) is Britain's top agent and is on an exciting mission, to solve the mysterious murder of a fellow agent. The task sends him to Jamacia, where he joins forces with Quarrel and a loyal CIA agent, Felix Leiter. While dodging tarantulas, \"fire breathing dragons\" and a trio of assassins, known as the three blind mice. Bond meets up with the beautiful Honey Ryder and goes face to face with the evil Dr. No.",
                 quality   => '50',
                 rating    => 'PG',
                 title     => 'Dr. No',
+                writer    => [
+                    'Richard Maibaum',
+                    'Johanna Harwood',
+                ],
                 year      => '1962',
             },
             input   => {
@@ -136,9 +162,13 @@ my %metadata = $handler->extract_metadata( $target_file );
 is_deeply(
         \%metadata,
         {
+            artist        => 'Terence Young',
             artwork_count => 1,
+            description   => "James Bond (007) is Britain's top agent and is on an exciting mission, to solve the mysterious murder of a fellow agent. The task sends him to Jamacia, where he joins forces with Quarrel and a loyal CIA agent, Felix Leiter. While dodging tarantulas, \"fire breathing dragons\" and a trio of assassins, known as the three blind mice. Bond meets up with the beautiful Honey Ryder and goes face to face with the evil Dr. No.",
+            genre         => 'Action',
             kind          => 'Movie',
             rating        => 'PG',
+            summary       => "James Bond (007) is Britain's top agent and is on an exciting mission, to solve the mysterious murder of a fellow agent. The task sends him to Jamacia, where he joins forces with Quarrel and a loyal CIA agent, Felix Leiter. While dodging tarantulas, \"f …",
             title         => 'Dr. No',
             year          => '1962',
         },
@@ -153,14 +183,40 @@ is_deeply(
         $payload,
         {
             details => {
+                actor     => [
+                  'Sean Connery',
+                  'Ursula Andress',
+                  'Joseph Wiseman',
+                  'Jack Lord',
+                  'Bernard Lee',
+                  'Anthony Dawson',
+                  'Zena Marshall',
+                  'John Kitzmiller',
+                  'Eunice Gayson',
+                  'Lois Maxwell',
+                ],
                 audio     => "1:stereo:English",
+                company   => "Eon Productions",
                 crop      => '0/0/34/34',
+                director  => [
+                    'Terence Young'
+                ],
                 extra     => 'Trailer 1',
+                genre     => [
+                    'Action',
+                    'Adventure',
+                    'Thriller'
+                ],
                 maxWidth  => '320',
                 maxHeight => '240',
+                plot      => "James Bond (007) is Britain's top agent and is on an exciting mission, to solve the mysterious murder of a fellow agent. The task sends him to Jamacia, where he joins forces with Quarrel and a loyal CIA agent, Felix Leiter. While dodging tarantulas, \"fire breathing dragons\" and a trio of assassins, known as the three blind mice. Bond meets up with the beautiful Honey Ryder and goes face to face with the evil Dr. No.",
                 quality   => '50',
                 rating    => 'PG',
                 title     => 'Dr. No',
+                writer    => [
+                    'Richard Maibaum',
+                    'Johanna Harwood',
+                ],
                 year      => '1962',
             },
             input   => {
@@ -216,9 +272,13 @@ is_deeply(
 is_deeply(
         \%metadata,
         {
+            artist        => 'Terence Young',
             artwork_count => 1,
+            description   => "James Bond (007) is Britain's top agent and is on an exciting mission, to solve the mysterious murder of a fellow agent. The task sends him to Jamacia, where he joins forces with Quarrel and a loyal CIA agent, Felix Leiter. While dodging tarantulas, \"fire breathing dragons\" and a trio of assassins, known as the three blind mice. Bond meets up with the beautiful Honey Ryder and goes face to face with the evil Dr. No.",
+            genre         => 'Action',
             kind          => 'Movie',
             rating        => 'PG',
+            summary       => "James Bond (007) is Britain's top agent and is on an exciting mission, to solve the mysterious murder of a fellow agent. The task sends him to Jamacia, where he joins forces with Quarrel and a loyal CIA agent, Felix Leiter. While dodging tarantulas, \"f …",
             title         => 'Trailer 1',
             year          => '1962',
         },
@@ -233,14 +293,40 @@ is_deeply(
         $payload,
         {
             details => {
+                actor     => [
+                  'Sean Connery',
+                  'Ursula Andress',
+                  'Joseph Wiseman',
+                  'Jack Lord',
+                  'Bernard Lee',
+                  'Anthony Dawson',
+                  'Zena Marshall',
+                  'John Kitzmiller',
+                  'Eunice Gayson',
+                  'Lois Maxwell',
+                ],
                 audio     => "1:stereo:English",
+                company   => "Eon Productions",
                 crop      => '8/4/0/2',
+                director  => [
+                    'Terence Young'
+                ],
                 extra     => 'Trailer 2',
+                genre     => [
+                    'Action',
+                    'Adventure',
+                    'Thriller'
+                ],
                 maxWidth  => '320',
                 maxHeight => '240',
+                plot      => "James Bond (007) is Britain's top agent and is on an exciting mission, to solve the mysterious murder of a fellow agent. The task sends him to Jamacia, where he joins forces with Quarrel and a loyal CIA agent, Felix Leiter. While dodging tarantulas, \"fire breathing dragons\" and a trio of assassins, known as the three blind mice. Bond meets up with the beautiful Honey Ryder and goes face to face with the evil Dr. No.",
                 quality   => '50',
                 rating    => 'PG',
                 title     => 'Dr. No',
+                writer    => [
+                    'Richard Maibaum',
+                    'Johanna Harwood',
+                ],
                 year      => '1962',
             },
             input   => {
@@ -301,9 +387,13 @@ is_deeply(
 is_deeply(
         \%metadata,
         {
+            artist        => 'Terence Young',
             artwork_count => 1,
+            description   => "James Bond (007) is Britain's top agent and is on an exciting mission, to solve the mysterious murder of a fellow agent. The task sends him to Jamacia, where he joins forces with Quarrel and a loyal CIA agent, Felix Leiter. While dodging tarantulas, \"fire breathing dragons\" and a trio of assassins, known as the three blind mice. Bond meets up with the beautiful Honey Ryder and goes face to face with the evil Dr. No.",
+            genre         => 'Action',
             kind          => 'Movie',
             rating        => 'PG',
+            summary       => "James Bond (007) is Britain's top agent and is on an exciting mission, to solve the mysterious murder of a fellow agent. The task sends him to Jamacia, where he joins forces with Quarrel and a loyal CIA agent, Felix Leiter. While dodging tarantulas, \"f …",
             title         => 'Trailer 2',
             year          => '1962',
         },

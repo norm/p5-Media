@@ -61,6 +61,18 @@ is_deeply(
         $payload,
         {
             details => {
+                actor    => [
+                    'Mark Hamill',
+                    'Harrison Ford',
+                    'Carrie Fisher',
+                    'Peter Cushing',
+                    'Alec Guinness',
+                    'Anthony Daniels',
+                    'Kenny Baker',
+                    'Peter Mayhew',
+                    'David Prowse',
+                    'James Earl Jones',
+                ],
                 audio    => [
                     "1:ac3pass:English",
                     "1:dpl2:English",
@@ -70,14 +82,28 @@ is_deeply(
                     "3:dpl2:English"
                 ],
                 chapters => '22-22',
+                company  => 'Lucasfilm',
                 crop     => '72/72/0/0',
+                director => [
+                    'George Lucas',
+                ],
                 feature  => '1',
+                genre => [
+                    'Action',
+                    'Adventure',
+                    'Fantasy',
+                    'Sci-Fi',
+                ],
+                plot     => "Part IV in George Lucas' epic, Star Wars: A New Hope opens with a Rebel ship being boarded by the tyrannical Darth Vader. The plot then follows the life of a simple farm boy, Luke Skywalker, as he and his newly met allies (Han Solo, Chewbacca, Obi-Wan Kenobi, C-3PO, R2-D2) attempt to rescue a Rebel leader, Princess Leia, from the clutches of the Empire. The conclusion is culminated as the Rebels, including Skywalker and flying ace Wedge Antilles make an attack on the Empire's most powerful and ominous weapon, the Death Star.",
                 rating   => 'U',
                 subtitle => [
                     'burn:8',
                     'eng:english.srt',
                 ],
-                title    => 'Star Wars IV - A New Hope',
+                title    => "Star Wars - Episode IV - A New Hope",
+                writer   => [
+                    'George Lucas',
+                ],
                 year     => '1977',
             },
             input   => {
@@ -90,7 +116,7 @@ is_deeply(
                 title      => 1
             },
             medium  => 'DVD',
-            name    => 'Star Wars IV - A New Hope - U (1977)',
+            name    => 'Star Wars - Episode IV - A New Hope - U (1977)',
             type    => 'Movie',
         },
         'first job payload matches',
@@ -98,8 +124,8 @@ is_deeply(
 
 $media->encode_media( $payload );
 
-my $target_file = 'xt/movies/All/Star Wars IV - A New Hope - U (1977)/'
-                . 'Star Wars IV - A New Hope - U (1977).m4v';
+my $title       = 'Star Wars - Episode IV - A New Hope - U (1977)';
+my $target_file = sprintf 'xt/movies/All/%s/%s.m4v', $title, $title;
 ok( -f $target_file, 'file installed' );
 
 my $handler          = $media->get_empty_handler( undef, 'VideoFile' );
@@ -176,10 +202,14 @@ my %metadata = $handler->extract_metadata( $target_file );
 is_deeply(
         \%metadata,
         {
+            artist        => "George Lucas",
             artwork_count => 1,
+            description   => "Part IV in George Lucas' epic, Star Wars: A New Hope opens with a Rebel ship being boarded by the tyrannical Darth Vader. The plot then follows the life of a simple farm boy, Luke Skywalker, as he and his newly met allies (Han Solo, Chewbacca, Obi-Wan Kenobi, C-3PO, R2-D2) attempt to rescue a Rebel leader, Princess Leia, from the clutches of the Empire. The conclusion is culminated as the Rebels, including Skywalker and flying ace Wedge Antilles make an attack on the Empire's most powerful and ominous weapon, the Death Star.",
+            genre         => 'Action',
             kind          => 'Movie',
             rating        => 'U',
-            title         => 'Star Wars IV - A New Hope',
+            summary       => "Part IV in George Lucas' epic, Star Wars: A New Hope opens with a Rebel ship being boarded by the tyrannical Darth Vader. The plot then follows the life of a simple farm boy, Luke Skywalker, as he and his newly met allies (Han Solo, Chewbacca, Obi-Wan  \342\200\246",
+            title         => 'Star Wars - Episode IV - A New Hope',
             year          => '1977',
         },
         'metadata'

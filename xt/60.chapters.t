@@ -61,15 +61,41 @@ is_deeply(
         $payload,
         {
             details => {
+                actor     => [
+                  'Sean Connery',
+                  'Ursula Andress',
+                  'Joseph Wiseman',
+                  'Jack Lord',
+                  'Bernard Lee',
+                  'Anthony Dawson',
+                  'Zena Marshall',
+                  'John Kitzmiller',
+                  'Eunice Gayson',
+                  'Lois Maxwell',
+                ],
                 audio     => "1:stereo:English",
+                company   => "Eon Productions",
                 crop      => '0/0/6/4',
+                director  => [
+                    'Terence Young'
+                ],
                 extra     => 'Terence Young - Bond Vivant',
+                genre     => [
+                    'Action',
+                    'Adventure',
+                    'Thriller'
+                ],
                 markers   => 'chapters.csv',
                 maxWidth  => '320',
                 maxHeight => '240',
+                plot      => "James Bond (007) is Britain's top agent and is on an exciting mission, to solve the mysterious murder of a fellow agent. The task sends him to Jamacia, where he joins forces with Quarrel and a loyal CIA agent, Felix Leiter. While dodging tarantulas, \"fire breathing dragons\" and a trio of assassins, known as the three blind mice. Bond meets up with the beautiful Honey Ryder and goes face to face with the evil Dr. No.",
                 quality   => '50',
                 rating    => 'PG',
                 title     => 'Dr. No',
+                writer    => [
+                    'Richard Maibaum',
+                    'Johanna Harwood',
+                ],
                 year      => '1962',
             },
             input   => {
@@ -135,9 +161,13 @@ my %metadata = $handler->extract_metadata( $target_file );
 is_deeply(
         \%metadata,
         {
+            artist        => 'Terence Young',
             artwork_count => 1,
+            description   => "James Bond (007) is Britain's top agent and is on an exciting mission, to solve the mysterious murder of a fellow agent. The task sends him to Jamacia, where he joins forces with Quarrel and a loyal CIA agent, Felix Leiter. While dodging tarantulas, \"fire breathing dragons\" and a trio of assassins, known as the three blind mice. Bond meets up with the beautiful Honey Ryder and goes face to face with the evil Dr. No.",
+            genre         => 'Action',
             kind          => 'Movie',
             rating        => 'PG',
+            summary       => "James Bond (007) is Britain's top agent and is on an exciting mission, to solve the mysterious murder of a fellow agent. The task sends him to Jamacia, where he joins forces with Quarrel and a loyal CIA agent, Felix Leiter. While dodging tarantulas, \"f …",
             title         => 'Terence Young - Bond Vivant',
             year          => '1962',
         },

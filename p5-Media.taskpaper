@@ -1,3 +1,5 @@
+IMDB:
+    - replace use of IMDB::Film with more lightweight scraper
 encoder:
 	- option to sleep the encoder during certain hours
 	- pull chapters and subtitle files from the web, like posters

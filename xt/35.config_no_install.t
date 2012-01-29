@@ -54,12 +54,40 @@ is_deeply(
         $payload,
         {
             details => {
-                audio   => '1:stereo:English',
-                feature => '1',
-                install => '0',
-                rating  => 'X',
-                title   => 'Barbarella',
-                year    => '1968',
+                actor    => [
+                    "Jane Fonda",
+                    "John Phillip Law",
+                    "Anita Pallenberg",
+                    "Milo O'Shea",
+                    "Marcel Marceau",
+                    "Claude Dauphin",
+                    "V\351ronique Vendell",
+                    "Giancarlo Cobelli",
+                    "Serge Marquand",
+                    "Nino Musco",
+                ],
+                audio    => '1:stereo:English',
+                company  => "Dino de Laurentiis Cinematografica",
+                director => [
+                    "Roger Vadim",
+                ],
+                feature  => '1',
+                genre    => [
+                    "Action",
+                    "Adventure",
+                    "Comedy",
+                    "Fantasy",
+                    "Sci-Fi",
+                ],
+                install  => '0',
+                plot     => "After an in-flight anti-gravity striptease (masked by the film's opening titles), Barbarella, a 41st century astronaut, lands on the planet Lythion and sets out to find the evil Durand Durand in the city of Sogo, where a new sin is invented every hour. There, she encounters such objects as the Exessive Machine, a genuine sex organ on which an accomplished artist of the keyboard, in this case, Durand Durand himself, can drive a victim to death by pleasure, a lesbian queen who, in her dream chamber, can make her fantasies take form, and a group of ladies smoking a giant hookah which, via a poor victim struggling in its glass globe, dispenses Essance of Man. You can't help but be impressed by the special effects crew and the various ways that were found to tear off what few clothes our heroine seemed to possess. Based on the popular French comic strip.",
+                rating   => '15',
+                title    => 'Barbarella',
+                writer   => [
+                    "Jean-Claude Forest",
+                    "Claude Brul\351",
+                ],
+                year     => '1968',
             },
             input   => {
                 media_conf => "$cwd/t/conf/trash.conf",
@@ -69,17 +97,17 @@ is_deeply(
                 title      => '1',
             },
             medium  => 'VideoFile',
-            name    => 'Barbarella - X (1968)',
+            name    => 'Barbarella - 15 (1968)',
             type    => 'Movie',
         }
     );
 
 $media->encode_media( $payload );
 
-my $encode_directory = 'xt/encode/Barbarella - X (1968)';
+my $encode_directory = 'xt/encode/Barbarella - 15 (1968)';
 my $encoded_file     = "$encode_directory/Z-converted.m4v";
-my $target_file      = 'xt/movies/All/Barbarella - X (1968)/'
-                     . 'Barbarella - X (1968).m4v';
+my $target_file      = 'xt/movies/All/Barbarella - 15 (1968)/'
+                     . 'Barbarella - 15 (1968).m4v';
 
 ok( !-f $target_file, 'file installed' );
 exit if -f $target_file;
@@ -139,9 +167,13 @@ ok( !-d $source,
 is_deeply(
         \%metadata,
         {
+            artist        => 'Roger Vadim',
             artwork_count => '1',
+            description   => "After an in-flight anti-gravity striptease (masked by the film's opening titles), Barbarella, a 41st century astronaut, lands on the planet Lythion and sets out to find the evil Durand Durand in the city of Sogo, where a new sin is invented every hour. There, she encounters such objects as the Exessive Machine, a genuine sex organ on which an accomplished artist of the keyboard, in this case, Durand Durand himself, can drive a victim to death by pleasure, a lesbian queen who, in her dream chamber, can make her fantasies take form, and a group of ladies smoking a giant hookah which, via a poor victim struggling in its glass globe, dispenses Essance of Man. You can't help but be impressed by the special effects crew and the various ways that were found to tear off what few clothes our heroine seemed to possess. Based on the popular French comic strip.",
+            genre         => 'Action',
             kind          => 'Movie',
-            rating        => 'X',
+            rating        => '15',
+            summary       => "After an in-flight anti-gravity striptease (masked by the film's opening titles), Barbarella, a 41st century astronaut, lands on the planet Lythion and sets out to find the evil Durand Durand in the city of Sogo, where a new sin is invented every hour. …",
             title         => 'Barbarella',
             year          => '1968',
         },

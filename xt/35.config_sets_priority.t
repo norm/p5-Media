@@ -65,10 +65,37 @@ is_deeply(
         $payload,
         {
             details => {
+                actor    => [
+                    'Keanu Reeves',
+                    'Laurence Fishburne',
+                    'Carrie-Anne Moss',
+                    'Hugo Weaving',
+                    'Gloria Foster',
+                    'Joe Pantoliano',
+                    'Marcus Chong',
+                    'Julian Arahanga',
+                    'Matt Doran',
+                    'Belinda McClory',
+                ],
                 audio    => '1:stereo:English',
+                company  => 'Warner Bros. Pictures',
+                director => [
+                    'Andy Wachowski',
+                    'Lana Wachowski',
+                ],
                 feature  => '1',
+                genre    => [
+                    'Action',
+                    'Adventure',
+                    'Sci-Fi',
+                ],
+                plot     => "Thomas A. Anderson is a man living two lives. By day he is an average computer programmer and by night a hacker known as Neo. Neo has always questioned his reality, but the truth is far beyond his imagination. Neo finds himself targeted by the police when he is contacted by Morpheus, a legendary computer hacker branded a terrorist by the government. Morpheus awakens Neo to the real world, a ravaged wasteland where most of humanity have been captured by a race of machines that live off of the humans' body heat and electrochemical energy and who imprison their minds within an artificial reality known as the Matrix. As a rebel against the machines, Neo must return to the Matrix and confront the agents: super-powerful computer programs devoted to snuffing out Neo and the entire human rebellion.",
                 rating   => '15',
                 title    => 'The Matrix',
+                writer   => [
+                    'Andy Wachowski',
+                    'Lana Wachowski',
+                ],
                 year     => '1999',
             },
             input   => {
@@ -106,9 +133,13 @@ my %metadata = $handler->extract_metadata( $target_file );
 is_deeply(
         \%metadata,
         {
+            artist        => "Andy Wachowski",
             artwork_count => '1',
+            description   => "Thomas A. Anderson is a man living two lives. By day he is an average computer programmer and by night a hacker known as Neo. Neo has always questioned his reality, but the truth is far beyond his imagination. Neo finds himself targeted by the police when he is contacted by Morpheus, a legendary computer hacker branded a terrorist by the government. Morpheus awakens Neo to the real world, a ravaged wasteland where most of humanity have been captured by a race of machines that live off of the humans' body heat and electrochemical energy and who imprison their minds within an artificial reality known as the Matrix. As a rebel against the machines, Neo must return to the Matrix and confront the agents: super-powerful computer programs devoted to snuffing out Neo and the entire human rebellion.",
+            genre         => 'Action',
             kind          => 'Movie',
             rating        => '15',
+            summary       => "Thomas A. Anderson is a man living two lives. By day he is an average computer programmer and by night a hacker known as Neo. Neo has always questioned his reality, but the truth is far beyond his imagination. Neo finds himself targeted by the police w \342\200\246",
             title         => 'The Matrix',
             year          => '1999',
         },
@@ -168,10 +199,38 @@ is_deeply(
         $payload,
         {
             details => {
+                actor    => [
+                    "Jane Fonda",
+                    "John Phillip Law",
+                    "Anita Pallenberg",
+                    "Milo O'Shea",
+                    "Marcel Marceau",
+                    "Claude Dauphin",
+                    "V\351ronique Vendell",
+                    "Giancarlo Cobelli",
+                    "Serge Marquand",
+                    "Nino Musco",
+                ],
                 audio    => '1:stereo:English',
+                company  => "Dino de Laurentiis Cinematografica",
+                director => [
+                    "Roger Vadim",
+                ],
                 feature  => '1',
-                rating   => 'X',
+                genre    => [
+                    "Action",
+                    "Adventure",
+                    "Comedy",
+                    "Fantasy",
+                    "Sci-Fi",
+                ],
+                plot     => "After an in-flight anti-gravity striptease (masked by the film's opening titles), Barbarella, a 41st century astronaut, lands on the planet Lythion and sets out to find the evil Durand Durand in the city of Sogo, where a new sin is invented every hour. There, she encounters such objects as the Exessive Machine, a genuine sex organ on which an accomplished artist of the keyboard, in this case, Durand Durand himself, can drive a victim to death by pleasure, a lesbian queen who, in her dream chamber, can make her fantasies take form, and a group of ladies smoking a giant hookah which, via a poor victim struggling in its glass globe, dispenses Essance of Man. You can't help but be impressed by the special effects crew and the various ways that were found to tear off what few clothes our heroine seemed to possess. Based on the popular French comic strip.",
+                rating   => '15',
                 title    => 'Barbarella',
+                writer   => [
+                    "Jean-Claude Forest",
+                    "Claude Brul\351",
+                ],
                 year     => '1968',
             },
             input   => {
@@ -182,7 +241,7 @@ is_deeply(
                 title      => '1',
             },
             medium  => 'VideoFile',
-            name    => 'Barbarella - X (1968)',
+            name    => 'Barbarella - 15 (1968)',
             type    => 'Movie',
         }
     );

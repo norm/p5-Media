@@ -37,11 +37,33 @@ role Media::Queue {
         my @titles = $handler->list_titles();
         
         foreach my $title ( @titles ) {
-            # populate this before the next use of $handler so values are set 
+            # populate these before the next use of $handler so values are set 
             # correctly when using a config file rather than the title string
             my $source_details;
+            my $name;
+            
             if ( $handler->can( 'get_details' ) ) {
                 $source_details = $handler->get_details( $title );
+                
+                my $temp_handler = $self->get_empty_handler( $handler->type );
+                my( $score, %d ) = $temp_handler->parse_title_string(
+                        'Title',
+                        $source_details,
+                    );
+                
+                # get "proper" job name
+                my $x_handler = $self->get_handler(
+                        $handler->type,
+                        $handler->medium,
+                        \%d,
+                        $handler->input
+                    );
+                $name = $x_handler->get_job_name();
+                
+                $source_details = {
+                    %$source_details,
+                    %d,
+                };
             }
             else {
                 $source_details = $handler->get_input_track_details();
@@ -61,12 +83,14 @@ role Media::Queue {
                 );
             
             $priority = delete $details{'priority'};
+            $name     = $handler->get_job_name()
+                if !defined $name;
             
             my %payload = (
                     details    => \%details,
                     input      => \%input,
                     medium     => $handler->medium,
-                    name       => $handler->get_job_name(),
+                    name       => $name,
                     type       => $handler->type,
                 );
             
