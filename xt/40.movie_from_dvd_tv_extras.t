@@ -278,8 +278,8 @@ is_deeply(
             artwork_count => 1,
             genre         => 'Documentary',
             kind          => 'TV Show',
-            series        => 'DVD Extras - Dr. No - PG (1962)',
-            title         => 'Trailer 1',
+            series        => 'DVD Extras',
+            title         => 'Dr. No - PG (1962) - Trailer 1',
         },
         "second file's metadata is correct"
     );
@@ -389,8 +389,8 @@ is_deeply(
             artwork_count => 1,
             genre         => 'Documentary',
             kind          => 'TV Show',
-            series        => 'DVD Extras - Dr. No - PG (1962)',
-            title         => 'Trailer 2',
+            series        => 'DVD Extras',
+            title         => 'Dr. No - PG (1962) - Trailer 2',
         },
         "third file's metadata is correct"
     );

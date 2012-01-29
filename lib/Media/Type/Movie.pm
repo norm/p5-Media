@@ -24,12 +24,13 @@ role Media::Type::Movie {
         
         my @elements;
         if ( $extras_as_tv ) {
-            my $show  = sprintf 'DVD Extras - %s',
-                $self->get_movie_filename();
+            my $title = sprintf '%s - %s',
+                $self->get_movie_filename(),
+                $self->details->{'extra'};
             
             @elements = (
-                    '--TVShowName',     $show,
-                    '--title',          $self->details->{'extra'},
+                    '--TVShowName',     'DVD Extras',
+                    '--title',          $title,
                     '--stik',           'TV Show',
                     '--genre',          'Documentary',
                 );
