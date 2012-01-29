@@ -82,7 +82,8 @@ role Media::Queue {
                     %$extra_args,
                 );
             
-            $priority = delete $details{'priority'};
+            $priority = delete $details{'priority'}
+                if defined $details{'priority'} && !defined $priority;
             $name     = $handler->get_job_name()
                 if !defined $name;
             
