@@ -9,7 +9,7 @@ role Media::Medium::VideoFile {
     
     use constant UNWANTED_FILE_TYPES => qw( nfo sfv nzb txt srr );
     use constant VIDEO_EXTENSIONS    => qw( 
-        m4v  avi  mkv  mp4  mpg  wmv  vob  m2ts
+        m4v  avi  mkv  mp4  mpg  wmv  vob  m2ts  xvid
     );
     
     has medium => (
