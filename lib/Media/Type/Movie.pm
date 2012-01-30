@@ -436,6 +436,7 @@ XML
         return $title;
     }
     method get_normalised_rating ( $rating ) {
+        return unless defined $rating;
         return '12' if $rating eq '12A';
         return 'PG' if $rating eq 'A';
         return '15' if $rating eq 'X';
