@@ -59,7 +59,6 @@ foreach my $video ( @$videos ) {
                 $title,
                 "$slug.mp4",
             );
-            die;
             
             $seen->{$slug} = 1;
             next VIDEO;
