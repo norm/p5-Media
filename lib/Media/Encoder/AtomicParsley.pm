@@ -57,14 +57,12 @@ role Media::Encoder::AtomicParsley {
                 if defined $poster;
         }
         
-        my( $out, $err ) = tee {
-                system(
-                    'AtomicParsley',
-                    $file,
-                    '--overWrite',
-                    @elements,
-                );
-            };
+        system(
+            'AtomicParsley',
+            $file,
+            '--overWrite',
+            @elements,
+        ) if scalar @elements;
     }
     
     method extract_metadata ( $file ) {
