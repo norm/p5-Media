@@ -180,7 +180,7 @@ class Media::Object {
                 = $handler->parse_title_string( $string, $hints );
             
             $score += 50
-                if $try eq $force;
+                if defined $force && $try eq $force;
             
             # use Data::Dumper::Concise;
             # print " -> $try ($score)";
