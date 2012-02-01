@@ -8,7 +8,7 @@ class Media::Object {
     use File::Path      qw( mkpath );
     use Storable        qw( nstore retrieve );
     
-    use constant AVAILABLE_HANDLERS => qw( ConfigFile TV Movie MusicVideo );
+    use constant AVAILABLE_HANDLERS => qw( ConfigFile TV Movie MusicVideo Video );
     use constant AVAILABLE_MEDIA    => qw( DVD VideoFile );
     
     has full_configuration => (
@@ -92,7 +92,8 @@ class Media::Object {
         $handler->clean_up_conversion();
     }
     method queue_media ( $input, $priority?, $hints?, $extra_args? ) {
-        my $handler = $self->get_handler_for( $input, $hints );
+        my $handler
+            = $self->get_handler_for( $input, $hints, $extra_args->{'type'} );
         
         if ( defined $handler ) {
             $self->queue_conversion( $handler, $priority, $extra_args );
@@ -142,9 +143,9 @@ class Media::Object {
                 config  => $self->full_configuration,
             );
     }
-    method get_handler_for ( $target, $hints? ) {
-        my( $type, $details ) = $self->determine_type( $target, $hints );
-        my( $medium, $input ) = $self->determine_medium( $target );
+    method get_handler_for ( $target, $hints?, $force? ) {
+        my($type, $details) = $self->determine_type($target, $hints, $force);
+        my($medium, $input) = $self->determine_medium($target);
         
         # use Data::Dumper::Concise;
         # print Dumper \$type;
@@ -167,7 +168,7 @@ class Media::Object {
         
         return;
     }
-    method determine_type ( $string, $hints? ) {
+    method determine_type ( $string, $hints?, $force? ) {
         my $confidence = 0;
         my $type;
         my $details;
@@ -177,6 +178,9 @@ class Media::Object {
             
             my( $score, %d )
                 = $handler->parse_title_string( $string, $hints );
+            
+            $score += 50
+                if $try eq $force;
             
             # use Data::Dumper::Concise;
             # print " -> $try ($score)";

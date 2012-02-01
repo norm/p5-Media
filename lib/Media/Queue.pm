@@ -76,6 +76,7 @@ role Media::Queue {
                 if !defined $extra_args;
             
             my $edit_before_queueing = delete $extra_args->{'edit-before'};
+            delete $extra_args->{'type'};
             
             my %details = (
                     %$source_details,

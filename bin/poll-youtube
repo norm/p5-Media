@@ -1,0 +1,115 @@
+#!/usr/bin/env perl
+
+use Modern::Perl;
+use Getopt::Long    qw( :config bundling );
+use Media;
+use Pod::Usage;
+use Storable        qw( nstore retrieve );
+use WebService::GData::YouTube;
+use WebService::GData::YouTube::Feed;
+
+use constant FORMAT_CODES     => qw( 37 22 18 );
+use constant OPTIONS          => qw(
+                                     config|c=s
+                                     user|u=s 
+                                 );
+use constant REQUIRED_OPTIONS => qw( user );
+
+
+
+my %option = get_options_or_exit();
+my $media  = Media->new( $option{'config'} );
+my $yt     = new WebService::GData::YouTube();
+my $videos = $yt->get_user_favorite_videos( $option{'user'} );
+my $cache  = sprintf "%s/youtube.store",
+                $media->full_configuration->{''}{'cache_directory'};
+my $encode = $media->full_configuration->{''}{'encode_directory'};
+my $seen   = {};
+
+
+chdir $encode
+    or die "chdir $encode: $!";
+$seen = retrieve $cache
+    if -f $cache;
+
+VIDEO:
+foreach my $video ( @$videos ) {
+    my $slug = $video->video_id;
+    next if defined $seen->{$slug};
+    
+    my $title   = $video->title;
+    my $url     = $video->media_player;
+    say " -> $slug $title";
+    
+    foreach my $code ( FORMAT_CODES ) {
+        system(
+            'youtube-dl',
+            '-f',
+            $code,
+            $url,
+        );
+        
+        my $exit = $? >> 8;
+        if ( $exit == 0 ) {
+            say(
+                'queue',
+                '--series',
+                'YouTube Favourites',
+                '--title',
+                $title,
+                "$slug.mp4",
+            );
+            die;
+            
+            $seen->{$slug} = 1;
+            next VIDEO;
+        }
+    }
+}
+
+nstore $seen, $cache;
+exit;
+
+
+
+sub get_options_or_exit {
+    my %getopts = @_;
+    
+    my $known = GetOptions( \%getopts, OPTIONS );
+    my $usage = ! $known || $getopts{'help'};
+    
+    foreach my $key ( REQUIRED_OPTIONS ) {
+        $usage = 1
+            unless defined $getopts{ $key };
+    }
+    
+    pod2usage() if $usage;
+    
+    return %getopts;
+}
+
+__END__
+
+=head1 NAME
+
+queue - add media to the encoding queue
+
+=head1 SYNOPSIS
+    
+    poll-youtube [-c <config>] -u <user>
+
+Will check for new YouTube favourites from I<user>, download new ones and
+queue them up to be converted.
+
+They will be saved as TV shows in the series "YouTube Favourites".
+
+=head1 AUTHOR
+
+Mark Norman Francis, L<norm@cackhanded.net>.
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2012 Mark Norman Francis.
+
+This library is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.

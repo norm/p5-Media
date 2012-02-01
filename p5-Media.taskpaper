@@ -8,8 +8,6 @@ encoder:
 		- document clean-srt
 	Chapters:
 		- produce chapter preview images
-Types:
-	- add "Plain" type for straight video encodes without any other metadata (eg. YouTube)
 Media locations:
 	- custom paths (eg. "{series}/Season {season}/{episode} - {title}.{extension}")
 Ebooks:
