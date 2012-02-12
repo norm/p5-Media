@@ -185,7 +185,7 @@ sub monitor_queue {
     my $log_length = int $height / 3;
     my $clear      = `clear`;
     
-    $option{'first'} = $height - $log_length - 2;
+    $option{'first'} = $height - $log_length - 3;
     
     while ( 1 ) {
         my $tail = capture_merged {
