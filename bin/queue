@@ -24,14 +24,13 @@ use constant HINTS   => qw(
     album=s    artist=s   episode=s  extra=s    
     rating=s   season=s   series=s   title=s    
     year=s     
-    type=s
 );
 use constant ENCODER => qw(
     chapters=s     deblock        decomb         deinterlace    
     denoise        detelecine     grayscale      height=s       
     large-file     maxHeight=s    maxWidth=s     quality=s      
-    size=s         start-at=s     stop-at=s      turbo          
-    two-pass       vb=s           width=s
+    size=s         start-at=s     stop-at=s      type=s         
+    turbo          two-pass       vb=s           width=s
 );
 
 
