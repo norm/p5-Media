@@ -8,11 +8,21 @@ role Media::Medium::DVD {
     use Config::Std;
     use POSIX;
     
-    my $numerically = sub {
+    my $logically = sub {
+        # change (1b, 2) to (1, 2)
         my $a_num = $a;
         my $b_num = $b;
-        $a_num = -1 if !isdigit $a;
-        $b_num = -1 if !isdigit $b;
+
+        $a_num = $1
+            if $a =~ m{^ (\d+) }x;
+        $b_num = $1
+            if $b =~ m{^ (\d+) }x;
+
+        # compare (1b, 1d) lexically
+        return $a cmp $b
+            if $a_num == $b_num;
+
+        # compare (1, 2) numerically
         return $a_num <=> $b_num;
     };
     
@@ -52,7 +62,7 @@ role Media::Medium::DVD {
             push @titles, $title;
         }
         
-        return sort $numerically @titles;
+        return sort $logically @titles;
     }
     method install_content {
         my $converted   = $self->converted_file();
