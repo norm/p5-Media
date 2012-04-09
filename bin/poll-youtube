@@ -10,14 +10,15 @@ use WebService::GData::YouTube::Feed;
 
 use constant FORMAT_CODES     => qw( 37 22 18 );
 use constant OPTIONS          => qw(
-                                     config|c=s
-                                     user|u=s 
+                                       config|c=s
+                                         user|u=s
+                                     priority|p=i
                                  );
 use constant REQUIRED_OPTIONS => qw( user );
 
 
 
-my %option = get_options_or_exit();
+my %option = get_options_or_exit( priority => '5' );
 my $media  = Media->new( $option{'config'} );
 my $yt     = new WebService::GData::YouTube();
 my $videos = $yt->get_user_favorite_videos( $option{'user'} );
