@@ -83,10 +83,11 @@ role Media::Medium::DVD {
         return $self->input->{'image'};
     }
     method can_use_medium ( $input ) {
-        my $dvd_image = "$input/VIDEO_TS";
-        my $config    = "$input/media.conf";
+        my $dvd_image    = "$input/VIDEO_TS";
+        my $bluray_image = "$input/BDMV";
+        my $config       = "$input/media.conf";
         
-        if ( -d $dvd_image ) {
+        if ( -d $dvd_image || -d $bluray_image ) {
             if ( -f $config ) {
                 return {
                     image  => $input,
