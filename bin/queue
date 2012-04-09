@@ -198,7 +198,7 @@ sub monitor_queue {
         say $clear . $tail;
         list_queue();
         
-        sleep $pause_between;
+        ReadKey $pause_between;
     }
 }
 
