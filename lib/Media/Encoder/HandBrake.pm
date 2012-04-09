@@ -9,7 +9,7 @@ role Media::Encoder::HandBrake {
     use IO::All         -utf8;
     use List::Util      qw( first );
     # use Net::Discident;
-    use POSIX;
+    use POSIX           qw( isdigit );
     
     use constant SILENT                => 1;
     use constant NOISY                 => 2;

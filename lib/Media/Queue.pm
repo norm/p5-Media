@@ -6,7 +6,7 @@ role Media::Queue {
     use File::Temp;
     use IO::All         -utf8;
     use IPC::DirQueue;
-    use POSIX;
+    use POSIX           qw( isdigit );
     use Storable        qw( freeze thaw );
     use Try::Tiny;
     

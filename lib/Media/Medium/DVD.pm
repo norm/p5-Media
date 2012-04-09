@@ -6,7 +6,6 @@ role Media::Medium::DVD {
     with 'Media::Encoder::AtomicParsley';
     
     use Config::Std;
-    use POSIX;
     
     my $logically = sub {
         # change (1b, 2) to (1, 2)
