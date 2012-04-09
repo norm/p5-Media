@@ -89,6 +89,9 @@ while ( $argument ) {
                 $encoder{'edit-before'} = 1
                     if $option{'edit-payload'};
                 
+                $encoder{'install'} = $option{'install'}
+                    if defined $option{'install'};
+                
                 $media->queue_media(
                         $argument,
                         $option{'priority'},
