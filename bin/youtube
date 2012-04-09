@@ -1,0 +1,161 @@
+#!/usr/bin/env perl
+
+use Modern::Perl;
+use Getopt::Long    qw( :config bundling );
+use Media;
+use Pod::Usage;
+use WebService::GData::YouTube;
+
+use constant FORMAT_CODES     => qw( 37 22 18 );
+use constant OPTIONS          => qw(
+                                       config|c=s
+                                      episode|e=i
+                                     priority|p=i
+                                       series|s=s
+                                       season|n=i
+                                        title|t=s
+                                 );
+
+my %option = get_options_or_exit(
+                 priority => '5',
+                 series   => 'YouTube Favourites',
+             );
+my $media  = Media->new( $option{'config'} );
+my $yt     = new WebService::GData::YouTube();
+
+while ( my $argument = shift ) {
+    my $id = $argument;
+    
+    $id = $1
+        if $argument =~ m{ v = ( [a-zA-Z0-9_-]+ ) }x;
+    
+    my $video  = $yt->get_video_by_id( $id );
+    my $slug   = $video->video_id;
+    my $title  = $option{'title'} // $video->title;
+    my $series = $option{'series'};
+    my $url    = $video->media_player;
+    
+    FORMAT:
+    foreach my $code ( FORMAT_CODES ) {
+        system(
+            'youtube-dl',
+            '-c',
+            '-f',
+            $code,
+            $url,
+        );
+        
+        my $dl_exit = $? >> 8;
+        if ( $dl_exit == 0 ) {
+            my @args = (
+                    'queue',
+                    '--priority',
+                    $option{'priority'},
+                    '--series',
+                    $series,
+                    '--title',
+                    $title,
+                );
+            
+            push @args, '--episode', $option{'episode'}
+                if defined $option{'episode'};
+            push @args, '--season', $option{'season'}
+                if defined $option{'season'};
+            
+            system @args, '--', "$slug.mp4";
+            my $queue_exit = $? >> 8;
+            die "queue failed: $!"
+                if $queue_exit;
+            
+            last FORMAT;
+        }
+    }
+    
+}
+exit;
+
+sub get_options_or_exit {
+    my %getopts = @_;
+    
+    my $known = GetOptions( \%getopts, OPTIONS );
+    my $usage = ! $known || $getopts{'help'};
+    
+    pod2usage( -verbose => 1 ) if $usage;
+    
+    return %getopts;
+}
+
+__END__
+
+# youtube --series 'Adverts' URL
+# youtube URL
+# youtube 
+
+  config|c=s
+ episode|e=i
+priority|p=i
+  series|s=s
+  season|n=i
+   title|t=s
+
+
+=head1 NAME
+
+youtube - enqueue a YouTube video
+
+=head1 SYNOPSIS
+    
+    youtube [options] <ID or URL>
+    
+=head1 OPTIONS
+
+=over
+
+=item -c <config_file>
+
+=item --config <config_file>
+
+read configuration from I<config_file>
+
+=item -e <number>
+
+=item --episode <number>
+
+the I<number> of this episode within the season
+
+=item -s <series>
+
+=item --series <series>
+
+the name of the I<series>. Defaults to 'YouTube Favourites'.
+
+=item -n <number>
+
+=item --season <number>
+
+the <number> of the season that this episodes occurs within
+
+=item -t <title>
+
+=item --title <title>
+
+the title of the episode. Defaults to the title on YouTube.
+
+=item -p <number>
+
+=item --priority <number>
+
+the priority of this encode within the queue. Defaults to 5.
+
+=back
+
+=head1 AUTHOR
+
+Mark Norman Francis, L<norm@cackhanded.net>.
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2012 Mark Norman Francis.
+
+This library is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
