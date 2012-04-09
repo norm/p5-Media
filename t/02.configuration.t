@@ -174,8 +174,9 @@ my $test_config        = {
             {
                 '' => {
                     %$test_config,
-                    low_disk_space => '200M',
-                    trash_files    => 'true',
+                    low_disk_space  => '200M',
+                    trash_files     => 'true',
+                    video_directory => 'xt/video',
                 },
                 handbrake => $default_handbrake,
                 %audio_profiles,
