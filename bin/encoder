@@ -63,8 +63,14 @@ sub run_encoder {
                 log_action( '"' . $payload->{'name'} . "\" disappeared" );
             }
             else {
-                my $elapsed = elapsed( time() - $start );
-                log_action( '"' . $payload->{'name'} . "\" took $elapsed" );
+                my $elapsed = time() - $start;
+                my $hours   = int( $elapsed / 3600 );
+                my $minutes = int( ($elapsed - ($hours * 3600)) / 60 );
+                my $seconds = $elapsed - ($hours * 3600) - ($minutes * 60);
+                my $taken   = sprintf "%d:%02d:%02d\n",
+                                  $hours, $minutes, $seconds;
+                
+                log_action( '"' . $payload->{'name'} . "\" took $taken" );
             }
         }
         
