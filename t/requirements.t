@@ -22,7 +22,7 @@ my $return;
              1 if $output =~ m{^HandBrake rev([\d]+)}m;
         
         $output =~ m{^HandBrake ([\d\.]+)}m;
-        is( '0.9.5', $1, 'HandBrakeCLI is the right version' );
+        is( '0.9.8', $1, 'HandBrakeCLI is the right version' );
     }
     # Check the version of HandbrakeCLI built from source
     SKIP: {

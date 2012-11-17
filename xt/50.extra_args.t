@@ -104,6 +104,7 @@ is_deeply(
             audio              => '1',
             decomb             => '1',
             encoder            => 'x264',
+            encopts            => 'b-adapt=2',
             format             => 'mp4',
             maxHeight          => '720',
             maxWidth           => '1280',
@@ -111,10 +112,6 @@ is_deeply(
             quality            => '22',
             'start-at'         => 'duration:0',
             'stop-at'          => 'duration:97',
-            x264opts           => 'cabac=0:ref=2:me=umh:b-adapt=2:'
-                                . 'weightb=0:trellis=0:weightp=0:'
-                                . 'b-pyramid=none:vbv-maxrate=9500:'
-                                . 'vbv-bufsize=9500'
         },
         'handbrake arguments are correct'
     );
@@ -173,14 +170,14 @@ my %titles           = $handler->analyse_input( $handbrake_output );
 is_deeply(
         \%titles,
         {
-            handbrake_version => "0.9.5",
+            handbrake_version => "0.9.8",
             input_type        => "mov",
             1                 => {
                 audio     => [
                     {
                         channels => '2.0 ch',
                         code     => 'und',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'Unknown',
                         track    => '1',
                     },

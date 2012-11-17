@@ -24,13 +24,13 @@ my $default_config     = {
 my %audio_profiles     = (
     audio_ac3pass => {
         ab       => '640',
-        aencoder => 'copy',
+        aencoder => 'copy:ac3',
         arate    => 'Auto',
         mixdown  => '6ch',
     },
     audio_ac3 => {
         ab       => '640',
-        aencoder => 'ac3',
+        aencoder => 'ffac3',
         arate    => 'Auto',
         mixdown  => '6ch',
     },
@@ -55,15 +55,12 @@ my %audio_profiles     = (
 );
 my $default_handbrake  = {
     encoder            => "x264",
+    encopts            => 'b-adapt=2',
     format             => "mp4",
     "loose-anamorphic" => "",
     maxHeight          => 720,
     maxWidth           => 1280,
     quality            => 22,
-    x264opts           => 'cabac=0:ref=2:me=umh:b-adapt=2:'
-                        . 'weightb=0:trellis=0:weightp=0:'
-                        . 'b-pyramid=none:vbv-maxrate=9500:'
-                        . 'vbv-bufsize=9500',
 };
 my $test_config        = {
     add_to_itunes    => '0',
@@ -121,12 +118,12 @@ my $test_config        = {
                 ''        => $default_config,
                 handbrake => {
                     encoder            => "x264",
+                    encopts            => '',
                     format             => "mp4",
                     "loose-anamorphic" => "",
                     maxHeight          => 1080,
                     maxWidth           => 1920,
                     quality            => 15,
-                    x264opts           => '',
                 },
                 %audio_profiles,
             },

@@ -61,15 +61,12 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
             {
                 crop               => '0/0/0/0',
                 encoder            => 'x264',
+                encopts            => 'b-adapt=2',
                 format             => 'mp4',
                 'loose-anamorphic' => "",
                 maxHeight          => '720',
                 maxWidth           => '1280',
                 quality            => '22',
-                x264opts           => 'cabac=0:ref=2:me=umh:b-adapt=2:'
-                                    . 'weightb=0:trellis=0:weightp=0:'
-                                    . 'b-pyramid=none:vbv-maxrate=9500:'
-                                    . 'vbv-bufsize=9500',
             }
         );
 }
@@ -129,7 +126,7 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
                 mixdown => '6ch,dpl2',
                 aname => 'English 5.1 ch AC3,English 5.1 ch',
                 ab => '640,160',
-                aencoder => 'ac3,ca_aac',
+                aencoder => 'ffac3,ca_aac',
                 arate => 'Auto,48',
                 audio => '1,1'
             }
@@ -139,15 +136,12 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
             {
                 crop               => '0/0/0/0',
                 encoder            => 'x264',
+                encopts            => 'b-adapt=2',
                 format             => 'mp4',
                 'loose-anamorphic' => "",
                 maxHeight          => '720',
                 maxWidth           => '1280',
                 quality            => '22',
-                x264opts           => 'cabac=0:ref=2:me=umh:b-adapt=2:'
-                                    . 'weightb=0:trellis=0:weightp=0:'
-                                    . 'b-pyramid=none:vbv-maxrate=9500:'
-                                    . 'vbv-bufsize=9500',
             }
         );
 }
@@ -194,7 +188,7 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
                 mixdown => '6ch,dpl2',
                 aname => 'Unknown 5.1 ch AC3,Unknown 5.1 ch',
                 ab => '640,160',
-                aencoder => 'copy,ca_aac',
+                aencoder => 'copy:ac3,ca_aac',
                 arate => 'Auto,48',
                 audio => '1,1'
             }
@@ -204,15 +198,12 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
             {
                 crop               => '2/0/0/0',
                 encoder            => 'x264',
+                encopts            => 'b-adapt=2',
                 format             => 'mp4',
                 'loose-anamorphic' => "",
                 maxHeight          => '720',
                 maxWidth           => '1280',
                 quality            => '22',
-                x264opts           => 'cabac=0:ref=2:me=umh:b-adapt=2:'
-                                    . 'weightb=0:trellis=0:weightp=0:'
-                                    . 'b-pyramid=none:vbv-maxrate=9500:'
-                                    . 'vbv-bufsize=9500',
             }
         );
 }
@@ -547,7 +538,7 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
                 mixdown => '6ch,dpl2',
                 aname => 'English Dolby Surround AC3,English Dolby Surround',
                 ab => '640,160',
-                aencoder => 'copy,ca_aac',
+                aencoder => 'copy:ac3,ca_aac',
                 arate => 'Auto,48',
                 audio => '1,1'
             }
@@ -557,15 +548,12 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
             {
                 crop               => '0/2/10/10',
                 encoder            => 'x264',
+                encopts            => 'b-adapt=2',
                 format             => 'mp4',
                 'loose-anamorphic' => "",
                 maxHeight          => '720',
                 maxWidth           => '1280',
                 quality            => '22',
-                x264opts           => 'cabac=0:ref=2:me=umh:b-adapt=2:'
-                                  . 'weightb=0:trellis=0:weightp=0:'
-                                  . 'b-pyramid=none:vbv-maxrate=9500:'
-                                  . 'vbv-bufsize=9500',
             }
         );
 }
@@ -612,7 +600,7 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
                 mixdown => '6ch,dpl2',
                 aname => 'English 5.1 ch AC3,English 5.1 ch',
                 ab => '640,160',
-                aencoder => 'copy,ca_aac',
+                aencoder => 'copy:ac3,ca_aac',
                 arate => 'Auto,48',
                 audio => '1,1'
             }
@@ -622,15 +610,12 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
             {
                 crop               => '142/144/0/0',
                 encoder            => 'x264',
+                encopts            => 'b-adapt=2',
                 format             => 'mp4',
                 'loose-anamorphic' => "",
                 maxHeight          => '720',
                 maxWidth           => '1280',
                 quality            => '22',
-                x264opts           => 'cabac=0:ref=2:me=umh:b-adapt=2:'
-                                    . 'weightb=0:trellis=0:weightp=0:'
-                                    . 'b-pyramid=none:vbv-maxrate=9500:'
-                                    . 'vbv-bufsize=9500',
             }
         );
 }
@@ -802,7 +787,7 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
                 mixdown => '6ch,dpl2,6ch,dpl2,6ch,dpl2',
                 aname => "English 5.1 ch AC3,English 5.1 ch,English Dolby Surround AC3,English Dolby Surround,Director's Commentary 1 AC3,Director's Commentary 1",
                 ab => '640,160,640,160,640,160',
-                aencoder => 'copy,ca_aac,copy,ca_aac,copy,ca_aac',
+                aencoder => 'copy:ac3,ca_aac,copy:ac3,ca_aac,copy:ac3,ca_aac',
                 arate => 'Auto,48,Auto,48,Auto,48',
                 audio => '1,1,2,2,3,3'
             }
@@ -812,15 +797,12 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
             {
                 crop               => '72/72/0/0',
                 encoder            => 'x264',
+                encopts            => 'b-adapt=2',
                 format             => 'mp4',
                 'loose-anamorphic' => "",
                 maxHeight          => '720',
                 maxWidth           => '1280',
                 quality            => '22',
-                x264opts           => 'cabac=0:ref=2:me=umh:b-adapt=2:'
-                                    . 'weightb=0:trellis=0:weightp=0:'
-                                    . 'b-pyramid=none:vbv-maxrate=9500:'
-                                    . 'vbv-bufsize=9500',
             }
         );
 }
@@ -875,6 +857,7 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
             \%video_args,
             {
                 encoder            => 'x264',
+                encopts            => 'b-adapt=2',
                 format             => 'mp4',
                 "loose-anamorphic" => '',
                 
@@ -884,10 +867,6 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
                 maxHeight          => '720',
                 maxWidth           => '1280',
                 quality            => '22',
-                x264opts           => 'cabac=0:ref=2:me=umh:b-adapt=2:'
-                                    . 'weightb=0:trellis=0:weightp=0:'
-                                    . 'b-pyramid=none:vbv-maxrate=9500:'
-                                    . 'vbv-bufsize=9500',
             }
         );
 }

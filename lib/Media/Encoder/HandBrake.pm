@@ -257,7 +257,7 @@ role Media::Encoder::HandBrake {
             }
         }
         
-        # HB 0.9.5 always detects one chapter in a video file with no chapters
+        # HB always detects one chapter in a video file with no chapters
         foreach my $title ( keys %titles ) {
             next if $title eq 'handbrake_version';
             next if $title eq 'input_type';

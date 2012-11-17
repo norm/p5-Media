@@ -36,6 +36,7 @@ sub get_configuration {
         # accept the code defaults).
         handbrake => {
             encoder   => 'x264',
+            encopts   => 'b-adapt=2',
             format    => 'mp4',
             
             quality   => '22',
@@ -43,24 +44,19 @@ sub get_configuration {
             maxWidth  => '1280',
             maxHeight => '720',
             
-            # settings suitable for iPhone, iPad and Apple TV (both revs)
-            x264opts  => 'cabac=0:ref=2:me=umh:b-adapt=2:weightb=0:'
-                       . 'trellis=0:weightp=0:b-pyramid=none:'
-                       . 'vbv-maxrate=9500:vbv-bufsize=9500',
-            
             'loose-anamorphic' => '',
         },
         
         # NAMED SECTIONS - audio profiles
         audio_ac3pass => {
             ab       => '640',
-            aencoder => 'copy',
+            aencoder => 'copy:ac3',
             arate    => 'Auto',
             mixdown  => '6ch',
         },
         audio_ac3 => {
             ab       => '640',
-            aencoder => 'ac3',
+            aencoder => 'ffac3',
             arate    => 'Auto',
             mixdown  => '6ch',
         },
@@ -273,16 +269,20 @@ is C<x264>.
 
 The file output format to use (mp4, mkv). Default is C<mp4>.
 
-=item x264opts
+=item encopts
 
 The advanced settings passed to the x264 encoder. Default is:
+
+    b-adapt=2
+
+which is suitable for Apple TV 3 and modern iPads. For older hardware, use:
 
     cabac=0:ref=2:me=umh:b-adapt=2:weightb=0
     :trellis=0:weightp=0:b-pyramid=none
     :vbv-maxrate=9500:vbv-bufsize=9500
 
-which is tuned to produce content that will work on the iPhone, iPad and
-both hardware revisions of the Apple TV.
+which is tuned to produce content that will work on the early iPhones, iPads
+and the first Apple TV.
 
 =item two-pass
 

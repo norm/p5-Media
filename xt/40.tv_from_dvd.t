@@ -99,7 +99,7 @@ my %titles           = $handler->analyse_input( $handbrake_output );
 is_deeply(
         \%titles,
         {
-            handbrake_version => "0.9.5",
+            handbrake_version => "0.9.8",
             input_type        => "mov",
             1                 => {
                 audio     => [
@@ -113,12 +113,12 @@ is_deeply(
                     {
                         channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'English',
                         track    => '2',
                     },
                 ],
-                crop      => '70/68/8/8',       # crazy numbers!
+                crop      => '0/0/8/10',
                 duration  => '00:02:25',
                 size      => '720x576, pixel aspect: 16/15, display '
                            . 'aspect: 1.33, 25.000 fps',
@@ -170,19 +170,19 @@ $handbrake_output = $handler->scan_input( 0, $target_file );
 is_deeply(
         \%titles,
         {
-            handbrake_version => "0.9.5",
+            handbrake_version => "0.9.8",
             input_type        => "mov",
             1                 => {
                 audio     => [
                     {
                         channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'English',
                         track    => '1',
                     },
                 ],
-                crop      => '0/2/12/20',
+                crop      => '0/2/8/10',
                 duration  => '00:02:24',
                 size      => '720x576, pixel aspect: 16/15, display '
                            . 'aspect: 1.33, 25.000 fps',
@@ -245,21 +245,21 @@ $handbrake_output = $handler->scan_input( 0, $target_file );
 is_deeply(
         \%titles,
         {
-            handbrake_version => "0.9.5",
+            handbrake_version => "0.9.8",
             input_type        => "mov",
             1                 => {
                 audio         => [
                     {
                         channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'English',
                         track    => '1',
                     },
                     {
                         channels => '2.0 ch',
                         code     => 'deu',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'Deutsch',
                         track    => '2',
                     },
@@ -268,7 +268,7 @@ is_deeply(
                 crop          => '0/0/0/0',
                 duration      => '00:10:13',
                 size          => '304x240, pixel aspect: 20/19, '
-                           . 'display aspect: 1.33, 24.999 fps',
+                           . 'display aspect: 1.33, 25.000 fps',
                 
                 # not a subtitle -- this is the chapters file
                 subtitles     => [

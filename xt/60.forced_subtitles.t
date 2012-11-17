@@ -71,7 +71,7 @@ is_deeply(
                     'Kenny Baker',
                     'Peter Mayhew',
                     'David Prowse',
-                    'James Earl Jones',
+                    'Phil Brown',
                 ],
                 audio    => [
                     "1:ac3pass:English",
@@ -134,7 +134,7 @@ my %titles           = $handler->analyse_input( $handbrake_output );
 is_deeply(
         \%titles,
         {
-            handbrake_version => "0.9.5",
+            handbrake_version => "0.9.8",
             input_type        => "mov",
             1                 => {
                 audio     => [
@@ -148,7 +148,7 @@ is_deeply(
                     {
                         channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'English',
                         track    => '2',
                     },
@@ -162,7 +162,7 @@ is_deeply(
                     {
                         channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'English',
                         track    => '4',
                     },
@@ -176,12 +176,12 @@ is_deeply(
                     {
                         channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'English',
                         track    => '6',
                     },
                 ],
-                crop      => '0/0/18/0',
+                crop      => '0/0/28/0',
                 duration  => '00:01:13',
                 size      => '720x432, pixel aspect: 64/45, display '
                            . 'aspect: 2.37, 24.973 fps',

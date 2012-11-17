@@ -134,7 +134,7 @@ my %titles           = $handler->analyse_input( $handbrake_output );
 is_deeply(
         \%titles,
         {
-            handbrake_version => "0.9.5",
+            handbrake_version => "0.9.8",
             input_type        => "mov",
             1                 => {
                 audio     => [
@@ -148,7 +148,7 @@ is_deeply(
                     {
                         channels => '2.0 ch',
                         code     => 'und',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'Unknown',
                         track    => '2',
                     },

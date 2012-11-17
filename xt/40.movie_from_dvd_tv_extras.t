@@ -132,21 +132,21 @@ my %titles           = $handler->analyse_input( $handbrake_output );
 is_deeply(
         \%titles,
         {
-            handbrake_version => "0.9.5",
+            handbrake_version => "0.9.8",
             input_type        => "mov",
             1                 => {
                 audio     => [
                     {
                         channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'English',
                         track    => '1',
                     },
                     {
                         channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'English',
                         track    => '2',
                     },
@@ -249,14 +249,14 @@ $handbrake_output = $handler->scan_input( 0, $target_file );
 is_deeply(
         \%titles,
         {
-            handbrake_version => "0.9.5",
+            handbrake_version => "0.9.8",
             input_type        => "mov",
             1                 => {
                 audio     => [
                     {
                         channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'English',
                         track    => '1',
                     },
@@ -360,14 +360,14 @@ $handbrake_output = $handler->scan_input( 0, $target_file );
 is_deeply(
         \%titles,
         {
-            handbrake_version => "0.9.5",
+            handbrake_version => "0.9.8",
             input_type        => "mov",
             1                 => {
                 audio     => [
                     {
                         channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'English',
                         track    => '1',
                     },

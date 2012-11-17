@@ -188,7 +188,7 @@ my %titles           = $handler->analyse_input( $handbrake_output );
 is_deeply(
         \%titles,
         {
-            handbrake_version => "0.9.5",
+            handbrake_version => "0.9.8",
             input_type        => "mov",
             1                 => {
                 audio     => [
@@ -202,7 +202,7 @@ is_deeply(
                     {
                         channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AAC',
+                        format   => 'aac',
                         language => 'English',
                         track    => '2',
                     },
@@ -210,7 +210,7 @@ is_deeply(
                 crop      => '0/0/0/0',
                 duration  => '00:00:43',
                 size      => '1280x528, pixel aspect: 99/100, display '
-                           . 'aspect: 2.40, 23.976 fps',
+                           . 'aspect: 2.40, 24.004 fps',
                 subtitles => []
             },
         },
