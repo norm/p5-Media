@@ -78,8 +78,8 @@ is_deeply(
                     "1:stereo:English",
                     "2:stereo:Director, Cast and Crew Commentary",
                 ],
-                company   => "Eon Productions",
                 chapters  => '8-9',
+                company   => 'Eon Productions',
                 crop      => '0/0/6/10',
                 director  => [
                     'Terence Young'
@@ -88,6 +88,7 @@ is_deeply(
                 genre     => [
                     'Action',
                     'Adventure',
+                    'Crime',
                     'Thriller'
                 ],
                 maxWidth  => '320',
@@ -195,8 +196,8 @@ is_deeply(
                   'Eunice Gayson',
                   'Lois Maxwell',
                 ],
-                audio     => "1:stereo:English",
-                company   => "Eon Productions",
+                audio     => '1:stereo:English',
+                company   => 'Eon Productions',
                 crop      => '0/0/34/34',
                 director  => [
                     'Terence Young'
@@ -205,6 +206,7 @@ is_deeply(
                 genre     => [
                     'Action',
                     'Adventure',
+                    'Crime',
                     'Thriller'
                 ],
                 maxWidth  => '320',
@@ -305,8 +307,8 @@ is_deeply(
                   'Eunice Gayson',
                   'Lois Maxwell',
                 ],
-                audio     => "1:stereo:English",
-                company   => "Eon Productions",
+                audio     => '1:stereo:English',
+                company   => 'Eon Productions',
                 crop      => '8/4/0/2',
                 director  => [
                     'Terence Young'
@@ -315,6 +317,7 @@ is_deeply(
                 genre     => [
                     'Action',
                     'Adventure',
+                    'Crime',
                     'Thriller'
                 ],
                 maxWidth  => '320',

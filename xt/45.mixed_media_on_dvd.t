@@ -88,6 +88,7 @@ is_deeply(
                 genre     => [
                     'Action',
                     'Adventure',
+                    'Crime',
                     'Thriller'
                 ],
                 maxWidth  => '320',

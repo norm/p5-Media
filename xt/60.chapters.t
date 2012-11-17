@@ -83,6 +83,7 @@ is_deeply(
                 genre     => [
                     'Action',
                     'Adventure',
+                    'Crime',
                     'Thriller'
                 ],
                 markers   => 'chapters.csv',
