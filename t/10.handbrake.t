@@ -116,18 +116,18 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
     is_deeply(
             \@profiles,
             [
-                '1:ac3:English 5.1 ch AC3',
                 '1:dpl2:English 5.1 ch',
+                '1:ac3:English 5.1 ch AC3',
             ]
         );
     is_deeply(
             \%audio_args,
             {
-                mixdown => '6ch,dpl2',
-                aname => 'English 5.1 ch AC3,English 5.1 ch',
-                ab => '640,160',
-                aencoder => 'ffac3,ca_aac',
-                arate => 'Auto,48',
+                mixdown => 'dpl2,6ch',
+                aname => 'English 5.1 ch,English 5.1 ch AC3',
+                ab => '160,640',
+                aencoder => 'ca_aac,ffac3',
+                arate => '48,Auto',
                 audio => '1,1'
             }
         );
@@ -178,18 +178,18 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
     is_deeply(
             \@profiles,
             [
-                '1:ac3pass:Unknown 5.1 ch AC3',
                 '1:dpl2:Unknown 5.1 ch',
+                '1:ac3pass:Unknown 5.1 ch AC3',
             ]
         );
     is_deeply(
             \%audio_args,
             {
-                mixdown => '6ch,dpl2',
-                aname => 'Unknown 5.1 ch AC3,Unknown 5.1 ch',
-                ab => '640,160',
-                aencoder => 'copy:ac3,ca_aac',
-                arate => 'Auto,48',
+                mixdown => 'dpl2,6ch',
+                aname => 'Unknown 5.1 ch,Unknown 5.1 ch AC3',
+                ab => '160,640',
+                aencoder => 'ca_aac,copy:ac3',
+                arate => '48,Auto',
                 audio => '1,1'
             }
         );
@@ -528,18 +528,18 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
     is_deeply(
             \@profiles,
             [
-                '1:ac3pass:English Dolby Surround AC3',
                 '1:dpl2:English Dolby Surround',
+                '1:ac3pass:English Dolby Surround AC3',
             ]
         );
     is_deeply(
             \%audio_args,
             {
-                mixdown => '6ch,dpl2',
-                aname => 'English Dolby Surround AC3,English Dolby Surround',
-                ab => '640,160',
-                aencoder => 'copy:ac3,ca_aac',
-                arate => 'Auto,48',
+                mixdown => 'dpl2,6ch',
+                aname => 'English Dolby Surround,English Dolby Surround AC3',
+                ab => '160,640',
+                aencoder => 'ca_aac,copy:ac3',
+                arate => '48,Auto',
                 audio => '1,1'
             }
         );
@@ -590,18 +590,18 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
     is_deeply(
             \@profiles,
             [
-                '1:ac3pass:English 5.1 ch AC3',
                 '1:dpl2:English 5.1 ch',
+                '1:ac3pass:English 5.1 ch AC3',
             ]
         );
     is_deeply(
             \%audio_args,
             {
-                mixdown => '6ch,dpl2',
-                aname => 'English 5.1 ch AC3,English 5.1 ch',
-                ab => '640,160',
-                aencoder => 'copy:ac3,ca_aac',
-                arate => 'Auto,48',
+                mixdown => 'dpl2,6ch',
+                aname => 'English 5.1 ch,English 5.1 ch AC3',
+                ab => '160,640',
+                aencoder => 'ca_aac,copy:ac3',
+                arate => '48,Auto',
                 audio => '1,1'
             }
         );
@@ -773,22 +773,22 @@ my $handler = $media->get_empty_handler( 'TV', 'VideoFile' );
     is_deeply(
             \@profiles,
             [
-                '1:ac3pass:English 5.1 ch AC3',
                 '1:dpl2:English 5.1 ch',
-                '2:ac3pass:English Dolby Surround AC3',
+                '1:ac3pass:English 5.1 ch AC3',
                 '2:dpl2:English Dolby Surround',
-                "3:ac3pass:Director's Commentary 1 AC3",
+                '2:ac3pass:English Dolby Surround AC3',
                 "3:dpl2:Director's Commentary 1",
+                "3:ac3pass:Director's Commentary 1 AC3",
             ]
         );
     is_deeply(
             \%audio_args,
             {
-                mixdown => '6ch,dpl2,6ch,dpl2,6ch,dpl2',
-                aname => "English 5.1 ch AC3,English 5.1 ch,English Dolby Surround AC3,English Dolby Surround,Director's Commentary 1 AC3,Director's Commentary 1",
-                ab => '640,160,640,160,640,160',
-                aencoder => 'copy:ac3,ca_aac,copy:ac3,ca_aac,copy:ac3,ca_aac',
-                arate => 'Auto,48,Auto,48,Auto,48',
+                mixdown => 'dpl2,6ch,dpl2,6ch,dpl2,6ch',
+                aname => "English 5.1 ch,English 5.1 ch AC3,English Dolby Surround,English Dolby Surround AC3,Director's Commentary 1,Director's Commentary 1 AC3",
+                ab => '160,640,160,640,160,640',
+                aencoder => 'ca_aac,copy:ac3,ca_aac,copy:ac3,ca_aac,copy:ac3',
+                arate => '48,Auto,48,Auto,48,Auto',
                 audio => '1,1,2,2,3,3'
             }
         );

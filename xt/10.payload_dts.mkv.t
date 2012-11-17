@@ -25,8 +25,8 @@ my $payload   = {
     details => {
         actor    => \@actors,
         audio   => [
-            "1:ac3:English",
             "1:dpl2:English",
+            "1:ac3:English",
         ],
         director => \@directors,
         feature  => '1',
@@ -110,13 +110,13 @@ is_deeply(
                 type => "vide",
             },
             {
-                kind => "ac-3",
+                kind => "mp4a",
                 type => "soun",
             },
             {
-                kind => "mp4a",
+                kind => "ac-3",
                 type => "soun",
-            }
+            },
         ],
         'tracks'
     );

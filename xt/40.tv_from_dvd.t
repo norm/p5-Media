@@ -62,8 +62,8 @@ is_deeply(
         {
             details => {
                 audio   => [
-                    "1:ac3pass:English",
                     "1:dpl2:English",
+                    "1:ac3pass:English",
                 ],
                 crop    => '0/0/0/0',
                 episode => '99',
@@ -104,16 +104,16 @@ is_deeply(
             1                 => {
                 audio     => [
                     {
-                        channels => 'Dolby Surround',
+                        channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AC3',
+                        format   => 'aac',
                         language => 'English',
                         track    => '1',
                     },
                     {
-                        channels => '2.0 ch',
+                        channels => 'Dolby Surround',
                         code     => 'eng',
-                        format   => 'aac',
+                        format   => 'AC3',
                         language => 'English',
                         track    => '2',
                     },

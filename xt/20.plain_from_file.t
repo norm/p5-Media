@@ -58,8 +58,8 @@ is_deeply(
         {
             details => {
                 audio   => [
-                    '1:ac3pass:Unknown 5.1 ch AC3',
                     '1:dpl2:Unknown 5.1 ch',
+                    '1:ac3pass:Unknown 5.1 ch AC3',
                 ],
                 title => 'ac3',
             },
@@ -106,13 +106,13 @@ is_deeply(
                 type => "vide",
             },
             {
-                kind => "ac-3",
+                kind => "mp4a",
                 type => "soun",
             },
             {
-                kind => "mp4a",
+                kind => "ac-3",
                 type => "soun",
-            }
+            },
         ],
         'tracks'
     );
@@ -127,16 +127,16 @@ is_deeply(
             1                 => {
                 audio     => [
                     {
-                        channels => '5.1 ch',
+                        channels => '2.0 ch',
                         code     => 'und',
-                        format   => 'AC3',
+                        format   => 'aac',
                         language => 'Unknown',
                         track    => '1',
                     },
                     {
-                        channels => '2.0 ch',
+                        channels => '5.1 ch',
                         code     => 'und',
-                        format   => 'aac',
+                        format   => 'AC3',
                         language => 'Unknown',
                         track    => '2',
                     },
@@ -160,8 +160,8 @@ is_deeply(
         {
             details => {
                 audio  => [
-                    '1:ac3pass:Unknown 5.1 ch AC3',
                     '1:dpl2:Unknown 5.1 ch',
+                    '1:ac3pass:Unknown 5.1 ch AC3',
                 ],
                 series => 'YouTube Favourites',
                 title  => 'Charlie bit my finger',
@@ -214,13 +214,13 @@ is_deeply(
                 type => "vide",
             },
             {
-                kind => "ac-3",
+                kind => "mp4a",
                 type => "soun",
             },
             {
-                kind => "mp4a",
+                kind => "ac-3",
                 type => "soun",
-            }
+            },
         ],
         'tracks'
     );
@@ -236,16 +236,16 @@ is_deeply(
             1                 => {
                 audio     => [
                     {
-                        channels => '5.1 ch',
+                        channels => '2.0 ch',
                         code     => 'und',
-                        format   => 'AC3',
+                        format   => 'aac',
                         language => 'Unknown',
                         track    => '1',
                     },
                     {
-                        channels => '2.0 ch',
+                        channels => '5.1 ch',
                         code     => 'und',
-                        format   => 'aac',
+                        format   => 'AC3',
                         language => 'Unknown',
                         track    => '2',
                     },

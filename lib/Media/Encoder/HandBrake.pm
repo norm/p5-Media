@@ -438,14 +438,14 @@ role Media::Encoder::HandBrake {
         given ( $channels ) {
             when ( '5.1 ch' ) {
                 given ( $format ) {
-                    when ( 'AC3' ) { return [ 'ac3pass', 'dpl2' ]; }
-                    when ( 'DTS' ) { return [ 'ac3',     'dpl2' ]; }
+                    when ( 'AC3' ) { return [ 'dpl2', 'ac3pass' ]; }
+                    when ( 'DTS' ) { return [ 'dpl2', 'ac3'     ]; }
                 }
             }
             when ( 'Dolby Surround' ) {
                 given ( $format ) {
-                    when ( 'AC3' ) { return [ 'ac3pass', 'dpl2' ]; }
-                    when ( 'DTS' ) { return [ 'ac3',     'dpl2' ]; }
+                    when ( 'AC3' ) { return [ 'dpl2', 'ac3pass' ]; }
+                    when ( 'DTS' ) { return [ 'dpl2', 'ac3'     ]; }
                 }
             }
             when ( '2.0 ch' ) {

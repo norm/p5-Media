@@ -60,8 +60,8 @@ is_deeply(
             details => {
                 # taken from source file
                 audio => [
-                    '1:ac3:English 5.1 ch AC3',
                     '1:dpl2:English 5.1 ch',
+                    '1:ac3:English 5.1 ch AC3',
                 ],
                 
                 # taken from filename, should remain static
@@ -155,13 +155,13 @@ is_deeply(
                 type => "vide",
             },
             {
-                kind => "ac-3",
+                kind => "mp4a",
                 type => "soun",
             },
             {
-                kind => "mp4a",
+                kind => "ac-3",
                 type => "soun",
-            }
+            },
         ],
         'tracks'
     );
@@ -193,16 +193,16 @@ is_deeply(
             1                 => {
                 audio     => [
                     {
-                        channels => '5.1 ch',
+                        channels => '2.0 ch',
                         code     => 'eng',
-                        format   => 'AC3',
+                        format   => 'aac',
                         language => 'English',
                         track    => '1',
                     },
                     {
-                        channels => '2.0 ch',
+                        channels => '5.1 ch',
                         code     => 'eng',
-                        format   => 'aac',
+                        format   => 'AC3',
                         language => 'English',
                         track    => '2',
                     },

@@ -20,8 +20,8 @@ my $media     = Media->new( 't/conf/media.conf' );
 my $payload   = {
     details => {
         audio   => [
-            "1:ac3pass:English",
             "1:dpl2:English",
+            "1:ac3pass:English",
         ],
         series  => 'Battlestar Galactica (2003)',
         season  => '1',
@@ -79,13 +79,13 @@ is_deeply(
                 type => "vide",
             },
             {
-                kind => "ac-3",
+                kind => "mp4a",
                 type => "soun",
             },
             {
-                kind => "mp4a",
+                kind => "ac-3",
                 type => "soun",
-            }
+            },
         ],
         'tracks'
     );
