@@ -78,7 +78,7 @@ class Media::Handler::Object {
         return $destination;
     }
     method split_extension_filename ( $filename ) {
-        $filename =~ m{^ (.*?) (?: \. [^\.]+ )? $}x;
+        $filename =~ m{^ (.*?) (?: \. ([^\.]+) )? $}x;
         return( $1, $2 );
     }
     method get_handler ( $type, $medium, $details, $input='' ) {
